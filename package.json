@@ -1,0 +1,37 @@
+{
+  "name": "quietloudlab-website",
+  "version": "1.0.0",
+  "description": "A critical design and innovation studio website with interactive typography and glass morphism effects",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 https_server.py",
+    "build": "node build.js",
+    "serve": "npx serve .",
+    "deploy": "npm run build && echo 'Build complete. Upload dist/ contents to your web server.'"
+  },
+  "keywords": [
+    "design",
+    "innovation",
+    "critical-design",
+    "typography",
+    "interactive",
+    "glass-morphism",
+    "studio"
+  ],
+  "author": "quietloudlab",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "clean-css-cli": "^5.6.0",
+    "terser": "^5.19.0",
+    "html-minifier": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quietloudlab/website.git"
+  },
+  "homepage": "https://quietloudlab.com"
+}
