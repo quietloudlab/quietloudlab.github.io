@@ -367,7 +367,7 @@ body {
 .content {
   max-width: min(500px, 90vw);
   width: 100%;
-  padding: 2rem 1rem;
+  padding: 2rem;
   text-align: left;
   margin: 0 auto;
   padding-bottom: 40vh;
