@@ -93,6 +93,7 @@
     <div class="email-signup">
       <form class="signup-form" action="https://submit-form.com/rFddulOOu" method="POST">
         <input type="hidden" name="source" value="email_signup">
+        <input type="hidden" name="_redirect" value="false">
         <div class="signup-input-group">
           <input 
             type="email" 
@@ -174,6 +175,7 @@
           <!-- Right Column - Contact Form -->
           <div class="contact-form">
             <form action="https://submit-form.com/yt7Ve7HB0" method="POST" class="contact-form-inner">
+              <input type="hidden" name="_redirect" value="false">
               <div class="form-group">
                 <label for="name" class="required">Name</label>
                 <input 
@@ -265,23 +267,27 @@
   <script src="script.js"></script>
   <script src="https://unpkg.com/@botpoison/browser"></script>
   <script>
-    // Initialize Botpoison for forms with data-botpoison-public-key
+    // Ensure form handling is properly initialized
     document.addEventListener('DOMContentLoaded', function() {
-      const forms = document.querySelectorAll('form[data-botpoison-public-key]');
-      forms.forEach(form => {
-        const publicKey = form.getAttribute('data-botpoison-public-key');
-        if (publicKey && window.Botpoison) {
-          const botpoison = new Botpoison({
-            publicKey: publicKey
-          });
-          
-          // Let Botpoison handle the form submission
-          form.addEventListener('submit', function(e) {
-            // Botpoison will automatically handle the challenge
-            console.log('Form submitted with Botpoison protection');
-          });
-        }
-      });
+      console.log('DOM Content Loaded - checking forms...');
+      
+      // Check if our AJAX handlers are attached
+      const emailForm = document.querySelector('.signup-form');
+      const contactForm = document.querySelector('.contact-form-inner');
+      
+      if (emailForm) {
+        console.log('Email form found:', emailForm);
+        // Remove any existing listeners and re-attach
+        emailForm.removeEventListener('submit', handleFormSubmit);
+        emailForm.addEventListener('submit', handleFormSubmit);
+      }
+      
+      if (contactForm) {
+        console.log('Contact form found:', contactForm);
+        // Remove any existing listeners and re-attach
+        contactForm.removeEventListener('submit', handleFormSubmit);
+        contactForm.addEventListener('submit', handleFormSubmit);
+      }
     });
   </script>
 </body>

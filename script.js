@@ -1385,9 +1385,18 @@ async function handleFormSubmit(e) {
     console.log('Response status:', response.status);
     console.log('Response headers:', response.headers);
     
-    // Check for successful submission (Formspark returns 302 redirect on success)
+    // Check for successful submission
     if (response.status === 302 || response.status === 200) {
-      showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
+      // With _redirect=false, Formspark returns JSON response
+      try {
+        const responseData = await response.json();
+        console.log('Formspark response:', responseData);
+        showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
+      } catch (jsonError) {
+        // If not JSON, it's still a success (302 redirect)
+        console.log('Non-JSON response, treating as success');
+        showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
+      }
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
