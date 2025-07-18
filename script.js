@@ -57,7 +57,7 @@ const CONFIG = {
   // Performance optimizations
   THROTTLE: {
     MOUSE: 32, // ~30fps (was 16 for 60fps)
-    SCROLL: 32,
+    SCROLL: 16, // ~60fps for faster scroll response
     ORIENTATION: 64 // ~15fps (was 32 for 30fps)
   },
   
@@ -1091,6 +1091,11 @@ class InteractiveTextApp {
     this.setupEventListeners();
     this.setupMobileSensors();
     this.startAnimation();
+    
+    // Check for elements already in view on page load
+    setTimeout(() => {
+      this.checkScrollReveal();
+    }, 100);
   }
   
   testFontVariations() {
@@ -1262,11 +1267,15 @@ class InteractiveTextApp {
   }
   
   checkScrollReveal() {
-    const descriptions = document.querySelectorAll('.description');
+    // Cache descriptions on first call to avoid repeated DOM queries
+    if (!this.descriptions) {
+      this.descriptions = document.querySelectorAll('.description');
+    }
+    
     const windowHeight = window.innerHeight;
     const triggerOffset = windowHeight * 0.8; // Trigger when 80% of element is visible
     
-    descriptions.forEach((description, index) => {
+    this.descriptions.forEach((description, index) => {
       if (description.classList.contains('revealed')) return;
       
       const rect = this.domCache.getRect(description);
@@ -1275,10 +1284,8 @@ class InteractiveTextApp {
       
       // Check if element is in viewport
       if (elementTop < triggerOffset && elementTop + elementHeight > 0) {
-        // Add staggered delay based on index
-        setTimeout(() => {
-          description.classList.add('revealed');
-        }, index * 200); // 200ms delay between each paragraph
+        // Remove staggered delay for faster response
+        description.classList.add('revealed');
       }
     });
   }
