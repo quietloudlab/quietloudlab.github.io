@@ -56,9 +56,9 @@ const CONFIG = {
   
   // Performance optimizations
   THROTTLE: {
-    MOUSE: 32, // ~30fps (was 16 for 60fps)
-    SCROLL: 16, // ~60fps for faster scroll response
-    ORIENTATION: 64 // ~15fps (was 32 for 30fps)
+    MOUSE: 64, // ~15fps (was 32 for 30fps)
+    SCROLL: 32, // ~30fps (was 16 for 60fps)
+    ORIENTATION: 128 // ~8fps (was 64 for 15fps)
   },
   
   // Caching
@@ -69,8 +69,8 @@ const CONFIG = {
   
   // Performance monitoring
   PERFORMANCE: {
-    TARGET_FPS: 30,
-    FRAME_TIME_THRESHOLD: 33.33, // 30fps = 33.33ms per frame
+    TARGET_FPS: 20, // Reduced from 30
+    FRAME_TIME_THRESHOLD: 50, // 20fps = 50ms per frame (was 33.33ms)
     ADAPTIVE_QUALITY: true,
     FRAME_SKIP_THRESHOLD: 0.1, // Skip frames when effects are minimal
     INACTIVITY_TIMEOUT: 2000 // Pause animation after 2s of inactivity
@@ -765,7 +765,8 @@ class GlassGridManager {
     this.lastMouseX = 0;
     this.lastMouseY = 0;
     
-    this.initialize();
+    // TEMPORARILY DISABLED FOR PERFORMANCE TESTING
+    // this.initialize();
   }
   
   initialize() {
@@ -1023,9 +1024,9 @@ class InteractiveTextApp {
     const isLowEnd = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
     
     if (isMobile || isLowEnd) {
-      return 20; // 20fps for mobile/low-end devices
+      return 15; // 15fps for mobile/low-end devices (was 20)
     }
-    return 30; // 30fps for desktop
+    return 20; // 20fps for desktop (was 30)
   }
   
   precalculateLetterData() {
@@ -1355,6 +1356,13 @@ class InteractiveTextApp {
       this.updateLetters(time);
       
       this.performanceMonitor.endFrame();
+      
+      // Log performance every 60 frames (about 3 seconds at 20fps)
+      if (this.performanceMonitor.frameCount % 60 === 0) {
+        const avgFrameTime = this.performanceMonitor.getAverageFrameTime();
+        const qualityLevel = this.performanceMonitor.getQualityLevel();
+        console.log(`Performance: ${avgFrameTime.toFixed(1)}ms/frame, Quality: ${(qualityLevel * 100).toFixed(0)}%`);
+      }
       
       // Adaptive frame rate based on performance
       const frameTime = this.performanceMonitor.getAverageFrameTime();
