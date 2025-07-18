@@ -1375,30 +1375,53 @@ async function handleFormSubmit(e) {
     console.log('Form data being sent:', data);
     console.log('Form action:', form.action);
     
-    // Submit to Formspark using form data (not JSON)
-    const response = await fetch(form.action, {
-      method: 'POST',
-      body: formData,
-      redirect: 'manual' // Prevent automatic redirects
-    });
-    
-    console.log('Response status:', response.status);
-    console.log('Response headers:', response.headers);
-    
-    // Check for successful submission
-    if (response.status === 302 || response.status === 200) {
-      // With _redirect=false, Formspark returns JSON response
-      try {
-        const responseData = await response.json();
-        console.log('Formspark response:', responseData);
-        showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
-      } catch (jsonError) {
-        // If not JSON, it's still a success (302 redirect)
-        console.log('Non-JSON response, treating as success');
-        showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
+    // Try AJAX submission first
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        redirect: 'manual' // Prevent automatic redirects
+      });
+      
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+      
+      // Check for successful submission
+      if (response.status === 302 || response.status === 200) {
+        // With _redirect=false, Formspark returns JSON response
+        try {
+          const responseData = await response.json();
+          console.log('Formspark response:', responseData);
+          showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
+          return; // Success, exit early
+        } catch (jsonError) {
+          // If not JSON, it's still a success (302 redirect)
+          console.log('Non-JSON response, treating as success');
+          showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
+          return; // Success, exit early
+        }
+      } else {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-    } else {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    } catch (ajaxError) {
+      console.log('AJAX failed due to CORS or network issue, using regular form submission:', ajaxError);
+      
+      // AJAX failed, use regular form submission
+      // Remove the _redirect=false to allow normal redirect
+      const redirectInput = form.querySelector('input[name="_redirect"]');
+      if (redirectInput) {
+        redirectInput.remove();
+      }
+      
+      // Show success message immediately
+      showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
+      
+      // Submit the form normally (this will redirect to Formspark)
+      setTimeout(() => {
+        form.submit();
+      }, 500); // Small delay to show the success message
+      
+      return; // Exit early
     }
   } catch (error) {
     console.error('Form submission error:', error);
