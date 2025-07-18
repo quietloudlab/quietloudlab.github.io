@@ -568,30 +568,6 @@ class EffectCalculator {
     const finalDistortion = baselineDistortion + clickWave + keyboardWave + chaosWave1 + chaosWave2 + 
                            tapWave + tapChaosWave1 + tapChaosWave2 + orientationDistortion;
     
-    // Debug logging for distortion values (only log if distortion is high)
-    if (finalDistortion > CONFIG.DISTORTION.MAX * 0.8) {
-      console.log('High distortion detected:', {
-        finalDistortion,
-        baselineDistortion,
-        clickWave,
-        keyboardWave,
-        chaosWave1,
-        chaosWave2,
-        tapWave,
-        tapChaosWave1,
-        tapChaosWave2,
-        orientationDistortion,
-        effects: {
-          clickEffect: state.clickEffect,
-          keyboardEffect: state.keyboardEffect,
-          tapEffect: state.tapEffect,
-          verticalTilt: state.verticalTilt,
-          horizontalTilt: state.horizontalTilt,
-          deviceOrientation: state.deviceOrientation
-        }
-      });
-    }
-    
     return {
       weight: finalWeight,
       distortion: finalDistortion
@@ -616,7 +592,6 @@ class MobileSensorManager {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
       if (!isMobile) {
-        console.log('Device orientation disabled on desktop');
         this.isInitialized = true;
         return;
       }
@@ -770,16 +745,7 @@ class MobileSensorManager {
       this.state.horizontalTilt = Math.min(1, Math.abs(this.state.deviceOrientation.gamma) / CONFIG.TILT_SENSITIVITY);
       this.state.orientationEffect = Math.min(1, (this.state.verticalTilt + this.state.horizontalTilt) / 2);
       
-      // Debug logging for extreme values
-      if (this.state.verticalTilt > 0.8 || this.state.horizontalTilt > 0.8) {
-        console.log('High tilt detected:', {
-          alpha,
-          beta: validBeta,
-          gamma: validGamma,
-          verticalTilt: this.state.verticalTilt,
-          horizontalTilt: this.state.horizontalTilt
-        });
-      }
+
     });
     
     window.addEventListener('deviceorientation', throttledHandler);
@@ -1112,22 +1078,9 @@ class InteractiveTextApp {
     const supportsFontVariation = CSS.supports('font-variation-settings', '"wght" 100');
     const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
     
-    console.log('Font variation test:', {
-      supportsFontVariation,
-      isChrome,
-      userAgent: navigator.userAgent,
-      computedFontFamily: getComputedStyle(testElement).fontFamily
-    });
-    
     // Test different variation settings
     testElement.style.fontVariationSettings = '"wght" 100, "DIST" 30';
     const computedVariations = getComputedStyle(testElement).fontVariationSettings;
-    
-    console.log('Font variation settings test:', {
-      applied: '"wght" 100, "DIST" 30',
-      computed: computedVariations,
-      working: computedVariations.includes('DIST') || computedVariations.includes('100')
-    });
     
     // Clean up
     document.body.removeChild(testElement);
@@ -1319,17 +1272,7 @@ class InteractiveTextApp {
           letterData.element.style.setProperty('font-variation-settings', variationSettings);
         }
         
-        // Debug logging for high distortion values
-        if (distortion > CONFIG.DISTORTION.MAX * 0.8) {
-          console.log('Applying high distortion:', {
-            element: letterData.element,
-            weight: weight.toFixed(1),
-            distortion: distortion.toFixed(1),
-            variationSettings,
-            isChrome,
-            computedStyle: getComputedStyle(letterData.element).fontVariationSettings
-          });
-        }
+
       } else {
         // Fallback for browsers without font variation support
         letterData.element.style.fontWeight = Math.round(weight);
@@ -1475,19 +1418,15 @@ class InteractiveTextApp {
 
 // Form handling for Formspark
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Initializing Formspark integration...');
-  
   // Handle email signup form
   const emailForm = document.querySelector('.signup-form');
   if (emailForm) {
-    console.log('Email form found, attaching handler');
     emailForm.addEventListener('submit', handleFormSubmit);
   }
 
   // Handle contact form
   const contactForm = document.querySelector('.contact-form-inner');
   if (contactForm) {
-    console.log('Contact form found, attaching handler');
     contactForm.addEventListener('submit', handleFormSubmit);
   }
 });
@@ -1527,9 +1466,6 @@ async function handleFormSubmit(e) {
     // Add _redirect: false to prevent redirect (as per docs)
     data._redirect = false;
     
-    console.log('Sending data to Formspark:', data);
-    console.log('Form action:', form.action);
-    
     // Submit using JSON (as per Formspark AJAX docs)
     const response = await fetch(form.action, {
       method: 'POST',
@@ -1540,17 +1476,12 @@ async function handleFormSubmit(e) {
       body: JSON.stringify(data)
     });
     
-    console.log('Response status:', response.status);
-    console.log('Response headers:', response.headers);
-    
     if (response.ok) {
       // Success - Formspark returns JSON when _redirect=false
       try {
         const responseData = await response.json();
-        console.log('Formspark success response:', responseData);
         showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
       } catch (jsonError) {
-        console.log('Non-JSON response, but status is OK');
         showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
       }
     } else {
@@ -1558,11 +1489,8 @@ async function handleFormSubmit(e) {
     }
     
   } catch (error) {
-    console.error('Form submission error:', error);
-    
     // If it's a CORS or network error, fall back to regular form submission
     if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-      console.log('Network error detected, falling back to regular form submission');
       
       // Remove _redirect=false to allow normal redirect
       const redirectInput = form.querySelector('input[name="_redirect"]');
