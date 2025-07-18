@@ -538,13 +538,14 @@ ul {
 
 .modal-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 2rem 2rem 1rem 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(10px);
+  position: relative;
 }
 
 .modal-header h2 {
@@ -554,6 +555,8 @@ ul {
   margin: 0;
   text-align: center;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  flex: 1;
+  margin-right: 60px; /* Space for close button */
 }
 
 .modal-close {
@@ -571,6 +574,10 @@ ul {
   border-radius: 50%;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  position: absolute;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .modal-close:hover {
@@ -591,7 +598,7 @@ ul {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   min-height: 0;
 }
@@ -607,9 +614,9 @@ ul {
   align-items: start;
   /* This allows the content to be centered when there's space, 
      but align to top when content is taller than viewport */
-  align-self: center;
+  align-self: flex-start;
   min-height: min-content;
-  padding-top: 4rem;
+  padding-top: 2rem;
 }
 
 .contact-info {
@@ -617,6 +624,7 @@ ul {
   flex-direction: column;
   gap: 2rem;
   padding-right: 2rem;
+  width: 100%;
 }
 
 .contact-section {
@@ -725,6 +733,7 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
 }
 
 .form-group {
@@ -792,6 +801,7 @@ ul {
   gap: 0.75rem;
   height: auto;
   padding-right: 0.5rem;
+  max-height: none;
 }
 
 .checkbox-item {
@@ -943,13 +953,23 @@ ul {
     padding: 1.5rem 1.5rem 1rem 1.5rem;
   }
   
+  .modal-header h2 {
+    margin-right: 50px;
+  }
+  
+  .modal-close {
+    right: 1.5rem;
+  }
+  
   .modal-body {
     padding: 1.5rem;
+    padding-top: 2rem;
   }
   
   .contact-layout {
     grid-template-columns: 1fr;
     gap: 2rem;
+    padding-top: 1rem;
   }
   
   .contact-info {
@@ -1000,17 +1020,31 @@ ul {
     padding: 1rem 1rem 0.75rem 1rem;
   }
   
+  .modal-header h2 {
+    margin-right: 45px;
+    font-size: 1.25rem;
+  }
+  
+  .modal-close {
+    right: 1rem;
+    width: 35px;
+    height: 35px;
+    font-size: 1.5rem;
+  }
+  
   .modal-body {
     padding: 1rem;
+    padding-top: 1.5rem;
   }
   
   .contact-layout {
     gap: 1.5rem;
+    padding-top: 0.5rem;
   }
   
   .contact-info {
     gap: 1rem;
-    padding-right: 2rem;
+    padding-right: 0;
   }
   
   .contact-form-inner {
@@ -1018,7 +1052,7 @@ ul {
   }
   
   .checkbox-group {
-    max-height: 120px;
+    max-height: none;
   }
 }
 
@@ -1037,6 +1071,14 @@ ul {
   }
   
   .modal-header h2 {
+    font-size: 1.125rem;
+    margin-right: 40px;
+  }
+  
+  .modal-close {
+    right: 0.75rem;
+    width: 32px;
+    height: 32px;
     font-size: 1.25rem;
   }
   
@@ -1046,6 +1088,15 @@ ul {
   
   .checkbox-text {
     font-size: 0.75rem;
+  }
+  
+  .contact-layout {
+    padding-top: 0;
+  }
+  
+  .modal-body {
+    padding: 0.75rem;
+    padding-top: 1rem;
   }
 }
 
