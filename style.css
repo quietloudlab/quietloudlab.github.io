@@ -54,7 +54,6 @@
   transition: all 0.3s ease;
   z-index: 2;
   margin: -1px;
-  border: 1px solid transparent;
 }
 
 .glass-pane::before {
@@ -70,10 +69,9 @@
 
 .glass-pane.refracting {
   backdrop-filter: blur(25px);
-  border-color: rgba(255, 255, 255, 0.15);
   box-shadow: 
     0 8px 25px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    inset 0 1px 0 rgba(125, 125, 125, 0.2);
   transform: scale(1.02);
   filter: contrast(1.05) brightness(1.02);
 }
@@ -377,7 +375,8 @@ body {
 }
 
 .description {
-  font-size: clamp(1rem, 3.5vw, 1.25rem);
+  font-size: clamp(1rem, 3.5vw, 1.5rem);
+  text-shadow: 0 0 12px rgba(0, 0, 0, .5);
   line-height: 1.6;
   color: #FFF;
   margin: 0 0 2rem 0;
@@ -993,7 +992,7 @@ ul {
   }
   
   .description {
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
   
   .modal-header {
@@ -1033,7 +1032,7 @@ ul {
   }
   
   .description {
-    font-size: 0.875rem;
+    font-size: 1rem;
   }
   
   .modal-header h2 {
@@ -1137,12 +1136,12 @@ ul {
   
 /* Fallback for browsers without backdrop-filter support */
 .no-backdrop-filter .glass-pane {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(125, 125, 125, 0.1);
   backdrop-filter: none;
 }
 
 .no-backdrop-filter .glass-pane.refracting {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(125, 125, 125, 0.2);
   backdrop-filter: none;
 }
 
@@ -1165,9 +1164,8 @@ ul {
 
 /* Lightweight Glass Panes - Performance Optimized */
 .lightweight-glass-pane {
-  backdrop-filter: blur(15px);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(var(--blur-intensity, 15px));
+  background: rgba(0, 0, 0, 0.1); /* Darker base background */
   border-radius: 0; /* Remove border radius for seamless tiling */
   position: relative;
   overflow: hidden;
@@ -1187,7 +1185,7 @@ ul {
   bottom: 0;
   background: radial-gradient(
     circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.08) 0%,
     transparent calc(var(--distance, 0) * 100px)
   );
   opacity: var(--distance, 0);
@@ -1205,7 +1203,7 @@ ul {
   background: linear-gradient(
     45deg,
     transparent 30%,
-    rgba(255, 255, 255, 0.03) 50%,
+    rgba(255, 255, 255, 0.02) 50%,
     transparent 70%
   );
   opacity: 0.3;
@@ -1213,12 +1211,12 @@ ul {
 }
 
 .lightweight-glass-pane.active {
-  backdrop-filter: blur(20px);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(var(--active-blur-intensity, 20px));
+  background: rgba(0, 0, 0, 0.15); /* Slightly darker when active */
+  border-color: rgba(255, 255, 255, calc(var(--border-opacity, 0.1) * 2));
   box-shadow: 
-    0 4px 15px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 4px 15px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transform: scale(1.02);
 }
 
@@ -1229,21 +1227,21 @@ ul {
 /* Responsive adjustments for lightweight panes */
 @media (max-width: 768px) {
   .lightweight-glass-pane {
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(calc(var(--blur-intensity, 15px) * 0.8));
   }
   
   .lightweight-glass-pane.active {
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(calc(var(--active-blur-intensity, 20px) * 0.8));
   }
 }
 
 @media (max-width: 480px) {
   .lightweight-glass-pane {
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(calc(var(--blur-intensity, 15px) * 0.67));
   }
   
   .lightweight-glass-pane.active {
-    backdrop-filter: blur(14px);
+    backdrop-filter: blur(calc(var(--active-blur-intensity, 20px) * 0.67));
   }
 }
 
@@ -1262,9 +1260,8 @@ ul {
 }
 
 .css-only-glass-pane {
-  backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(var(--blur-intensity, 12px));
+  background: rgba(0, 0, 0, 0.08); /* Darker base background */
   border-radius: 0; /* Remove border radius for seamless tiling */
   position: relative;
   overflow: hidden;
@@ -1285,7 +1282,7 @@ ul {
   background: linear-gradient(
     45deg,
     transparent 40%,
-    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.03) 50%,
     transparent 60%
   );
   animation: shimmer 6s ease-in-out infinite;
@@ -1302,7 +1299,7 @@ ul {
   bottom: 0;
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.05) 0%,
     transparent 70%
   );
   opacity: 0.6;
@@ -1339,7 +1336,7 @@ ul {
   }
   
   .css-only-glass-pane {
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(calc(var(--blur-intensity, 12px) * 0.83));
   }
 }
 
@@ -1350,7 +1347,7 @@ ul {
   }
   
   .css-only-glass-pane {
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(calc(var(--blur-intensity, 12px) * 0.67));
   }
 }
   

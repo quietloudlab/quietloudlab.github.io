@@ -81,9 +81,9 @@ const CONFIG = {
     TYPE: 'lightweight', // Options: 'lightweight', 'css-only', 'disabled'
     INTERACTION_RADIUS: 300,
     PANE_SIZE: {
-      DESKTOP: 200,
-      TABLET: 150,
-      MOBILE: 120
+      DESKTOP: 150, // Increased from 120
+      TABLET: 110,  // Increased from 90
+      MOBILE: 85    // Increased from 70
     }
   },
   
@@ -811,9 +811,18 @@ class LightweightGlassGridManager {
         const pane = document.createElement('div');
         pane.className = 'lightweight-glass-pane';
         
-        // Add subtle random variation
+        // Add subtle random variations for organic feel
         const randomOpacity = 0.7 + Math.random() * 0.3;
+        const randomBlur = 12 + Math.random() * 8; // 12-20px blur variation
+        const randomActiveBlur = 16 + Math.random() * 8; // 16-24px active blur variation
+        const randomBackground = 0.08 + Math.random() * 0.04; // 0.08-0.12 darker background opacity
+        const randomBorder = 0.06 + Math.random() * 0.04; // 0.06-0.10 border opacity
+        
         pane.style.opacity = randomOpacity;
+        pane.style.setProperty('--blur-intensity', `${randomBlur}px`);
+        pane.style.setProperty('--active-blur-intensity', `${randomActiveBlur}px`);
+        pane.style.setProperty('--background-opacity', randomBackground.toString());
+        pane.style.setProperty('--border-opacity', randomBorder.toString());
         
         // Add CSS custom properties for mouse interaction
         pane.style.setProperty('--mouse-x', '50%');
@@ -960,9 +969,16 @@ class CSSOnlyGlassGrid {
         const delay = (row + col) * 0.5;
         pane.style.setProperty('--delay', delay.toString());
         
-        // Add subtle random opacity variation
+        // Add subtle random variations for organic feel
         const randomOpacity = 0.6 + Math.random() * 0.4;
+        const randomBlur = 10 + Math.random() * 6; // 10-16px blur variation
+        const randomBackground = 0.06 + Math.random() * 0.03; // 0.06-0.09 darker background opacity
+        const randomBorder = 0.05 + Math.random() * 0.03; // 0.05-0.08 border opacity
+        
         pane.style.opacity = randomOpacity;
+        pane.style.setProperty('--blur-intensity', `${randomBlur}px`);
+        pane.style.setProperty('--background-opacity', randomBackground.toString());
+        pane.style.setProperty('--border-opacity', randomBorder.toString());
         
         this.gridContainer.appendChild(pane);
       }
