@@ -1385,10 +1385,13 @@ async function handleFormSubmit(e) {
     console.log('Response headers:', response.headers);
     
     if (response.ok) {
-      // Check if it's a redirect (Formspark success)
-      if (response.redirected || response.url.includes('submitted.formspark.io')) {
+      // With _redirect=false, Formspark returns a JSON response
+      try {
+        const responseData = await response.json();
+        console.log('Formspark response:', responseData);
         showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
-      } else {
+      } catch (jsonError) {
+        // Fallback for non-JSON responses
         const responseText = await response.text();
         console.log('Response text:', responseText);
         showSuccessMessage(form, 'Thank you! Your message has been sent.');
