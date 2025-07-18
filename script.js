@@ -1354,23 +1354,13 @@ async function handleFormSubmit(e) {
   submitButton.disabled = true;
   
   try {
-    // Get Botpoison token if available
-    let botpoisonToken = '';
-    if (window.botpoison) {
-      const { solution } = await window.botpoison.challenge();
-      botpoisonToken = solution;
-    }
-    
     // Get form data
     const formData = new FormData(form);
     const data = new URLSearchParams();
     
     for (let [key, value] of formData.entries()) {
-      if (key === '_botpoison' && botpoisonToken) {
-        data.append(key, botpoisonToken);
-      } else if (key !== '_botpoison') {
-        data.append(key, value);
-      }
+      // Include all form data including botpoison token
+      data.append(key, value);
     }
     
     // Log form data for debugging
