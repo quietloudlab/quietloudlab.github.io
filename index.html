@@ -96,6 +96,7 @@
     <div class="email-signup">
       <form class="signup-form" action="https://submit-form.com/yt7Ve7HB0" method="POST">
         <input type="hidden" name="source" value="email_signup">
+        <input type="hidden" name="_botpoison" value="">
         <div class="signup-input-group">
           <input 
             type="email" 
@@ -177,6 +178,7 @@
           <!-- Right Column - Contact Form -->
           <div class="contact-form">
             <form action="https://submit-form.com/yt7Ve7HB0" method="POST" class="contact-form-inner">
+              <input type="hidden" name="_botpoison" value="">
               <div class="form-group">
                 <label for="name" class="required">Name</label>
                 <input 
@@ -214,43 +216,43 @@
                 <label for="interests">I'm interested in...</label>
                 <div class="checkbox-group">
                   <label class="checkbox-item">
-                    <input type="checkbox" name="exploring_support" value="Exploring how quietloud can support my team">
+                    <input type="checkbox" name="interests" value="Exploring how quietloud can support my team">
                     <span class="checkmark"></span>
                     <span class="checkbox-text">Exploring how quietloud can support my team</span>
                   </label>
                   
                   <label class="checkbox-item">
-                    <input type="checkbox" name="codesigning_new_product" value="Co-designing a new product, service, or solution">
+                    <input type="checkbox" name="interests" value="Co-designing a new product, service, or solution">
                     <span class="checkmark"></span>
                     <span class="checkbox-text">Co-designing a new product, service, or solution</span>
                   </label>
                   
                   <label class="checkbox-item">
-                    <input type="checkbox" name="prototyping_idea" value="Prototyping an idea to test or explore">
+                    <input type="checkbox" name="interests" value="Prototyping an idea to test or explore">
                     <span class="checkmark"></span>
                     <span class="checkbox-text">Prototyping an idea to test or explore</span>
                   </label>
                   
                   <label class="checkbox-item">
-                    <input type="checkbox" name="running_workshop" value="Running a workshop with my team">
+                    <input type="checkbox" name="interests" value="Running a workshop with my team">
                     <span class="checkmark"></span>
                     <span class="checkbox-text">Running a workshop with my team</span>
                   </label>
                   
                   <label class="checkbox-item">
-                    <input type="checkbox" name="learning_ai_design" value="Learning how to design for AI (individually or as a team)">
+                    <input type="checkbox" name="interests" value="Learning how to design for AI (individually or as a team)">
                     <span class="checkmark"></span>
                     <span class="checkbox-text">Learning how to design for AI (individually or as a team)</span>
                   </label>
                   
                   <label class="checkbox-item">
-                    <input type="checkbox" name="framing_problem" value="Framing a problem, opportunity, or future state">
+                    <input type="checkbox" name="interests" value="Framing a problem, opportunity, or future state">
                     <span class="checkmark"></span>
                     <span class="checkbox-text">Framing a problem, opportunity, or future state</span>
                   </label>
                   
                   <label class="checkbox-item">
-                    <input type="checkbox" name="scheduling_chat" value="Scheduling a 30 minute consultation chat">
+                    <input type="checkbox" name="interests" value="Scheduling a 30 minute consultation chat">
                     <span class="checkmark"></span>
                     <span class="checkbox-text">Scheduling a 30 minute consultation chat</span>
                   </label>
@@ -266,5 +268,10 @@
   </div>
 
   <script src="script.js"></script>
+  <script src="https://unpkg.com/@botpoison/browser"></script>
+  <script>
+    // Initialize Botpoison
+    window.botpoison = new Botpoison('sk_ef2166b4-25b2-4a92-9d46-c1e2be30adf2');
+  </script>
 </body>
 </html>

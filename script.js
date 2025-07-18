@@ -1342,7 +1342,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-function handleFormSubmit(e) {
+async function handleFormSubmit(e) {
   e.preventDefault();
   
   const form = e.target;
@@ -1353,36 +1353,57 @@ function handleFormSubmit(e) {
   submitButton.innerHTML = 'Sending...';
   submitButton.disabled = true;
   
-  // Get form data
-  const formData = new FormData(form);
-  const data = new URLSearchParams();
-  
-  for (let [key, value] of formData.entries()) {
-    data.append(key, value);
-  }
-  
-  // Submit to Formspark
-  fetch(form.action, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: data,
-    mode: 'no-cors' // Add this to handle CORS issues
-  })
-  .then(response => {
-    // With no-cors mode, we can't read the response, so we assume success
-    showSuccessMessage(form, 'Thank you! Your message has been sent.');
-  })
-  .catch(error => {
+  try {
+    // Get Botpoison token if available
+    let botpoisonToken = '';
+    if (window.botpoison) {
+      const { solution } = await window.botpoison.challenge();
+      botpoisonToken = solution;
+    }
+    
+    // Get form data
+    const formData = new FormData(form);
+    const data = new URLSearchParams();
+    
+    for (let [key, value] of formData.entries()) {
+      if (key === '_botpoison' && botpoisonToken) {
+        data.append(key, botpoisonToken);
+      } else if (key !== '_botpoison') {
+        data.append(key, value);
+      }
+    }
+    
+    // Log form data for debugging
+    console.log('Form data being sent:', Object.fromEntries(data));
+    console.log('Form action:', form.action);
+    
+    // Submit to Formspark
+    const response = await fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: data
+    });
+    
+    console.log('Response status:', response.status);
+    console.log('Response headers:', response.headers);
+    
+    if (response.ok) {
+      const responseText = await response.text();
+      console.log('Response text:', responseText);
+      showSuccessMessage(form, 'Thank you! Your message has been sent.');
+    } else {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+  } catch (error) {
     console.error('Form submission error:', error);
     showErrorMessage(form, 'Sorry, there was an error sending your message. Please try again or contact us directly at brandon@quietloudlab.com');
-  })
-  .finally(() => {
+  } finally {
     // Reset button
     submitButton.innerHTML = originalText;
     submitButton.disabled = false;
-  });
+  }
 }
 
 function showSuccessMessage(form, message) {
