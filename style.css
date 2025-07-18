@@ -1176,8 +1176,6 @@ ul {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  animation: subtlePaneFloat 12s ease-in-out infinite, paneBreathing 15s ease-in-out infinite, colorShift 20s ease-in-out infinite;
-  animation-delay: calc(var(--animation-delay, 0) * -1s), calc(var(--breathing-delay, 0) * -1s), calc(var(--color-delay, 0) * -1s);
 }
 
 .lightweight-glass-pane::before {
@@ -1195,8 +1193,6 @@ ul {
   opacity: var(--distance, 0);
   transition: opacity 0.2s ease;
   pointer-events: none;
-  animation: innerGlow 8s ease-in-out infinite;
-  animation-delay: calc(var(--animation-delay, 0) * -1s);
 }
 
 .lightweight-glass-pane::after {
@@ -1214,8 +1210,6 @@ ul {
   );
   opacity: 0.3;
   pointer-events: none;
-  animation: subtleShimmer 10s ease-in-out infinite;
-  animation-delay: calc(var(--animation-delay, 0) * -1s);
 }
 
 .lightweight-glass-pane.active {
@@ -1226,12 +1220,31 @@ ul {
     0 4px 15px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transform: scale(1.02);
-  animation-duration: 8s; /* Speed up animation when active */
 }
 
 .lightweight-glass-pane.active::before {
   opacity: calc(var(--distance, 0) * 0.8);
-  animation-duration: 6s; /* Speed up inner glow when active */
+}
+
+/* Responsive adjustments for lightweight panes */
+@media (max-width: 768px) {
+  .lightweight-glass-pane {
+    backdrop-filter: blur(12px);
+  }
+  
+  .lightweight-glass-pane.active {
+    backdrop-filter: blur(16px);
+  }
+}
+
+@media (max-width: 480px) {
+  .lightweight-glass-pane {
+    backdrop-filter: blur(10px);
+  }
+  
+  .lightweight-glass-pane.active {
+    backdrop-filter: blur(14px);
+  }
 }
 
 /* CSS-Only Glass Effect Alternative */
@@ -1255,8 +1268,8 @@ ul {
   border-radius: 0; /* Remove border radius for seamless tiling */
   position: relative;
   overflow: hidden;
-  animation: subtleFloat 8s ease-in-out infinite, paneBreathing 15s ease-in-out infinite;
-  animation-delay: calc(var(--delay, 0) * -1s), calc(var(--breathing-delay, 0) * -1s);
+  animation: subtleFloat 8s ease-in-out infinite;
+  animation-delay: calc(var(--delay, 0) * -1s);
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -1296,55 +1309,6 @@ ul {
   pointer-events: none;
 }
 
-/* Dynamic Animation Keyframes */
-@keyframes subtlePaneFloat {
-  0%, 100% {
-    transform: translateY(0px) scale(1);
-    opacity: 0.7;
-  }
-  33% {
-    transform: translateY(-1px) scale(1.005);
-    opacity: 0.8;
-  }
-  66% {
-    transform: translateY(1px) scale(0.995);
-    opacity: 0.75;
-  }
-}
-
-@keyframes innerGlow {
-  0%, 100% {
-    opacity: 0.2;
-    filter: brightness(1);
-  }
-  50% {
-    opacity: 0.4;
-    filter: brightness(1.1);
-  }
-}
-
-@keyframes subtleShimmer {
-  0%, 100% {
-    transform: translateX(-100%) rotate(0deg);
-    opacity: 0.2;
-  }
-  50% {
-    transform: translateX(100%) rotate(180deg);
-    opacity: 0.4;
-  }
-}
-
-@keyframes paneBreathing {
-  0%, 100% {
-    backdrop-filter: blur(12px);
-    background: rgba(255, 255, 255, 0.03);
-  }
-  50% {
-    backdrop-filter: blur(14px);
-    background: rgba(255, 255, 255, 0.05);
-  }
-}
-
 @keyframes subtleFloat {
   0%, 100% {
     transform: translateY(0px) scale(1);
@@ -1364,18 +1328,6 @@ ul {
   50% {
     opacity: 0.6;
     transform: translateX(100%);
-  }
-}
-
-@keyframes colorShift {
-  0%, 100% {
-    filter: hue-rotate(0deg) saturate(1);
-  }
-  33% {
-    filter: hue-rotate(5deg) saturate(1.05);
-  }
-  66% {
-    filter: hue-rotate(-3deg) saturate(0.98);
   }
 }
 
@@ -1399,27 +1351,6 @@ ul {
   
   .css-only-glass-pane {
     backdrop-filter: blur(8px);
-  }
-}
-
-/* Responsive adjustments for lightweight panes */
-@media (max-width: 768px) {
-  .lightweight-glass-pane {
-    backdrop-filter: blur(12px);
-  }
-  
-  .lightweight-glass-pane.active {
-    backdrop-filter: blur(16px);
-  }
-}
-
-@media (max-width: 480px) {
-  .lightweight-glass-pane {
-    backdrop-filter: blur(10px);
-  }
-  
-  .lightweight-glass-pane.active {
-    backdrop-filter: blur(14px);
   }
 }
   

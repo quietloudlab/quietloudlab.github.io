@@ -815,14 +815,6 @@ class LightweightGlassGridManager {
         const randomOpacity = 0.7 + Math.random() * 0.3;
         pane.style.opacity = randomOpacity;
         
-        // Add random animation delays for organic movement
-        const animationDelay = Math.random() * 12; // 0-12 seconds
-        const breathingDelay = Math.random() * 15; // 0-15 seconds
-        const colorDelay = Math.random() * 20; // 0-20 seconds
-        pane.style.setProperty('--animation-delay', animationDelay.toString());
-        pane.style.setProperty('--breathing-delay', breathingDelay.toString());
-        pane.style.setProperty('--color-delay', colorDelay.toString());
-        
         // Add CSS custom properties for mouse interaction
         pane.style.setProperty('--mouse-x', '50%');
         pane.style.setProperty('--mouse-y', '50%');
@@ -966,9 +958,7 @@ class CSSOnlyGlassGrid {
         
         // Add staggered animation delay for organic feel
         const delay = (row + col) * 0.5;
-        const breathingDelay = Math.random() * 15; // Random breathing delay
         pane.style.setProperty('--delay', delay.toString());
-        pane.style.setProperty('--breathing-delay', breathingDelay.toString());
         
         // Add subtle random opacity variation
         const randomOpacity = 0.6 + Math.random() * 0.4;
