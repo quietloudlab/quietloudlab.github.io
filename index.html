@@ -33,10 +33,7 @@
   <link rel="apple-touch-icon" href="/assets/img/ql-logo.svg">
   <link rel="manifest" href="/site.webmanifest">
   
-  <!-- Preload Critical Resources -->
-  <link rel="preload" href="/fonts/Distort-VariableVF.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="/assets/video/flwrblm.webm" as="video" type="video/webm">
-  <link rel="preload" href="/assets/img/ql-logo.svg" as="image" type="image/svg+xml">
+  <!-- DNS Prefetch -->
   
   <!-- DNS Prefetch -->
   <link rel="dns-prefetch" href="//fonts.googleapis.com">
@@ -270,8 +267,8 @@
   <script src="script.js"></script>
   <script src="https://unpkg.com/@botpoison/browser"></script>
   <script>
-    // Initialize Botpoison
-    window.botpoison = new Botpoison('sk_ef2166b4-25b2-4a92-9d46-c1e2be30adf2');
+    // Initialize Botpoison with public key
+    window.botpoison = new Botpoison('pk_fe73ce8b-81cf-48ae-b7b7-08692d01727d');
   </script>
 </body>
 </html>
