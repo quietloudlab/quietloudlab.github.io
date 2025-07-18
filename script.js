@@ -1327,6 +1327,107 @@ class InteractiveTextApp {
   }
 }
 
+// Form handling for Formspark
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle email signup form
+  const emailForm = document.querySelector('.signup-form');
+  if (emailForm) {
+    emailForm.addEventListener('submit', handleFormSubmit);
+  }
+
+  // Handle contact form
+  const contactForm = document.querySelector('.contact-form-inner');
+  if (contactForm) {
+    contactForm.addEventListener('submit', handleFormSubmit);
+  }
+});
+
+function handleFormSubmit(e) {
+  e.preventDefault();
+  
+  const form = e.target;
+  const submitButton = form.querySelector('button[type="submit"]');
+  const originalText = submitButton.innerHTML;
+  
+  // Show loading state
+  submitButton.innerHTML = 'Sending...';
+  submitButton.disabled = true;
+  
+  // Get form data
+  const formData = new FormData(form);
+  const data = new URLSearchParams();
+  
+  for (let [key, value] of formData.entries()) {
+    data.append(key, value);
+  }
+  
+  // Submit to Formspark
+  fetch(form.action, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: data
+  })
+  .then(response => {
+    if (response.ok) {
+      showSuccessMessage(form, 'Thank you! Your message has been sent.');
+    } else {
+      throw new Error('Form submission failed');
+    }
+  })
+  .catch(error => {
+    console.error('Form submission error:', error);
+    showErrorMessage(form, 'Sorry, there was an error sending your message. Please try again or contact us directly.');
+  })
+  .finally(() => {
+    // Reset button
+    submitButton.innerHTML = originalText;
+    submitButton.disabled = false;
+  });
+}
+
+function showSuccessMessage(form, message) {
+  // Create success message
+  const successDiv = document.createElement('div');
+  successDiv.className = 'form-message success';
+  successDiv.innerHTML = `
+    <div style="background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3); padding: 1rem; border-radius: 8px; margin: 1rem 0; color: #4CAF50;">
+      <strong>Success!</strong> ${message}
+    </div>
+  `;
+  
+  // Insert after form
+  form.parentNode.insertBefore(successDiv, form.nextSibling);
+  
+  // Clear form
+  form.reset();
+  
+  // Remove message after 5 seconds
+  setTimeout(() => {
+    successDiv.remove();
+  }, 5000);
+}
+
+function showErrorMessage(form, message) {
+  // Create error message
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'form-message error';
+  errorDiv.innerHTML = `
+    <div style="background: rgba(244, 67, 54, 0.1); border: 1px solid rgba(244, 67, 54, 0.3); padding: 1rem; border-radius: 8px; margin: 1rem 0; color: #F44336;">
+      <strong>Error:</strong> ${message}
+    </div>
+  `;
+  
+  // Insert after form
+  form.parentNode.insertBefore(errorDiv, form.nextSibling);
+  
+  // Remove message after 8 seconds
+  setTimeout(() => {
+    errorDiv.remove();
+  }, 8000);
+}
+
 // Initialize the application
 const app = new InteractiveTextApp();
 
