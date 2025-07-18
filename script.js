@@ -1329,16 +1329,25 @@ class InteractiveTextApp {
 
 // Form handling for Formspark
 document.addEventListener('DOMContentLoaded', function() {
+  // For now, let's use regular form submission instead of AJAX
+  // This should work better with Botpoison protection
+  
   // Handle email signup form
   const emailForm = document.querySelector('.signup-form');
   if (emailForm) {
-    emailForm.addEventListener('submit', handleFormSubmit);
+    emailForm.addEventListener('submit', function(e) {
+      // Let the form submit normally
+      console.log('Email signup form submitted');
+    });
   }
 
   // Handle contact form
   const contactForm = document.querySelector('.contact-form-inner');
   if (contactForm) {
-    contactForm.addEventListener('submit', handleFormSubmit);
+    contactForm.addEventListener('submit', function(e) {
+      // Let the form submit normally
+      console.log('Contact form submitted');
+    });
   }
 });
 
@@ -1356,24 +1365,33 @@ async function handleFormSubmit(e) {
   try {
     // Get form data
     const formData = new FormData(form);
-    const data = new URLSearchParams();
+    const data = {};
     
     for (let [key, value] of formData.entries()) {
-      // Include all form data including botpoison token
-      data.append(key, value);
+      // Handle multiple values for checkboxes
+      if (data[key]) {
+        if (Array.isArray(data[key])) {
+          data[key].push(value);
+        } else {
+          data[key] = [data[key], value];
+        }
+      } else {
+        data[key] = value;
+      }
     }
     
     // Log form data for debugging
-    console.log('Form data being sent:', Object.fromEntries(data));
+    console.log('Form data being sent:', data);
     console.log('Form action:', form.action);
     
-    // Submit to Formspark
+    // Submit to Formspark using JSON
     const response = await fetch(form.action, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
-      body: data
+      body: JSON.stringify(data)
     });
     
     console.log('Response status:', response.status);
