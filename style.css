@@ -1135,3 +1135,31 @@ ul {
   animation: pulse 1.5s ease-in-out infinite;
 }
   
+/* Fallback for browsers without backdrop-filter support */
+.no-backdrop-filter .glass-pane {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: none;
+}
+
+.no-backdrop-filter .glass-pane.refracting {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: none;
+}
+
+.no-backdrop-filter .form-message.success div,
+.no-backdrop-filter .form-message.error div {
+  background: rgba(76, 175, 80, 0.9);
+  backdrop-filter: none;
+}
+
+.no-backdrop-filter .form-message.error div {
+  background: rgba(244, 67, 54, 0.9);
+}
+
+/* Ensure text remains readable without backdrop-filter */
+.no-backdrop-filter .description,
+.no-backdrop-filter .subtitle,
+.no-backdrop-filter #splash span {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+  

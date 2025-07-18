@@ -1022,6 +1022,13 @@ class InteractiveTextApp {
   }
   
   initialize() {
+    // Check for backdrop-filter support
+    const supportsBackdropFilter = CSS.supports('backdrop-filter', 'blur(10px)');
+    if (!supportsBackdropFilter) {
+      // Add fallback class for browsers without backdrop-filter
+      document.body.classList.add('no-backdrop-filter');
+    }
+    
     this.setupEventListeners();
     this.setupMobileSensors();
     this.startAnimation();
@@ -1191,10 +1198,21 @@ class InteractiveTextApp {
   }
   
   updateLetterStyles(letterData, weight, distortion, color = null) {
+    // Check if font variation settings are supported
+    const supportsFontVariation = CSS.supports('font-variation-settings', '"wght" 100');
+    
     // Only update if values have changed
     if (letterData.lastWeight !== weight || letterData.lastDistortion !== distortion) {
-      letterData.element.style.fontVariationSettings = 
-        `"wght" ${weight.toFixed(1)}, "DIST" ${distortion.toFixed(1)}`;
+      if (supportsFontVariation) {
+        letterData.element.style.fontVariationSettings = 
+          `"wght" ${weight.toFixed(1)}, "DIST" ${distortion.toFixed(1)}`;
+      } else {
+        // Fallback for browsers without font variation support
+        letterData.element.style.fontWeight = Math.round(weight);
+        // Apply distortion as a transform for older browsers
+        const distortionScale = 1 + (distortion / 100);
+        letterData.element.style.transform = `scaleX(${distortionScale})`;
+      }
       letterData.lastWeight = weight;
       letterData.lastDistortion = distortion;
     }
