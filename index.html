@@ -266,5 +266,25 @@
 
   <script src="script.js"></script>
   <script src="https://unpkg.com/@botpoison/browser"></script>
+  <script>
+    // Initialize Botpoison for forms with data-botpoison-public-key
+    document.addEventListener('DOMContentLoaded', function() {
+      const forms = document.querySelectorAll('form[data-botpoison-public-key]');
+      forms.forEach(form => {
+        const publicKey = form.getAttribute('data-botpoison-public-key');
+        if (publicKey && window.Botpoison) {
+          const botpoison = new Botpoison({
+            publicKey: publicKey
+          });
+          
+          // Let Botpoison handle the form submission
+          form.addEventListener('submit', function(e) {
+            // Botpoison will automatically handle the challenge
+            console.log('Form submitted with Botpoison protection');
+          });
+        }
+      });
+    });
+  </script>
 </body>
 </html>
