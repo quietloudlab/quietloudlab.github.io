@@ -612,6 +612,15 @@ class MobileSensorManager {
     if (this.isInitialized) return;
     
     try {
+      // Only initialize on mobile devices
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (!isMobile) {
+        console.log('Device orientation disabled on desktop');
+        this.isInitialized = true;
+        return;
+      }
+      
       if (typeof DeviceOrientationEvent !== 'undefined' && 
           typeof DeviceOrientationEvent.requestPermission === 'function') {
         // Check if user has already granted permission
@@ -624,7 +633,7 @@ class MobileSensorManager {
           this.showPermissionButton();
         }
       } else {
-        // Other devices can auto-initialize
+        // Other mobile devices can auto-initialize
         this.setupOrientationListener();
       }
       
@@ -743,14 +752,34 @@ class MobileSensorManager {
   
   setupOrientationListener() {
     const throttledHandler = this.orientationThrottler.throttle((e) => {
-      this.state.deviceOrientation.alpha = e.alpha || 0;
-      this.state.deviceOrientation.beta = e.beta || 0;
-      this.state.deviceOrientation.gamma = e.gamma || 0;
+      // Validate device orientation values
+      const alpha = (e.alpha !== null && e.alpha !== undefined) ? e.alpha : 0;
+      const beta = (e.beta !== null && e.beta !== undefined) ? e.beta : 0;
+      const gamma = (e.gamma !== null && e.gamma !== undefined) ? e.gamma : 0;
+      
+      // Check for valid ranges (beta: 0-180, gamma: -180 to 180)
+      const validBeta = (beta >= 0 && beta <= 180) ? beta : 90;
+      const validGamma = (gamma >= -180 && gamma <= 180) ? gamma : 0;
+      
+      this.state.deviceOrientation.alpha = alpha;
+      this.state.deviceOrientation.beta = validBeta;
+      this.state.deviceOrientation.gamma = validGamma;
       
       // Calculate tilt effects - clamp to prevent excessive values
       this.state.verticalTilt = Math.min(1, Math.abs(this.state.deviceOrientation.beta - 90) / CONFIG.TILT_SENSITIVITY);
       this.state.horizontalTilt = Math.min(1, Math.abs(this.state.deviceOrientation.gamma) / CONFIG.TILT_SENSITIVITY);
       this.state.orientationEffect = Math.min(1, (this.state.verticalTilt + this.state.horizontalTilt) / 2);
+      
+      // Debug logging for extreme values
+      if (this.state.verticalTilt > 0.8 || this.state.horizontalTilt > 0.8) {
+        console.log('High tilt detected:', {
+          alpha,
+          beta: validBeta,
+          gamma: validGamma,
+          verticalTilt: this.state.verticalTilt,
+          horizontalTilt: this.state.horizontalTilt
+        });
+      }
     });
     
     window.addEventListener('deviceorientation', throttledHandler);
