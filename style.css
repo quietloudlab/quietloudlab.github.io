@@ -92,13 +92,13 @@ body::before {
 .glass-pane {
   backdrop-filter: blur(var(--glass-blur));
   background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  border: none;
   border-radius: 0;
   position: relative;
   overflow: hidden;
   transition: var(--transition);
   z-index: 2;
-  margin: -1px;
+  margin: 0;
 }
 
 .glass-pane::before {
