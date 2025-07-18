@@ -50,11 +50,6 @@ function minifyCSS() {
     const output = 'style.min.css';
     execSync(`npx clean-css-cli ${input} -o ${output}`, { stdio: 'inherit' });
     
-    // Update HTML to use minified CSS
-    let html = fs.readFileSync('index.html', 'utf8');
-    html = html.replace('style.css', 'style.min.css');
-    fs.writeFileSync('index.html', html);
-    
     console.log('✅ CSS minified successfully');
   } catch (error) {
     console.error('❌ CSS minification failed:', error.message);
@@ -69,11 +64,6 @@ function minifyJS() {
     const output = 'script.min.js';
     execSync(`npx terser ${input} -o ${output} --compress --mangle`, { stdio: 'inherit' });
     
-    // Update HTML to use minified JS
-    let html = fs.readFileSync('index.html', 'utf8');
-    html = html.replace('script.js', 'script.min.js');
-    fs.writeFileSync('index.html', html);
-    
     console.log('✅ JavaScript minified successfully');
   } catch (error) {
     console.error('❌ JavaScript minification failed:', error.message);
@@ -85,12 +75,8 @@ function minifyHTML() {
   console.log('📄 Minifying HTML...');
   try {
     const input = 'index.html';
-    const output = 'index.min.html';
+    const output = 'dist/index.html';
     execSync(`npx html-minifier ${input} -o ${output} --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true`, { stdio: 'inherit' });
-    
-    // Replace original with minified version
-    fs.copyFileSync(output, input);
-    fs.unlinkSync(output);
     
     console.log('✅ HTML minified successfully');
   } catch (error) {
@@ -107,13 +93,13 @@ function createProductionDir() {
   
   // Copy all files to dist
   const files = [
-    'index.html',
     'style.min.css',
     'script.min.js',
     'site.webmanifest',
     'robots.txt',
     'sitemap.xml'
     // Note: .htaccess is excluded for GitHub Pages deployment
+    // Note: index.html is created by the minifier
   ];
   
   files.forEach(file => {
@@ -130,7 +116,22 @@ function createProductionDir() {
     }
   });
   
+  // Update HTML file references in dist to use minified versions
+  updateHTMLReferences();
+  
   console.log('📁 Production files created in dist/ directory');
+}
+
+// Update HTML file references to use minified versions
+function updateHTMLReferences() {
+  const htmlPath = 'dist/index.html';
+  if (fs.existsSync(htmlPath)) {
+    let html = fs.readFileSync(htmlPath, 'utf8');
+    html = html.replace('style.css', 'style.min.css');
+    html = html.replace('script.js', 'script.min.js');
+    fs.writeFileSync(htmlPath, html);
+    console.log('✅ Updated HTML file references to minified versions');
+  }
 }
 
 // Main build function
