@@ -958,7 +958,7 @@ body::before {
     grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
     grid-template-rows: repeat(auto-fit, minmax(60px, 1fr));
     gap: 0;
-    padding: 8px;
+    padding: 0;
   }
   
   .hero {
@@ -1024,7 +1024,7 @@ body::before {
     grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
     grid-template-rows: repeat(auto-fit, minmax(50px, 1fr));
     gap: 0;
-    padding: 4px;
+    padding: 0;
   }
   
   .hero {
