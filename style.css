@@ -187,7 +187,7 @@ body {
   bottom: 5vh;
   left: 50%;
   transform: translateX(-50%);
-  max-width: min(400px, 85vw);
+  max-width: min(800px, 90vw);
   width: 100%;
   padding: 0 1rem;
   box-sizing: border-box;
@@ -893,7 +893,7 @@ ul {
 }
 
 .signup-button span {
-  font-size: clamp(0.875rem, 2.5vw, .75rem);
+  font-size: clamp(0.875rem, 2.5vw, .5rem);
   font-weight: 400;
 }
 
