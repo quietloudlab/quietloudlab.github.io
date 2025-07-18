@@ -1329,25 +1329,16 @@ class InteractiveTextApp {
 
 // Form handling for Formspark
 document.addEventListener('DOMContentLoaded', function() {
-  // For now, let's use regular form submission instead of AJAX
-  // This should work better with Botpoison protection
-  
-  // Handle email signup form
+  // Handle email signup form with AJAX
   const emailForm = document.querySelector('.signup-form');
   if (emailForm) {
-    emailForm.addEventListener('submit', function(e) {
-      // Let the form submit normally
-      console.log('Email signup form submitted');
-    });
+    emailForm.addEventListener('submit', handleFormSubmit);
   }
 
-  // Handle contact form
+  // Handle contact form with AJAX
   const contactForm = document.querySelector('.contact-form-inner');
   if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-      // Let the form submit normally
-      console.log('Contact form submitted');
-    });
+    contactForm.addEventListener('submit', handleFormSubmit);
   }
 });
 
@@ -1384,23 +1375,24 @@ async function handleFormSubmit(e) {
     console.log('Form data being sent:', data);
     console.log('Form action:', form.action);
     
-    // Submit to Formspark using JSON
+    // Submit to Formspark using form data (not JSON)
     const response = await fetch(form.action, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify(data)
+      body: formData
     });
     
     console.log('Response status:', response.status);
     console.log('Response headers:', response.headers);
     
     if (response.ok) {
-      const responseText = await response.text();
-      console.log('Response text:', responseText);
-      showSuccessMessage(form, 'Thank you! Your message has been sent.');
+      // Check if it's a redirect (Formspark success)
+      if (response.redirected || response.url.includes('submitted.formspark.io')) {
+        showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
+      } else {
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
+        showSuccessMessage(form, 'Thank you! Your message has been sent.');
+      }
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
@@ -1415,12 +1407,34 @@ async function handleFormSubmit(e) {
 }
 
 function showSuccessMessage(form, message) {
+  // Remove any existing messages
+  const existingMessages = form.parentNode.querySelectorAll('.form-message');
+  existingMessages.forEach(msg => msg.remove());
+  
   // Create success message
   const successDiv = document.createElement('div');
   successDiv.className = 'form-message success';
   successDiv.innerHTML = `
-    <div style="background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3); padding: 1rem; border-radius: 8px; margin: 1rem 0; color: #4CAF50;">
-      <strong>Success!</strong> ${message}
+    <div style="
+      background: rgba(76, 175, 80, 0.1); 
+      border: 1px solid rgba(76, 175, 80, 0.3); 
+      padding: 1.5rem; 
+      border-radius: 12px; 
+      margin: 1.5rem 0; 
+      color: #4CAF50;
+      font-size: 1rem;
+      line-height: 1.5;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);
+    ">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22,4 12,14.01 9,11.01"></polyline>
+        </svg>
+        <strong>Success!</strong>
+      </div>
+      <div style="margin-top: 0.5rem;">${message}</div>
     </div>
   `;
   
@@ -1430,29 +1444,68 @@ function showSuccessMessage(form, message) {
   // Clear form
   form.reset();
   
-  // Remove message after 5 seconds
+  // Scroll to message
+  successDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  
+  // Remove message after 8 seconds
   setTimeout(() => {
-    successDiv.remove();
-  }, 5000);
+    if (successDiv.parentNode) {
+      successDiv.style.opacity = '0';
+      successDiv.style.transform = 'translateY(-10px)';
+      successDiv.style.transition = 'all 0.3s ease';
+      setTimeout(() => successDiv.remove(), 300);
+    }
+  }, 8000);
 }
 
 function showErrorMessage(form, message) {
+  // Remove any existing messages
+  const existingMessages = form.parentNode.querySelectorAll('.form-message');
+  existingMessages.forEach(msg => msg.remove());
+  
   // Create error message
   const errorDiv = document.createElement('div');
   errorDiv.className = 'form-message error';
   errorDiv.innerHTML = `
-    <div style="background: rgba(244, 67, 54, 0.1); border: 1px solid rgba(244, 67, 54, 0.3); padding: 1rem; border-radius: 8px; margin: 1rem 0; color: #F44336;">
-      <strong>Error:</strong> ${message}
+    <div style="
+      background: rgba(244, 67, 54, 0.1); 
+      border: 1px solid rgba(244, 67, 54, 0.3); 
+      padding: 1.5rem; 
+      border-radius: 12px; 
+      margin: 1.5rem 0; 
+      color: #F44336;
+      font-size: 1rem;
+      line-height: 1.5;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(244, 67, 54, 0.1);
+    ">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+        <strong>Error:</strong>
+      </div>
+      <div style="margin-top: 0.5rem;">${message}</div>
     </div>
   `;
   
   // Insert after form
   form.parentNode.insertBefore(errorDiv, form.nextSibling);
   
-  // Remove message after 8 seconds
+  // Scroll to message
+  errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  
+  // Remove message after 10 seconds
   setTimeout(() => {
-    errorDiv.remove();
-  }, 8000);
+    if (errorDiv.parentNode) {
+      errorDiv.style.opacity = '0';
+      errorDiv.style.transform = 'translateY(-10px)';
+      errorDiv.style.transition = 'all 0.3s ease';
+      setTimeout(() => errorDiv.remove(), 300);
+    }
+  }, 10000);
 }
 
 // Initialize the application
