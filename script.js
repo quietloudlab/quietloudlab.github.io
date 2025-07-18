@@ -1378,24 +1378,16 @@ async function handleFormSubmit(e) {
     // Submit to Formspark using form data (not JSON)
     const response = await fetch(form.action, {
       method: 'POST',
-      body: formData
+      body: formData,
+      redirect: 'manual' // Prevent automatic redirects
     });
     
     console.log('Response status:', response.status);
     console.log('Response headers:', response.headers);
     
-    if (response.ok) {
-      // With _redirect=false, Formspark returns a JSON response
-      try {
-        const responseData = await response.json();
-        console.log('Formspark response:', responseData);
-        showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
-      } catch (jsonError) {
-        // Fallback for non-JSON responses
-        const responseText = await response.text();
-        console.log('Response text:', responseText);
-        showSuccessMessage(form, 'Thank you! Your message has been sent.');
-      }
+    // Check for successful submission (Formspark returns 302 redirect on success)
+    if (response.status === 302 || response.status === 200) {
+      showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
