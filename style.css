@@ -1163,4 +1163,191 @@ ul {
 .no-backdrop-filter #splash span {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
+
+/* Lightweight Glass Panes - Performance Optimized */
+.lightweight-glass-pane {
+  backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  will-change: transform, backdrop-filter;
+}
+
+.lightweight-glass-pane::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent calc(var(--distance, 0) * 100px)
+  );
+  opacity: var(--distance, 0);
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.lightweight-glass-pane::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.03) 50%,
+    transparent 70%
+  );
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.lightweight-glass-pane.active {
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: scale(1.02);
+}
+
+.lightweight-glass-pane.active::before {
+  opacity: calc(var(--distance, 0) * 0.8);
+}
+
+/* Responsive adjustments for lightweight panes */
+@media (max-width: 768px) {
+  .lightweight-glass-pane {
+    backdrop-filter: blur(12px);
+  }
+  
+  .lightweight-glass-pane.active {
+    backdrop-filter: blur(16px);
+  }
+}
+
+@media (max-width: 480px) {
+  .lightweight-glass-pane {
+    backdrop-filter: blur(10px);
+  }
+  
+  .lightweight-glass-pane.active {
+    backdrop-filter: blur(14px);
+  }
+}
+
+/* CSS-Only Glass Effect Alternative */
+.css-only-glass-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.css-only-glass-pane {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  animation: subtleFloat 8s ease-in-out infinite;
+  animation-delay: calc(var(--delay, 0) * -1s);
+}
+
+.css-only-glass-pane::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 60%
+  );
+  animation: shimmer 6s ease-in-out infinite;
+  animation-delay: calc(var(--delay, 0) * -1s);
+  pointer-events: none;
+}
+
+.css-only-glass-pane::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 70%
+  );
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+@keyframes subtleFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-2px) scale(1.01);
+    opacity: 0.9;
+  }
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translateX(-100%);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateX(100%);
+  }
+}
+
+/* Responsive adjustments for CSS-only panes */
+@media (max-width: 768px) {
+  .css-only-glass-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-rows: repeat(auto-fit, minmax(120px, 1fr));
+  }
+  
+  .css-only-glass-pane {
+    backdrop-filter: blur(10px);
+  }
+}
+
+@media (max-width: 480px) {
+  .css-only-glass-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-rows: repeat(auto-fit, minmax(100px, 1fr));
+  }
+  
+  .css-only-glass-pane {
+    backdrop-filter: blur(8px);
+  }
+}
   

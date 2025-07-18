@@ -76,7 +76,18 @@ const CONFIG = {
     INACTIVITY_TIMEOUT: 2000 // Pause animation after 2s of inactivity
   },
   
-  // Glass grid configuration
+  // Glass effect configuration
+  GLASS_EFFECT: {
+    TYPE: 'lightweight', // Options: 'lightweight', 'css-only', 'disabled'
+    INTERACTION_RADIUS: 300,
+    PANE_SIZE: {
+      DESKTOP: 200,
+      TABLET: 150,
+      MOBILE: 120
+    }
+  },
+  
+  // Glass grid configuration (legacy)
   GLASS_GRID: {
     PANE_SIZE: 70,
     GAP: 0,
@@ -752,21 +763,16 @@ class MobileSensorManager {
   }
 }
 
-// Glass Grid Manager
-class GlassGridManager {
+// Lightweight Glass Grid Manager - Performance Optimized
+class LightweightGlassGridManager {
   constructor() {
     this.gridContainer = document.getElementById('glassPaneGrid');
-    this.panes = [];
+    this.isInitialized = false;
     this.mouseX = 0;
     this.mouseY = 0;
-    this.isInitialized = false;
-    this.isMoving = false;
-    this.movementThreshold = 5; // Minimum movement to trigger spreading
-    this.lastMouseX = 0;
-    this.lastMouseY = 0;
+    this.animationId = null;
     
-    // TEMPORARILY DISABLED FOR PERFORMANCE TESTING
-    // this.initialize();
+    this.initialize();
   }
   
   initialize() {
@@ -775,219 +781,184 @@ class GlassGridManager {
       return;
     }
     
-    // Only create glass panes if the container is visible
-    if (this.gridContainer.offsetParent !== null) {
-      this.createGlassPanes();
-    }
-    // this.setupMouseTracking(); // DISABLED - removes mouse-following objects
+    // Create a much simpler grid with fewer elements
+    this.createOptimizedGrid();
+    this.setupMouseTracking();
     this.isInitialized = true;
   }
   
-  createGlassPanes() {
+  createOptimizedGrid() {
     const containerRect = this.gridContainer.getBoundingClientRect();
-    const settings = this.getResponsiveSettings();
-    const paneSize = settings.PANE_SIZE;
-    const gap = settings.GAP;
+    const paneSize = this.getResponsivePaneSize();
     
-    // Calculate grid dimensions
-    const cols = Math.ceil(containerRect.width / (paneSize + gap));
-    const rows = Math.ceil(containerRect.height / (paneSize + gap));
+    // Calculate grid dimensions - much larger panes = fewer elements
+    const cols = Math.ceil(containerRect.width / paneSize);
+    const rows = Math.ceil(containerRect.height / paneSize);
     
-    // Clear existing panes
+    // Clear existing content
     this.gridContainer.innerHTML = '';
-    this.panes = [];
     
-    // Create glass panes
+    // Create a much smaller number of larger panes
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         const pane = document.createElement('div');
-        pane.className = 'glass-pane';
+        pane.className = 'lightweight-glass-pane';
         pane.style.width = `${paneSize}px`;
         pane.style.height = `${paneSize}px`;
         
-        // Add subtle random variation for organic feel
-        const randomOpacity = 0.85 + Math.random() * 0.15;
+        // Add subtle random variation
+        const randomOpacity = 0.7 + Math.random() * 0.3;
         pane.style.opacity = randomOpacity;
         
+        // Add CSS custom properties for mouse interaction
+        pane.style.setProperty('--mouse-x', '50%');
+        pane.style.setProperty('--mouse-y', '50%');
+        pane.style.setProperty('--distance', '1');
+        
         this.gridContainer.appendChild(pane);
-        this.panes.push(pane);
       }
     }
   }
   
-  getResponsiveSettings() {
+  getResponsivePaneSize() {
     const width = window.innerWidth;
     if (width <= 480) {
-      return CONFIG.GLASS_GRID.SMALL_MOBILE;
+      return 120; // Much larger panes on mobile
     } else if (width <= 768) {
-      return CONFIG.GLASS_GRID.MOBILE;
+      return 150;
     } else {
-      return {
-        PANE_SIZE: CONFIG.GLASS_GRID.PANE_SIZE,
-        GAP: CONFIG.GLASS_GRID.GAP,
-        REFRACTION_RADIUS: CONFIG.GLASS_GRID.REFRACTION_RADIUS,
-        EMITTER_SIZE: CONFIG.GLASS_GRID.EMITTER_SIZE
-      };
+      return 200; // Very large panes on desktop
     }
   }
   
   setupMouseTracking() {
-    let animationId;
-    
-    const updateEmitter = (e) => {
+    // Use passive event listener for better performance
+    document.addEventListener('mousemove', (e) => {
       this.mouseX = e.clientX;
       this.mouseY = e.clientY;
       
-      // Check if mouse is moving enough to trigger spreading
-      const movement = Math.sqrt(
-        Math.pow(this.mouseX - this.lastMouseX, 2) + 
-        Math.pow(this.mouseY - this.lastMouseY, 2)
-      );
-      
-      this.isMoving = movement > this.movementThreshold;
-      
-      const settings = this.getResponsiveSettings();
-      
-      // Update main emitter position
-      this.gradientEmitter.style.left = `${this.mouseX - settings.EMITTER_SIZE / 2}px`;
-      this.gradientEmitter.style.top = `${this.mouseY - settings.EMITTER_SIZE / 2}px`;
-      
-      // Update circle positions with lag
-      this.updateCirclePositions();
-      
-      // Update refraction effects on glass panes
-      this.updateRefractionEffects();
-      
-      // Store current position for next frame
-      this.lastMouseX = this.mouseX;
-      this.lastMouseY = this.mouseY;
-      
-      // Cancel previous animation frame
-      if (animationId) {
-        cancelAnimationFrame(animationId);
+      // Throttle updates to reduce CPU usage
+      if (!this.animationId) {
+        this.animationId = requestAnimationFrame(() => {
+          this.updateGlassEffects();
+          this.animationId = null;
+        });
       }
-      
-      // Schedule next update
-      animationId = requestAnimationFrame(() => {
-        this.updateRefractionEffects();
-      });
-    };
-    
-    // Throttled mouse move handler
-    let lastUpdate = 0;
-    const throttledUpdate = (e) => {
-      const now = performance.now();
-      if (now - lastUpdate >= CONFIG.THROTTLE.MOUSE) {
-        lastUpdate = now;
-        updateEmitter(e);
-      }
-    };
-    
-    document.addEventListener('mousemove', throttledUpdate);
+    }, { passive: true });
     
     // Handle window resize
     window.addEventListener('resize', () => {
       setTimeout(() => {
-        this.createGlassPanes();
+        this.createOptimizedGrid();
       }, 100);
     });
   }
   
-  updateCirclePositions() {
-    const settings = this.getResponsiveSettings();
-    const emitterSize = settings.EMITTER_SIZE;
+  updateGlassEffects() {
+    const panes = this.gridContainer.querySelectorAll('.lightweight-glass-pane');
+    const maxDistance = 300; // Reduced interaction radius
     
-    if (this.isMoving) {
-      // Update positions with lag effect when moving
-      this.circlePositions[0] = { x: this.mouseX, y: this.mouseY };
-      
-      // Circle 1 follows main emitter with lag
-      this.circlePositions[1].x += (this.circlePositions[0].x - this.circlePositions[1].x) * 0.3;
-      this.circlePositions[1].y += (this.circlePositions[0].y - this.circlePositions[1].y) * 0.3;
-      
-      // Circle 2 follows circle 1 with lag
-      this.circlePositions[2].x += (this.circlePositions[1].x - this.circlePositions[2].x) * 0.25;
-      this.circlePositions[2].y += (this.circlePositions[1].y - this.circlePositions[2].y) * 0.25;
-      
-      // Circle 3 follows circle 2 with lag
-      this.circlePositions[3].x += (this.circlePositions[2].x - this.circlePositions[3].x) * 0.2;
-      this.circlePositions[3].y += (this.circlePositions[2].y - this.circlePositions[3].y) * 0.2;
-    } else {
-      // Resting state - all circles stack on top of each other
-      this.circlePositions[0] = { x: this.mouseX, y: this.mouseY };
-      this.circlePositions[1] = { x: this.mouseX, y: this.mouseY };
-      this.circlePositions[2] = { x: this.mouseX, y: this.mouseY };
-      this.circlePositions[3] = { x: this.mouseX, y: this.mouseY };
-    }
-    
-    // Update circle positions
-    const circles = this.circleCluster.querySelectorAll('.circle');
-    circles.forEach((circle, index) => {
-      const pos = this.circlePositions[index + 1];
-      circle.style.left = `${pos.x - emitterSize / 2}px`;
-      circle.style.top = `${pos.y - emitterSize / 2}px`;
-    });
-  }
-  
-  updateRefractionEffects() {
-    const settings = this.getResponsiveSettings();
-    const refractionRadius = settings.REFRACTION_RADIUS;
-    
-    this.panes.forEach((pane, index) => {
+    panes.forEach((pane) => {
       const rect = pane.getBoundingClientRect();
       const paneCenterX = rect.left + rect.width / 2;
       const paneCenterY = rect.top + rect.height / 2;
       
-      // Calculate distance from mouse to pane center
-      const distance = Math.sqrt(
-        Math.pow(this.mouseX - paneCenterX, 2) + 
-        Math.pow(this.mouseY - paneCenterY, 2)
-      );
+      // Calculate distance (avoid sqrt when possible)
+      const dx = this.mouseX - paneCenterX;
+      const dy = this.mouseY - paneCenterY;
+      const distanceSquared = dx * dx + dy * dy;
       
-      // Apply refraction effect based on distance
-      if (distance < refractionRadius) {
-        const intensity = 1 - (distance / refractionRadius);
-        const refractionStrength = Math.pow(intensity, 1.5);
+      if (distanceSquared < maxDistance * maxDistance) {
+        const distance = Math.sqrt(distanceSquared);
+        const normalizedDistance = Math.max(0, 1 - (distance / maxDistance));
         
-        // Calculate relative mouse position within the pane for CSS gradient
+        // Calculate relative mouse position
         const relativeX = ((this.mouseX - rect.left) / rect.width) * 100;
         const relativeY = ((this.mouseY - rect.top) / rect.height) * 100;
         
-        // Calculate warping based on distance from center
-        const centerDistance = Math.sqrt(
-          Math.pow(relativeX - 50, 2) + Math.pow(relativeY - 50, 2)
-        ) / 50; // Normalize to 0-1
-        
-        // Add refraction class and custom properties
-        pane.classList.add('refracting');
-        pane.style.setProperty('--refraction-intensity', refractionStrength);
+        // Update CSS custom properties
         pane.style.setProperty('--mouse-x', `${relativeX}%`);
         pane.style.setProperty('--mouse-y', `${relativeY}%`);
-        pane.style.setProperty('--warp-intensity', centerDistance);
+        pane.style.setProperty('--distance', normalizedDistance.toString());
         
-        // Add subtle transform for warping effect
-        const angleX = (this.mouseX - paneCenterX) / refractionRadius * 3;
-        const angleY = (this.mouseY - paneCenterY) / refractionRadius * 3;
-        const scale = 1 + refractionStrength * 0.03;
-        const transform = `perspective(800px) rotateX(${angleY}deg) rotateY(${angleX}deg) scale(${scale})`;
-        pane.style.transform = transform;
-        
+        // Add active class for CSS animations
+        pane.classList.add('active');
       } else {
-        // Remove refraction effects
-        pane.classList.remove('refracting');
-        pane.style.removeProperty('--refraction-intensity');
-        pane.style.removeProperty('--mouse-x');
-        pane.style.removeProperty('--mouse-y');
-        pane.style.removeProperty('--warp-intensity');
-        pane.style.transform = '';
+        // Remove active class when mouse is far
+        pane.classList.remove('active');
+        pane.style.setProperty('--distance', '0');
       }
     });
   }
   
   destroy() {
-    // Clean up event listeners if needed
-    this.panes = [];
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+    }
     this.isInitialized = false;
+  }
+}
+
+// CSS-Only Glass Grid Generator (Zero JavaScript Performance Impact)
+class CSSOnlyGlassGrid {
+  constructor() {
+    this.gridContainer = document.getElementById('glassPaneGrid');
+    this.initialize();
+  }
+  
+  initialize() {
+    if (!this.gridContainer) {
+      console.warn('Glass grid container not found');
+      return;
+    }
+    
+    this.createCSSOnlyGrid();
+  }
+  
+  createCSSOnlyGrid() {
+    const containerRect = this.gridContainer.getBoundingClientRect();
+    const paneSize = this.getResponsivePaneSize();
+    
+    // Calculate grid dimensions
+    const cols = Math.ceil(containerRect.width / paneSize);
+    const rows = Math.ceil(containerRect.height / paneSize);
+    
+    // Clear existing content
+    this.gridContainer.innerHTML = '';
+    this.gridContainer.className = 'css-only-glass-grid';
+    
+    // Create panes with staggered animation delays
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const pane = document.createElement('div');
+        pane.className = 'css-only-glass-pane';
+        
+        // Add staggered animation delay for organic feel
+        const delay = (row + col) * 0.5;
+        pane.style.setProperty('--delay', delay.toString());
+        
+        // Add subtle random opacity variation
+        const randomOpacity = 0.6 + Math.random() * 0.4;
+        pane.style.opacity = randomOpacity;
+        
+        this.gridContainer.appendChild(pane);
+      }
+    }
+  }
+  
+  getResponsivePaneSize() {
+    const width = window.innerWidth;
+    if (width <= 480) {
+      return 100;
+    } else if (width <= 768) {
+      return 120;
+    } else {
+      return 150;
+    }
+  }
+  
+  destroy() {
+    // No cleanup needed for CSS-only approach
   }
 }
 
@@ -1002,7 +973,12 @@ class InteractiveTextApp {
     this.mouseThrottler = new Throttler(CONFIG.THROTTLE.MOUSE);
     this.scrollThrottler = new Throttler(CONFIG.THROTTLE.SCROLL);
     this.modalManager = new ModalManager();
-    this.glassGridManager = new GlassGridManager();
+    
+    // Initialize glass effect based on configuration
+    this.glassGridManager = null;
+    this.cssOnlyGlassGrid = null;
+    this.initializeGlassEffect();
+    
     this.animationId = null;
     
     // Visibility and performance tracking
@@ -1016,6 +992,22 @@ class InteractiveTextApp {
     this.letterData = this.precalculateLetterData();
     
     this.initialize();
+  }
+  
+  initializeGlassEffect() {
+    switch (CONFIG.GLASS_EFFECT.TYPE) {
+      case 'lightweight':
+        this.glassGridManager = new LightweightGlassGridManager();
+        break;
+      case 'css-only':
+        this.cssOnlyGlassGrid = new CSSOnlyGlassGrid();
+        break;
+      case 'disabled':
+        // No glass effect
+        break;
+      default:
+        this.glassGridManager = new LightweightGlassGridManager();
+    }
   }
   
   detectOptimalFrameRate() {
@@ -1420,9 +1412,71 @@ class InteractiveTextApp {
     }
     this.domCache.clear();
     this.modalManager.destroy();
-    this.glassGridManager.destroy(); // Destroy GlassGridManager
+    
+    // Clean up glass effect managers
+    if (this.glassGridManager) {
+      this.glassGridManager.destroy();
+    }
+    if (this.cssOnlyGlassGrid) {
+      this.cssOnlyGlassGrid.destroy();
+    }
   }
 }
+
+// Performance testing utility
+function testGlassEffectPerformance() {
+  console.log('🧪 Testing Glass Effect Performance...');
+  
+  const testConfigs = [
+    { type: 'disabled', name: 'No Glass Effect' },
+    { type: 'css-only', name: 'CSS-Only Glass' },
+    { type: 'lightweight', name: 'Lightweight Glass' }
+  ];
+  
+  let currentTest = 0;
+  
+  function runTest() {
+    if (currentTest >= testConfigs.length) {
+      console.log('✅ Performance test complete!');
+      return;
+    }
+    
+    const config = testConfigs[currentTest];
+    console.log(`\n📊 Testing: ${config.name}`);
+    
+    // Update configuration
+    CONFIG.GLASS_EFFECT.TYPE = config.type;
+    
+    // Destroy current app and create new one
+    if (window.app) {
+      window.app.destroy();
+    }
+    
+    // Wait a moment for cleanup, then create new app
+    setTimeout(() => {
+      window.app = new InteractiveTextApp();
+      
+      // Test performance for 5 seconds
+      setTimeout(() => {
+        const avgFrameTime = window.app.performanceMonitor.getAverageFrameTime();
+        const qualityLevel = window.app.performanceMonitor.getQualityLevel();
+        
+        console.log(`📈 ${config.name} Results:`);
+        console.log(`   Average Frame Time: ${avgFrameTime.toFixed(1)}ms`);
+        console.log(`   Quality Level: ${(qualityLevel * 100).toFixed(0)}%`);
+        console.log(`   Estimated FPS: ${(1000 / avgFrameTime).toFixed(1)}`);
+        
+        currentTest++;
+        runTest();
+      }, 5000);
+    }, 1000);
+  }
+  
+  runTest();
+}
+
+// Add to global scope for easy testing
+window.testGlassEffectPerformance = testGlassEffectPerformance;
 
 // Form handling for Formspark
 document.addEventListener('DOMContentLoaded', function() {
