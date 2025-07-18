@@ -1329,15 +1329,19 @@ class InteractiveTextApp {
 
 // Form handling for Formspark
 document.addEventListener('DOMContentLoaded', function() {
-  // Handle email signup form with AJAX
+  console.log('Initializing Formspark integration...');
+  
+  // Handle email signup form
   const emailForm = document.querySelector('.signup-form');
   if (emailForm) {
+    console.log('Email form found, attaching handler');
     emailForm.addEventListener('submit', handleFormSubmit);
   }
 
-  // Handle contact form with AJAX
+  // Handle contact form
   const contactForm = document.querySelector('.contact-form-inner');
   if (contactForm) {
+    console.log('Contact form found, attaching handler');
     contactForm.addEventListener('submit', handleFormSubmit);
   }
 });
@@ -1354,11 +1358,14 @@ async function handleFormSubmit(e) {
   submitButton.disabled = true;
   
   try {
-    // Get form data
+    // Convert form data to JSON object (as per Formspark docs)
     const formData = new FormData(form);
     const data = {};
     
     for (let [key, value] of formData.entries()) {
+      // Skip _redirect field as we'll handle it separately
+      if (key === '_redirect') continue;
+      
       // Handle multiple values for checkboxes
       if (data[key]) {
         if (Array.isArray(data[key])) {
@@ -1371,61 +1378,60 @@ async function handleFormSubmit(e) {
       }
     }
     
-    // Log form data for debugging
-    console.log('Form data being sent:', data);
+    // Add _redirect: false to prevent redirect (as per docs)
+    data._redirect = false;
+    
+    console.log('Sending data to Formspark:', data);
     console.log('Form action:', form.action);
     
-    // Try AJAX submission first
-    try {
-      const response = await fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        redirect: 'manual' // Prevent automatic redirects
-      });
-      
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
-      
-      // Check for successful submission
-      if (response.status === 302 || response.status === 200) {
-        // With _redirect=false, Formspark returns JSON response
-        try {
-          const responseData = await response.json();
-          console.log('Formspark response:', responseData);
-          showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
-          return; // Success, exit early
-        } catch (jsonError) {
-          // If not JSON, it's still a success (302 redirect)
-          console.log('Non-JSON response, treating as success');
-          showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
-          return; // Success, exit early
-        }
-      } else {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    // Submit using JSON (as per Formspark AJAX docs)
+    const response = await fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    
+    console.log('Response status:', response.status);
+    console.log('Response headers:', response.headers);
+    
+    if (response.ok) {
+      // Success - Formspark returns JSON when _redirect=false
+      try {
+        const responseData = await response.json();
+        console.log('Formspark success response:', responseData);
+        showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
+      } catch (jsonError) {
+        console.log('Non-JSON response, but status is OK');
+        showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
       }
-    } catch (ajaxError) {
-      console.log('AJAX failed due to CORS or network issue, using regular form submission:', ajaxError);
+    } else {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+  } catch (error) {
+    console.error('Form submission error:', error);
+    
+    // If it's a CORS or network error, fall back to regular form submission
+    if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      console.log('Network error detected, falling back to regular form submission');
       
-      // AJAX failed, use regular form submission
-      // Remove the _redirect=false to allow normal redirect
+      // Remove _redirect=false to allow normal redirect
       const redirectInput = form.querySelector('input[name="_redirect"]');
       if (redirectInput) {
         redirectInput.remove();
       }
       
-      // Show success message immediately
+      // Show success message and submit normally
       showSuccessMessage(form, 'Thank you! Your message has been sent successfully.');
-      
-      // Submit the form normally (this will redirect to Formspark)
       setTimeout(() => {
         form.submit();
-      }, 500); // Small delay to show the success message
-      
-      return; // Exit early
+      }, 1000);
+    } else {
+      showErrorMessage(form, 'Sorry, there was an error sending your message. Please try again or contact us directly at brandon@quietloudlab.com');
     }
-  } catch (error) {
-    console.error('Form submission error:', error);
-    showErrorMessage(form, 'Sorry, there was an error sending your message. Please try again or contact us directly at brandon@quietloudlab.com');
   } finally {
     // Reset button
     submitButton.innerHTML = originalText;

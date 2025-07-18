@@ -265,30 +265,5 @@
   </div>
 
   <script src="script.js"></script>
-  <script src="https://unpkg.com/@botpoison/browser"></script>
-  <script>
-    // Ensure form handling is properly initialized
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM Content Loaded - checking forms...');
-      
-      // Check if our AJAX handlers are attached
-      const emailForm = document.querySelector('.signup-form');
-      const contactForm = document.querySelector('.contact-form-inner');
-      
-      if (emailForm) {
-        console.log('Email form found:', emailForm);
-        // Remove any existing listeners and re-attach
-        emailForm.removeEventListener('submit', handleFormSubmit);
-        emailForm.addEventListener('submit', handleFormSubmit);
-      }
-      
-      if (contactForm) {
-        console.log('Contact form found:', contactForm);
-        // Remove any existing listeners and re-attach
-        contactForm.removeEventListener('submit', handleFormSubmit);
-        contactForm.addEventListener('submit', handleFormSubmit);
-      }
-    });
-  </script>
 </body>
 </html>
