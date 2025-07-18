@@ -791,20 +791,25 @@ class LightweightGlassGridManager {
     const containerRect = this.gridContainer.getBoundingClientRect();
     const paneSize = this.getResponsivePaneSize();
     
-    // Calculate grid dimensions - much larger panes = fewer elements
+    // Calculate exact grid dimensions to ensure no gaps
     const cols = Math.ceil(containerRect.width / paneSize);
     const rows = Math.ceil(containerRect.height / paneSize);
     
     // Clear existing content
     this.gridContainer.innerHTML = '';
     
-    // Create a much smaller number of larger panes
+    // Set CSS Grid properties for proper tiling
+    this.gridContainer.style.display = 'grid';
+    this.gridContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    this.gridContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    this.gridContainer.style.gap = '0';
+    this.gridContainer.style.padding = '0';
+    
+    // Create panes - no need to set individual sizes since grid handles it
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         const pane = document.createElement('div');
         pane.className = 'lightweight-glass-pane';
-        pane.style.width = `${paneSize}px`;
-        pane.style.height = `${paneSize}px`;
         
         // Add subtle random variation
         const randomOpacity = 0.7 + Math.random() * 0.3;
@@ -823,11 +828,11 @@ class LightweightGlassGridManager {
   getResponsivePaneSize() {
     const width = window.innerWidth;
     if (width <= 480) {
-      return 120; // Much larger panes on mobile
+      return CONFIG.GLASS_EFFECT.PANE_SIZE.MOBILE;
     } else if (width <= 768) {
-      return 150;
+      return CONFIG.GLASS_EFFECT.PANE_SIZE.TABLET;
     } else {
-      return 200; // Very large panes on desktop
+      return CONFIG.GLASS_EFFECT.PANE_SIZE.DESKTOP;
     }
   }
   
@@ -846,11 +851,13 @@ class LightweightGlassGridManager {
       }
     }, { passive: true });
     
-    // Handle window resize
+    // Handle window resize with debouncing
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-      setTimeout(() => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
         this.createOptimizedGrid();
-      }, 100);
+      }, 150);
     });
   }
   
@@ -913,19 +920,35 @@ class CSSOnlyGlassGrid {
     }
     
     this.createCSSOnlyGrid();
+    
+    // Handle window resize with debouncing
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        this.createCSSOnlyGrid();
+      }, 150);
+    });
   }
   
   createCSSOnlyGrid() {
     const containerRect = this.gridContainer.getBoundingClientRect();
     const paneSize = this.getResponsivePaneSize();
     
-    // Calculate grid dimensions
+    // Calculate exact grid dimensions to ensure no gaps
     const cols = Math.ceil(containerRect.width / paneSize);
     const rows = Math.ceil(containerRect.height / paneSize);
     
     // Clear existing content
     this.gridContainer.innerHTML = '';
     this.gridContainer.className = 'css-only-glass-grid';
+    
+    // Set CSS Grid properties for proper tiling
+    this.gridContainer.style.display = 'grid';
+    this.gridContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    this.gridContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    this.gridContainer.style.gap = '0';
+    this.gridContainer.style.padding = '0';
     
     // Create panes with staggered animation delays
     for (let row = 0; row < rows; row++) {
@@ -949,11 +972,11 @@ class CSSOnlyGlassGrid {
   getResponsivePaneSize() {
     const width = window.innerWidth;
     if (width <= 480) {
-      return 100;
+      return CONFIG.GLASS_EFFECT.PANE_SIZE.MOBILE;
     } else if (width <= 768) {
-      return 120;
+      return CONFIG.GLASS_EFFECT.PANE_SIZE.TABLET;
     } else {
-      return 150;
+      return CONFIG.GLASS_EFFECT.PANE_SIZE.DESKTOP;
     }
   }
   
