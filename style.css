@@ -3,6 +3,7 @@
   src: url('./fonts/Distort-VariableVF.ttf') format('truetype');
   font-weight: 60 186;
   font-style: normal;
+  font-variation-settings: "wght" 60, "DIST" 0;
 }
 
 /* Video Background */

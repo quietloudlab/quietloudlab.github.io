@@ -564,10 +564,36 @@ class EffectCalculator {
     const orientationDistortion = state.verticalTilt * 60;
     const orientationWeight = state.horizontalTilt * 80;
     
+    const finalWeight = baselineWeight + clickBounce + keyboardBounce + tapBounce + orientationWeight;
+    const finalDistortion = baselineDistortion + clickWave + keyboardWave + chaosWave1 + chaosWave2 + 
+                           tapWave + tapChaosWave1 + tapChaosWave2 + orientationDistortion;
+    
+    // Debug logging for distortion values (only log if distortion is high)
+    if (finalDistortion > CONFIG.DISTORTION.MAX * 0.8) {
+      console.log('High distortion detected:', {
+        finalDistortion,
+        baselineDistortion,
+        clickWave,
+        keyboardWave,
+        chaosWave1,
+        chaosWave2,
+        tapWave,
+        tapChaosWave1,
+        tapChaosWave2,
+        orientationDistortion,
+        effects: {
+          clickEffect: state.clickEffect,
+          keyboardEffect: state.keyboardEffect,
+          tapEffect: state.tapEffect,
+          verticalTilt: state.verticalTilt,
+          horizontalTilt: state.horizontalTilt
+        }
+      });
+    }
+    
     return {
-      weight: baselineWeight + clickBounce + keyboardBounce + tapBounce + orientationWeight,
-      distortion: baselineDistortion + clickWave + keyboardWave + chaosWave1 + chaosWave2 + 
-                 tapWave + tapChaosWave1 + tapChaosWave2 + orientationDistortion
+      weight: finalWeight,
+      distortion: finalDistortion
     };
   }
 }
@@ -1029,9 +1055,47 @@ class InteractiveTextApp {
       document.body.classList.add('no-backdrop-filter');
     }
     
+    // Test font loading and variation settings
+    this.testFontVariations();
+    
     this.setupEventListeners();
     this.setupMobileSensors();
     this.startAnimation();
+  }
+  
+  testFontVariations() {
+    // Create a test element to check font variation support
+    const testElement = document.createElement('span');
+    testElement.style.fontFamily = 'Distort, sans-serif';
+    testElement.style.fontSize = '1px';
+    testElement.style.position = 'absolute';
+    testElement.style.visibility = 'hidden';
+    testElement.textContent = 'A';
+    document.body.appendChild(testElement);
+    
+    // Test if font variation settings work
+    const supportsFontVariation = CSS.supports('font-variation-settings', '"wght" 100');
+    const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
+    
+    console.log('Font variation test:', {
+      supportsFontVariation,
+      isChrome,
+      userAgent: navigator.userAgent,
+      computedFontFamily: getComputedStyle(testElement).fontFamily
+    });
+    
+    // Test different variation settings
+    testElement.style.fontVariationSettings = '"wght" 100, "DIST" 30';
+    const computedVariations = getComputedStyle(testElement).fontVariationSettings;
+    
+    console.log('Font variation settings test:', {
+      applied: '"wght" 100, "DIST" 30',
+      computed: computedVariations,
+      working: computedVariations.includes('DIST') || computedVariations.includes('100')
+    });
+    
+    // Clean up
+    document.body.removeChild(testElement);
   }
   
   setupEventListeners() {
@@ -1201,11 +1265,34 @@ class InteractiveTextApp {
     // Check if font variation settings are supported
     const supportsFontVariation = CSS.supports('font-variation-settings', '"wght" 100');
     
+    // Detect Chrome/Chromium-based browsers
+    const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
+    
     // Only update if values have changed
     if (letterData.lastWeight !== weight || letterData.lastDistortion !== distortion) {
       if (supportsFontVariation) {
-        letterData.element.style.fontVariationSettings = 
-          `"wght" ${weight.toFixed(1)}, "DIST" ${distortion.toFixed(1)}`;
+        // Chrome might need a different format or additional properties
+        const variationSettings = `"wght" ${weight.toFixed(1)}, "DIST" ${distortion.toFixed(1)}`;
+        letterData.element.style.fontVariationSettings = variationSettings;
+        
+        // For Chrome, also try setting individual properties
+        if (isChrome) {
+          letterData.element.style.fontWeight = weight.toFixed(1);
+          // Chrome might need the DIST axis to be set differently
+          letterData.element.style.setProperty('font-variation-settings', variationSettings);
+        }
+        
+        // Debug logging for high distortion values
+        if (distortion > CONFIG.DISTORTION.MAX * 0.8) {
+          console.log('Applying high distortion:', {
+            element: letterData.element,
+            weight: weight.toFixed(1),
+            distortion: distortion.toFixed(1),
+            variationSettings,
+            isChrome,
+            computedStyle: getComputedStyle(letterData.element).fontVariationSettings
+          });
+        }
       } else {
         // Fallback for browsers without font variation support
         letterData.element.style.fontWeight = Math.round(weight);
@@ -1250,6 +1337,10 @@ class InteractiveTextApp {
         );
         finalWeight = baselineEffects.weight;
         finalDistortion = baselineEffects.distortion;
+        
+        // Clamp baseline effects to prevent exceeding limits
+        finalWeight = Math.max(CONFIG.WEIGHT.MIN, Math.min(CONFIG.WEIGHT.MAX, finalWeight));
+        finalDistortion = Math.max(0, Math.min(CONFIG.DISTORTION.MAX, finalDistortion));
       }
       
       // If mouse is active, layer mouse effects on top of baseline effects
