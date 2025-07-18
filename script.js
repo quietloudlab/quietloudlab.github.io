@@ -560,9 +560,9 @@ class EffectCalculator {
     const tapChaosWave1 = qualityLevel > 0.6 ? Math.sin(time * 28 + index * 0.7) * 8 * state.tapEffect * tapChaosFactor * qualityMultiplier : 0;
     const tapChaosWave2 = qualityLevel > 0.6 ? Math.cos(time * 22 + index * 0.3) * 6 * state.tapEffect * tapChaosFactor * qualityMultiplier : 0;
     
-    // Orientation effects
-    const orientationDistortion = state.verticalTilt * 60;
-    const orientationWeight = state.horizontalTilt * 80;
+    // Orientation effects - clamp to prevent exceeding limits
+    const orientationDistortion = Math.min(CONFIG.DISTORTION.MAX, state.verticalTilt * 60);
+    const orientationWeight = Math.min(CONFIG.WEIGHT.MAX - CONFIG.WEIGHT.BASELINE, state.horizontalTilt * 80);
     
     const finalWeight = baselineWeight + clickBounce + keyboardBounce + tapBounce + orientationWeight;
     const finalDistortion = baselineDistortion + clickWave + keyboardWave + chaosWave1 + chaosWave2 + 
@@ -586,7 +586,8 @@ class EffectCalculator {
           keyboardEffect: state.keyboardEffect,
           tapEffect: state.tapEffect,
           verticalTilt: state.verticalTilt,
-          horizontalTilt: state.horizontalTilt
+          horizontalTilt: state.horizontalTilt,
+          deviceOrientation: state.deviceOrientation
         }
       });
     }
@@ -746,9 +747,9 @@ class MobileSensorManager {
       this.state.deviceOrientation.beta = e.beta || 0;
       this.state.deviceOrientation.gamma = e.gamma || 0;
       
-      // Calculate tilt effects
-      this.state.verticalTilt = Math.abs(this.state.deviceOrientation.beta - 90) / CONFIG.TILT_SENSITIVITY;
-      this.state.horizontalTilt = Math.abs(this.state.deviceOrientation.gamma) / CONFIG.TILT_SENSITIVITY;
+      // Calculate tilt effects - clamp to prevent excessive values
+      this.state.verticalTilt = Math.min(1, Math.abs(this.state.deviceOrientation.beta - 90) / CONFIG.TILT_SENSITIVITY);
+      this.state.horizontalTilt = Math.min(1, Math.abs(this.state.deviceOrientation.gamma) / CONFIG.TILT_SENSITIVITY);
       this.state.orientationEffect = Math.min(1, (this.state.verticalTilt + this.state.horizontalTilt) / 2);
     });
     
