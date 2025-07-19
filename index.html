@@ -38,10 +38,14 @@
   <!-- DNS Prefetch -->
   <link rel="dns-prefetch" href="//fonts.googleapis.com">
   <link rel="dns-prefetch" href="//submit-form.com">
+  <link rel="dns-prefetch" href="//unpkg.com">
   
   <!-- Stylesheets -->
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <!-- Botpoison -->
+  <script src="https://unpkg.com/@botpoison/browser"></script>
   
   <!-- Security Headers (Note: X-Frame-Options should be set via HTTP headers, not meta tags) -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -106,6 +110,8 @@
             <span>request more info</span>
           </button>
         </div>
+        <!-- Botpoison field for email signup -->
+        <div class="botpoison" data-public-key="pk_54a985ef-473d-4af3-a7c0-97b4aa371dda"></div>
       </form>
     </div>
     <div class="content">
@@ -258,6 +264,8 @@
 
               <!-- Desktop submit button (hidden on mobile) -->
               <button type="submit" class="submit-btn submit-btn-desktop">Send Message</button>
+              <!-- Botpoison field for contact form -->
+              <div class="botpoison" data-public-key="pk_ad0dc188-b728-4233-a537-7e0732689b41"></div>
             </form>
           </div>
         </div>

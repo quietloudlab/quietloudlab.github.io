@@ -358,7 +358,7 @@ function createGlassGrid() {
 }
 
 // Form handling
-function handleFormSubmit(e) {
+async function handleFormSubmit(e) {
   e.preventDefault();
   
   const form = e.target;
@@ -374,32 +374,50 @@ function handleFormSubmit(e) {
     btn.disabled = true;
   });
   
-  const formData = new FormData(form);
-  const data = Object.fromEntries(formData);
-  data._redirect = false;
-  
-  fetch(form.action, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  .then(response => {
+  try {
+    // Get Botpoison instance for this form
+    const botpoisonElement = form.querySelector('.botpoison');
+    if (!botpoisonElement) {
+      throw new Error('Botpoison element not found');
+    }
+    
+    const botpoison = window.botpoison.create({
+      publicKey: botpoisonElement.dataset.publicKey
+    });
+    
+    // Solve the challenge
+    const { solution } = await botpoison.challenge();
+    
+    // Prepare form data
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    data._redirect = false;
+    
+    // Add Botpoison solution to the data
+    data.botpoison = solution;
+    
+    // Submit the form
+    const response = await fetch(form.action, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    
     if (response.ok) {
       showMessage(form, 'Thank you! Your message has been sent successfully.', 'success');
       form.reset();
     } else {
       throw new Error('Network response was not ok');
     }
-  })
-  .catch(() => {
+  } catch (error) {
+    console.error('Form submission error:', error);
     showMessage(form, 'Sorry, there was an error. Please try again or contact us directly.', 'error');
-  })
-  .finally(() => {
+  } finally {
     buttons.forEach((btn, index) => {
       btn.innerHTML = originalTexts[index];
       btn.disabled = false;
     });
-  });
+  }
 }
 
 function showMessage(form, message, type) {

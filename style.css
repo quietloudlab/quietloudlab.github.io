@@ -43,6 +43,19 @@
 /* Base Styles */
 * { box-sizing: border-box; }
 
+/* Botpoison - Hide the challenge elements */
+.botpoison {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 body {
   margin: 0;
   padding: 0;
