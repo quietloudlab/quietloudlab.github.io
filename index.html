@@ -174,7 +174,7 @@
 
           <!-- Right Column - Contact Form -->
           <div class="contact-form">
-            <form action="https://submit-form.com/yt7Ve7HB0" method="POST" class="contact-form-inner">
+            <form id="contactForm" action="https://submit-form.com/yt7Ve7HB0" method="POST" class="contact-form-inner">
               <input type="hidden" name="_redirect" value="false">
               <div class="form-group">
                 <label for="name" class="required">Name</label>
@@ -256,13 +256,17 @@
                 </div>
               </div>
 
-              <button type="submit" class="submit-btn">Send Message</button>
+              <!-- Desktop submit button (hidden on mobile) -->
+              <button type="submit" class="submit-btn submit-btn-desktop">Send Message</button>
             </form>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Mobile floating submit button (outside modal) -->
+  <button type="submit" class="submit-btn submit-btn-mobile" form="contactForm">Send Message</button>
 
   <script src="script.js"></script>
 </body>

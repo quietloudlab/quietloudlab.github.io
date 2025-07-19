@@ -899,6 +899,37 @@ gap: var(--spacing-lg);
   margin-top: var(--spacing-xs);
 }
 
+/* Mobile floating submit button */
+.submit-btn-mobile {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1002; /* Higher than modal */
+  width: calc(100% - 40px);
+  max-width: 400px;
+  padding: 16px 24px;
+  font-size: var(--font-size-base);
+  font-weight: 120;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  /* Ensure it's positioned relative to viewport, not modal */
+  position: fixed !important;
+  bottom: 20px !important;
+}
+
+.submit-btn-mobile:hover {
+  transform: translateX(-50%) translateY(-2px) !important;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.submit-btn-mobile:active {
+  transform: translateX(-50%) translateY(0) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
 .submit-btn:active {
   transform: translateY(0);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -956,6 +987,16 @@ gap: var(--spacing-lg);
 .submit-btn:disabled:hover {
   transform: none !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Override for mobile button to maintain positioning */
+.submit-btn-mobile:disabled {
+  transform: translateX(-50%) !important;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.submit-btn-mobile:disabled:hover {
+  transform: translateX(-50%) !important;
 }
 
 /* Animations */
@@ -1040,6 +1081,7 @@ gap: var(--spacing-lg);
   .modal-body { 
     padding: var(--spacing-md);
     padding-top: var(--spacing-lg);
+    padding-bottom: 100px; /* Space for floating button */
   }
   
   .contact-layout {
@@ -1049,6 +1091,21 @@ gap: var(--spacing-lg);
   }
   
   .contact-info { gap: var(--spacing-md); }
+  
+  /* Show mobile submit button, hide desktop */
+  .submit-btn-desktop {
+    display: none;
+  }
+  
+  .submit-btn-mobile {
+    display: none; /* Hidden by default */
+  }
+  
+  /* Show mobile button only when modal is active */
+  .modal-overlay.active ~ .submit-btn-mobile {
+    display: block;
+  }
+  
   .logo { 
     max-width: 100px;
     margin: var(--spacing-xl) auto var(--spacing-md) auto;
@@ -1088,6 +1145,7 @@ gap: var(--spacing-lg);
   .modal-body { 
     padding: var(--spacing-sm);
     padding-top: var(--spacing-md);
+    padding-bottom: 100px; /* Space for floating button */
   }
   
   .contact-layout {
@@ -1101,6 +1159,20 @@ gap: var(--spacing-lg);
   }
   
   .contact-form-inner { gap: var(--spacing-sm); }
+  
+  /* Show mobile submit button, hide desktop */
+  .submit-btn-desktop {
+    display: none;
+  }
+  
+  .submit-btn-mobile {
+    display: none; /* Hidden by default */
+  }
+  
+  /* Show mobile button only when modal is active */
+  .modal-overlay.active ~ .submit-btn-mobile {
+    display: block;
+  }
   
   .logo { 
     max-width: 80px;

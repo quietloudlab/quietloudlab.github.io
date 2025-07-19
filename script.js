@@ -363,10 +363,16 @@ function handleFormSubmit(e) {
   
   const form = e.target;
   const button = form.querySelector('button[type="submit"]');
-  const originalText = button.innerHTML;
+  const mobileButton = document.querySelector('.submit-btn-mobile');
   
-  button.innerHTML = 'Sending...';
-  button.disabled = true;
+  // Handle both desktop and mobile buttons
+  const buttons = [button, mobileButton].filter(Boolean);
+  const originalTexts = buttons.map(btn => btn.innerHTML);
+  
+  buttons.forEach(btn => {
+    btn.innerHTML = 'Sending...';
+    btn.disabled = true;
+  });
   
   const formData = new FormData(form);
   const data = Object.fromEntries(formData);
@@ -389,8 +395,10 @@ function handleFormSubmit(e) {
     showMessage(form, 'Sorry, there was an error. Please try again or contact us directly.', 'error');
   })
   .finally(() => {
-    button.innerHTML = originalText;
-    button.disabled = false;
+    buttons.forEach((btn, index) => {
+      btn.innerHTML = originalTexts[index];
+      btn.disabled = false;
+    });
   });
 }
 
