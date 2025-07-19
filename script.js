@@ -375,13 +375,18 @@ async function handleFormSubmit(e) {
   });
   
   try {
+    // Check if Botpoison is loaded
+    if (typeof Botpoison === 'undefined') {
+      throw new Error('Botpoison library not loaded');
+    }
+    
     // Get Botpoison instance for this form
     const botpoisonElement = form.querySelector('.botpoison');
     if (!botpoisonElement) {
       throw new Error('Botpoison element not found');
     }
     
-    const botpoison = window.botpoison.create({
+    const botpoison = new Botpoison({
       publicKey: botpoisonElement.dataset.publicKey
     });
     
@@ -394,7 +399,7 @@ async function handleFormSubmit(e) {
     data._redirect = false;
     
     // Add Botpoison solution to the data
-    data.botpoison = solution;
+    data._botpoison = solution;
     
     // Submit the form
     const response = await fetch(form.action, {
