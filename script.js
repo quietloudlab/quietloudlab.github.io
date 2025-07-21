@@ -229,15 +229,45 @@ function handleKeyDown() {
 }
 
 // Modal functions
+let lastFocusedElement = null;
+function trapFocusInModal(e) {
+  if (!modal.classList.contains('active')) return;
+  const focusable = modal.querySelectorAll('input, textarea, button, [tabindex]:not([tabindex="-1"])');
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.key === 'Tab') {
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
+}
 function toggleModal() {
   if (modal.classList.contains('active')) {
     modal.classList.remove('active');
     floatingBtn.classList.remove('modal-active');
     document.body.style.overflow = '';
+    if (lastFocusedElement) lastFocusedElement.focus();
+    document.removeEventListener('keydown', trapFocusInModal);
   } else {
+    lastFocusedElement = document.activeElement;
     modal.classList.add('active');
     floatingBtn.classList.add('modal-active');
     document.body.style.overflow = 'hidden';
+    // Move focus to first input
+    setTimeout(() => {
+      const firstInput = modal.querySelector('input, textarea, button');
+      if (firstInput) firstInput.focus();
+    }, 50);
+    document.addEventListener('keydown', trapFocusInModal);
   }
 }
 
@@ -245,6 +275,8 @@ function closeModal() {
   modal.classList.remove('active');
   floatingBtn.classList.remove('modal-active');
   document.body.style.overflow = '';
+  if (lastFocusedElement) lastFocusedElement.focus();
+  document.removeEventListener('keydown', trapFocusInModal);
 }
 
 // Effect controls UI
@@ -435,9 +467,14 @@ function showMessage(form, message, type) {
       padding: 1rem; border-radius: 8px; margin: 1rem 0;
     ">${message}</div>
   `;
-  
   form.parentNode.insertBefore(div, form.nextSibling);
-  setTimeout(() => div.remove(), 5000);
+  // Update ARIA live region if present
+  const feedbackLive = form.parentNode.querySelector('#contactFormFeedback');
+  if (feedbackLive) feedbackLive.textContent = message;
+  setTimeout(() => {
+    div.remove();
+    if (feedbackLive) feedbackLive.textContent = '';
+  }, 5000);
 }
 
 // Initialize video
@@ -487,6 +524,15 @@ function init() {
   
   if (emailForm) emailForm.addEventListener('submit', handleFormSubmit);
   if (contactForm) contactForm.addEventListener('submit', handleFormSubmit);
+  
+  // Add event listener for 'say hi' link to open modal
+  const sayHiLink = document.getElementById('sayHiLink');
+  if (sayHiLink) {
+    sayHiLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      toggleModal();
+    });
+  }
   
   // Resize handler
   let resizeTimeout;

@@ -473,6 +473,22 @@ body::before {
   margin-bottom: 0;
 }
 
+#sayHiLink {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 120;
+  transition: var(--transition);
+  padding: var(--spacing-sm) 0;
+
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+#sayHiLink:hover {
+  color: var(--text-color);
+  text-decoration: underline;
+}
+
 /* Permission Buttons */
 .permission-container {
   display: flex;
@@ -1217,5 +1233,49 @@ gap: var(--spacing-lg);
     padding: 0.75rem;
     padding-top: var(--spacing-sm);
   }
+}
+  
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .background-video,
+  .glass-pane,
+  .logo,
+  .description,
+  .modal-overlay,
+  .modal-content {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Accessibility: Reduced Transparency */
+@media (prefers-reduced-transparency: reduce) {
+  .glass-pane,
+  .glass-component,
+  .signup-input-group,
+  .signup-button,
+  .floating-info-btn,
+  .modal-content,
+  .modal-close,
+  .social-link,
+  .form-group input,
+  .form-group textarea,
+  .checkmark,
+  .submit-btn {
+    background: #222 !important;
+    backdrop-filter: none !important;
+    border-color: #444 !important;
+  }
+}
+
+/* Fallback image for background video */
+.background-video {
+  background: url('./assets/img/bg.jpg') center/cover no-repeat;
 }
   

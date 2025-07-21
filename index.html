@@ -237,27 +237,27 @@
       <br><br><br>
       <p class="description">We swim in the unknown, where perspectives clash, disciplines overlap, and speculation becomes imagination becomes strategy becomes growth.</p>
       <br><br><br>
-      <p class="description final-line">If you're working in that space too, or want to dip your toes in the pool, say hi.</p>
+      <p class="description final-line">If you're working in that space too, or want to dip your toes in the pool, <a href="#" id="sayHiLink">say hi</a>.</p>
       <br><br><br><br><br><br>
       <img src="assets/img/ql-logo.svg" alt="quietloudlab logo" class="logo">
     </div>
   </div>
 
   <!-- Floating Info Button -->
-  <button class="floating-info-btn" id="floatingInfoBtn" aria-label="Information">
+  <button class="floating-info-btn" id="floatingInfoBtn" aria-label="Open contact information and form" aria-haspopup="dialog" aria-controls="contactModal">
     <span class="material-icons info-icon">question_mark</span>
     <span class="material-icons close-icon">close</span>
   </button>
 
   <!-- Contact Modal -->
-  <div class="modal-overlay" id="contactModal">
+  <div class="modal-overlay" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle" tabindex="-1">
     <div class="modal-content">
       <div class="modal-body">
         <div class="contact-layout">
           <!-- Left Column - Contact Info -->
           <div class="contact-info">
             <div class="contact-section">
-                <h3>We partner with those asking better questions about the future:</h3><br>
+                <h3 id="contactModalTitle">We partner with those asking better questions about the future:</h3><br>
                 <p><span class="bold">Startups & Incubators</span> exploring bold new ideas.</p><br>
                 <p><span class="bold">Innovation & Research Teams</span> working at the edge of what's known.</p><br>
                 <p><span class="bold">Business Strategy Leaders</span> navigating transformation.</p><br>
@@ -362,6 +362,8 @@
               <button type="submit" class="submit-btn submit-btn-desktop">Send Message</button>
               <!-- Botpoison field for contact form -->
               <div class="botpoison" data-public-key="pk_ad0dc188-b728-4233-a537-7e0732689b41"></div>
+              <!-- ARIA live region for form feedback -->
+              <div id="contactFormFeedback" aria-live="polite" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"> </div>
             </form>
           </div>
         </div>
@@ -370,7 +372,7 @@
   </div>
 
   <!-- Mobile floating submit button (outside modal) -->
-  <button type="submit" class="submit-btn submit-btn-mobile" form="contactForm">Send Message</button>
+  <button type="submit" class="submit-btn submit-btn-mobile" form="contactForm" aria-label="Send Message">Send Message</button>
 
   <script src="script.js"></script>
 </body>
