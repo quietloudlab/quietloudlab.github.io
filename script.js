@@ -21,6 +21,7 @@ let isHovering = false, hoverIntensity = 0;
 let animationId = null;
 let lastScrollY = 0;
 let scrollDirection = 'down';
+let mouseMoved = false;
 
 // Cache DOM elements
 const letters = Array.from(document.querySelectorAll('#splash span')).slice(0, -3);
@@ -30,6 +31,12 @@ const modal = document.getElementById('contactModal');
 const floatingBtn = document.getElementById('floatingInfoBtn');
 const video = document.querySelector('.background-video');
 const glassPanes = [];
+
+// Canvas pixelation system
+let pixelationCanvas;
+let pixelationCtx;
+let sourceCanvas;
+let sourceCtx;
 
 // Simple effect calculation
 function calculateEffect(letter, index, time) {
@@ -84,9 +91,107 @@ function updateLetter(letter, weight, distortion, intensity) {
   }
 }
 
-// Update glass panes
+// Initialize canvas pixelation system
+function initPixelationSystem() {
+  // Create source canvas to capture video frames
+  sourceCanvas = document.createElement('canvas');
+  sourceCtx = sourceCanvas.getContext('2d');
+  sourceCanvas.width = window.innerWidth;
+  sourceCanvas.height = window.innerHeight;
+  
+  // Create pixelation canvas
+  pixelationCanvas = document.createElement('canvas');
+  pixelationCtx = pixelationCanvas.getContext('2d');
+}
+
+// Create pixelated effect for a glass pane
+function createPixelatedCanvas(pane, index) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  
+  // Get pane position and size
+  const rect = pane.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+  
+  // Determine pixelation level based on nth-child pattern - MORE INTENSE
+  let pixelSize;
+  if (index % 7 === 0) pixelSize = 3; // Light pixelation
+  else if (index % 5 === 1) pixelSize = 8; // Medium pixelation
+  else if (index % 11 === 2) pixelSize = 12; // Heavy pixelation
+  else if (index % 13 === 3) pixelSize = 6; // Medium-light
+  else if (index % 8 === 4) pixelSize = 15; // Very heavy pixelation
+  else if (index % 17 === 5) pixelSize = 4; // Light-medium
+  else pixelSize = 20; // Extremely chunky
+  
+  // Store canvas and pixelation settings on pane
+  pane.canvas = canvas;
+  pane.canvasCtx = ctx;
+  pane.pixelSize = pixelSize;
+  pane.appendChild(canvas);
+  
+  return canvas;
+}
+
+// Update pixelated content for a glass pane
+function updatePixelatedPane(pane) {
+  if (!pane.canvas || !video.videoWidth) return;
+  
+  const rect = pane.getBoundingClientRect();
+  const ctx = pane.canvasCtx;
+  const pixelSize = pane.pixelSize;
+  
+  // Clear canvas
+  ctx.clearRect(0, 0, pane.canvas.width, pane.canvas.height);
+  
+  try {
+    // Draw the background video section that's behind this pane
+    const scaleX = video.videoWidth / window.innerWidth;
+    const scaleY = video.videoHeight / window.innerHeight;
+    
+    const sourceX = rect.left * scaleX;
+    const sourceY = rect.top * scaleY;
+    const sourceWidth = rect.width * scaleX;
+    const sourceHeight = rect.height * scaleY;
+    
+    // Draw video section to temporary small canvas for pixelation
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    const pixelatedWidth = Math.max(1, Math.floor(rect.width / pixelSize));
+    const pixelatedHeight = Math.max(1, Math.floor(rect.height / pixelSize));
+    
+    tempCanvas.width = pixelatedWidth;
+    tempCanvas.height = pixelatedHeight;
+    
+    // Draw downscaled version
+    tempCtx.drawImage(
+      video,
+      sourceX, sourceY, sourceWidth, sourceHeight,
+      0, 0, pixelatedWidth, pixelatedHeight
+    );
+    
+    // Disable image smoothing for pixelated effect
+    ctx.imageSmoothingEnabled = false;
+    
+    // Draw upscaled to create pixelated effect
+    ctx.drawImage(
+      tempCanvas,
+      0, 0, pixelatedWidth, pixelatedHeight,
+      0, 0, rect.width, rect.height
+    );
+    
+  } catch (error) {
+    // Fallback if video isn't ready
+    ctx.fillStyle = `rgba(255, 255, 255, 0.1)`;
+    ctx.fillRect(0, 0, pane.canvas.width, pane.canvas.height);
+  }
+}
+
+// Update glass panes with hover intensification
 function updateGlassPanes() {
-  glassPanes.forEach(pane => {
+  if (!mouseMoved) return;
+  
+  glassPanes.forEach((pane, index) => {
     const rect = pane.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -96,12 +201,22 @@ function updateGlassPanes() {
     
     if (effect > 0.05) {
       pane.classList.add('refracting');
-      pane.style.opacity = Math.min(1, 0.8 + effect * 0.3);
+      
+      // Intensify the pixelated effect on hover
+      if (pane.canvas) {
+        // Create more intense pixelation by reducing pixel size
+        const originalPixelSize = pane.pixelSize;
+        pane.pixelSize = Math.max(1, Math.floor(originalPixelSize * 0.5)); // Make pixels finer
+        updatePixelatedPane(pane);
+        pane.pixelSize = originalPixelSize; // Reset for next update
+      }
+      
     } else {
       pane.classList.remove('refracting');
-      pane.style.opacity = '';
     }
   });
+  
+  mouseMoved = false;
 }
 
 // Main animation loop
@@ -131,72 +246,18 @@ function animate(timestamp) {
   animationId = requestAnimationFrame(animate);
 }
 
-// Scroll reveal with direction awareness
+// Scroll handler (simplified - no visibility logic)
 function handleScroll() {
   const currentScrollY = window.scrollY;
   scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
   lastScrollY = currentScrollY;
-  
-  const triggerY = window.innerHeight * 0.7;
-  const exitY = window.innerHeight * 0.3;
-  
-  descriptions.forEach((desc, index) => {
-    // Skip the final line as it has its own animation
-    if (desc.classList.contains('final-line')) return;
-    
-    const rect = desc.getBoundingClientRect();
-    const isInView = rect.top < triggerY && rect.bottom > exitY;
-    const wasInView = desc.classList.contains('revealed');
-    
-    if (isInView && !wasInView) {
-      // Fade in with staggered delay
-      setTimeout(() => {
-        desc.classList.add('revealed');
-        desc.classList.remove('exiting');
-      }, index * 60);
-    } else if (!isInView && wasInView) {
-      // Fade out when scrolling away (faster for scroll up)
-      const delay = scrollDirection === 'up' ? 0 : index * 30;
-      setTimeout(() => {
-        desc.classList.remove('revealed');
-        desc.classList.add('exiting');
-      }, delay);
-    }
-  });
-  
-  // Final line and logo coordinated animation
-  const finalLine = document.querySelector('.final-line');
-  if (logo && finalLine) {
-    const logoRect = logo.getBoundingClientRect();
-    const finalLineRect = finalLine.getBoundingClientRect();
-    const triggerY = window.innerHeight * 0.8;
-    
-    const logoIsInView = logoRect.top < triggerY && logoRect.bottom > 0;
-    const finalLineIsInView = finalLineRect.top < triggerY && finalLineRect.bottom > 0;
-    
-    const logoWasInView = logo.classList.contains('revealed');
-    const finalLineWasInView = finalLine.classList.contains('revealed');
-    
-    if (logoIsInView && finalLineIsInView && !logoWasInView && !finalLineWasInView) {
-      // Both appear together with a slight delay for closeout effect
-      setTimeout(() => {
-        finalLine.classList.add('revealed');
-        finalLine.classList.remove('exiting');
-        logo.classList.add('revealed');
-      }, 200);
-    } else if ((!logoIsInView || !finalLineIsInView) && (logoWasInView || finalLineWasInView)) {
-      // Both fade out when scrolling away
-      finalLine.classList.remove('revealed');
-      finalLine.classList.add('exiting');
-      logo.classList.remove('revealed');
-    }
-  }
 }
 
 // Event handlers
 function handleMouseMove(e) {
   mouseX = e.clientX;
   mouseY = e.clientY;
+  mouseMoved = true;
 }
 
 function handleMouseEnter() {
@@ -362,6 +423,8 @@ function createEffectControls() {
   document.getElementById('closeBtn').addEventListener('click', () => ui.remove());
 }
 
+
+
 // Create glass grid
 function createGlassGrid() {
   const container = document.getElementById('glassPaneGrid');
@@ -386,7 +449,15 @@ function createGlassGrid() {
     pane.style.opacity = 0.7 + Math.random() * 0.3;
     container.appendChild(pane);
     glassPanes.push(pane);
+    
+    // Create pixelated canvas for each pane immediately
+    createPixelatedCanvas(pane, i);
   }
+  
+  // Initial render of all pixelated panes
+  setTimeout(() => {
+    glassPanes.forEach(pane => updatePixelatedPane(pane));
+  }, 100);
 }
 
 // Form handling
@@ -496,7 +567,19 @@ function initVideo() {
 // Initialize everything
 function init() {
   initVideo();
+  initPixelationSystem();
   createGlassGrid();
+  
+  // Periodic update of pixelated content to keep video in sync
+  setInterval(() => {
+    if (video && video.videoWidth) {
+      glassPanes.forEach(pane => {
+        if (pane.canvas && !pane.classList.contains('refracting')) {
+          updatePixelatedPane(pane);
+        }
+      });
+    }
+  }, 100); // Update every 100ms for smooth video sync
   
   // Event listeners
   document.addEventListener('mousemove', handleMouseMove);
@@ -553,9 +636,6 @@ function init() {
   
   // Start animation
   animationId = requestAnimationFrame(animate);
-  
-  // Initial scroll check
-  setTimeout(handleScroll, 100);
 }
 
 // Start when DOM is ready
