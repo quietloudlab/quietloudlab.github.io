@@ -95,15 +95,12 @@ body::before {
   filter: brightness(1.05) contrast(1.02);
 }
 
-
-
 .glass-grid-background {
   position: fixed;
   inset: 0;
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  background: rgba(255, 255, 255, 0.02);
 }
 
 /* Glass Pane System */
@@ -117,47 +114,34 @@ body::before {
   padding: 0;
   z-index: 2;
   overflow: hidden;
-  backdrop-filter: blur(24px);
 }
 
 .glass-pane {
-  background: transparent;
+  backdrop-filter: blur(var(--glass-blur));
+  background: var(--glass-bg);
   border: none;
   border-radius: 0;
   position: relative;
   overflow: hidden;
-  transition: opacity 0.2s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 2;
   margin: 0;
+  will-change: transform, filter, opacity;
+}
+
+.glass-pane::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  pointer-events: none;
 }
 
 .glass-pane.refracting {
-  opacity: 1;
+  backdrop-filter: blur(25px);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  filter: contrast(1.05) brightness(1.02);
 }
-
-.glass-pane canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.9;
-  transition: opacity 0.2s ease, filter 0.2s ease;
-}
-
-.glass-pane.refracting canvas {
-  opacity: 1;
-  filter: brightness(1.1) contrast(1.1) saturate(1.1);
-}
-
-/* Canvas-based pixelation variations - reduced contrast */
-.glass-pane:nth-child(7n+1) canvas { filter: contrast(1.1) saturate(0.7) brightness(1.05); }
-.glass-pane:nth-child(5n+2) canvas { filter: contrast(1.0) saturate(1.0) brightness(0.95); }
-.glass-pane:nth-child(11n+3) canvas { filter: contrast(1.2) saturate(0.6) brightness(1.1); }
-.glass-pane:nth-child(13n+4) canvas { filter: contrast(1.05) saturate(0.9) brightness(0.9); }
-.glass-pane:nth-child(8n+5) canvas { filter: contrast(0.9) saturate(0.8) brightness(1.1); }
-.glass-pane:nth-child(17n+6) canvas { filter: contrast(1.15) saturate(0.5) brightness(1.0); }
-.glass-pane:nth-child(19n+7) canvas { filter: contrast(0.85) saturate(1.1) brightness(0.85); }
 
 /* Layout Components */
 .container {
@@ -224,7 +208,7 @@ body::before {
 }
 
 .subtitle {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   line-height: 1.6;
   color: var(--text-color);
   margin: var(--spacing-sm) 0 var(--spacing-lg) 0;
@@ -236,20 +220,21 @@ body::before {
 
 /* Glass Component Base Styles */
 .glass-component {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--glass-base);
   border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
   transition: var(--transition);
 }
 
 .glass-component:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--glass-hover);
   border-color: var(--glass-border-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow);
 }
 
 .glass-component:focus-within {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--glass-focus);
   border-color: var(--glass-border-focus);
   box-shadow: var(--shadow);
 }
@@ -264,8 +249,9 @@ body::before {
 .form-group textarea,
 .checkmark,
 .submit-btn {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--glass-base);
   border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
   transition: var(--transition);
 }
 
@@ -278,7 +264,7 @@ body::before {
 .form-group textarea:hover,
 .checkmark:hover,
 .submit-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--glass-hover);
   border-color: var(--glass-border-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow);
@@ -287,7 +273,7 @@ body::before {
 .signup-input-group:focus-within,
 .form-group input:focus,
 .form-group textarea:focus {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--glass-focus);
   border-color: var(--glass-border-focus);
   box-shadow: var(--shadow);
 }
@@ -444,7 +430,7 @@ body::before {
 
 /* Content */
 .content {
-  max-width: min(70vw);
+  max-width: min(500px, 90vw);
   width: 100%;
   padding: var(--spacing-lg);
   text-align: left;
@@ -453,17 +439,21 @@ body::before {
 }
 
 .description {
-  font-size: 3rem;
+  font-size: var(--font-size-lg);
   text-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
   line-height: 1.6;
   color: var(--text-color);
   margin: 0 0 var(--spacing-lg) 0;
   font-weight: 100;
   opacity: 1;
+  transform: none;
+  transition: none;
   width: 100%;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  font-variation-settings: "DIST" 10;
   /* Performance optimizations */
+  will-change: opacity, transform;
   contain: layout style paint;
 }
 
@@ -572,7 +562,8 @@ body::before {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(30px);
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
@@ -581,7 +572,6 @@ body::before {
   align-items: flex-end;
   justify-content: center;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(24px);
 }
 
 .modal-overlay.active {
@@ -598,7 +588,8 @@ body::before {
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   position: relative;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(var(--glass-blur));
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   display: flex;
@@ -616,7 +607,8 @@ body::before {
   padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-sm) var(--spacing-lg);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
   position: relative;
 }
 
@@ -642,7 +634,7 @@ body::before {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
   position: absolute;
   right: var(--spacing-lg);
   top: 50%;
@@ -693,8 +685,20 @@ gap: var(--spacing-lg);
 }
 
 .contact-section {
-  opacity: 1;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.modal-overlay.active .contact-section {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.modal-overlay.active .contact-section:nth-child(1) { transition-delay: 0.2s; }
+.modal-overlay.active .contact-section:nth-child(2) { transition-delay: 0.3s; }
+.modal-overlay.active .contact-section:nth-child(3) { transition-delay: 0.4s; }
+.modal-overlay.active .contact-section:nth-child(4) { transition-delay: 0.5s; }
 
 .contact-section h3 {
   font-size: var(--font-size-lg);
@@ -760,7 +764,15 @@ gap: var(--spacing-lg);
 
 /* Contact Form */
 .contact-form {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0.6s;
+}
+
+.modal-overlay.active .contact-form {
   opacity: 1;
+  transform: translateY(0);
 }
 
 .contact-form-inner {
@@ -858,7 +870,9 @@ gap: var(--spacing-lg);
   position: relative;
 }
 
-
+.checkbox-item:hover .checkmark {
+  /* Inherited from glass component styles */
+}
 
 .checkbox-item input:checked ~ .checkmark {
   background: var(--accent-color);
@@ -918,7 +932,7 @@ gap: var(--spacing-lg);
   font-size: var(--font-size-base);
   font-weight: 120;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   /* Ensure it's positioned relative to viewport, not modal */
   position: fixed !important;
@@ -947,15 +961,26 @@ gap: var(--spacing-lg);
   max-width: 120px;
   width: 100%;
   height: auto;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: opacity, transform;
+}
+
+.logo.revealed {
   opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .logo:hover {
-  transform: scale(1.05);
+  transform: translateY(0) scale(1.05);
   transition: transform 0.3s ease-out;
 }
 
 /* Form Messages */
+.form-message {
+  animation: slideInUp 0.4s ease-out;
+}
 
 .form-message.success div,
 .form-message.error div {
@@ -994,7 +1019,16 @@ gap: var(--spacing-lg);
 }
 
 /* Animations */
-
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
@@ -1021,23 +1055,24 @@ gap: var(--spacing-lg);
   }
 }
 
-/* Enhanced contrast for better readability */
-.enhanced-contrast .glass-pane,
-.enhanced-contrast .signup-input-group,
-.enhanced-contrast .floating-info-btn,
-.enhanced-contrast .modal-content,
-.enhanced-contrast .modal-close,
-.enhanced-contrast .social-link,
-.enhanced-contrast .form-group input,
-.enhanced-contrast .form-group textarea,
-.enhanced-contrast .checkmark,
-.enhanced-contrast .submit-btn {
-  background: rgba(255, 255, 255, 0.2);
+/* Fallback for browsers without backdrop-filter */
+.no-backdrop-filter .glass-pane,
+.no-backdrop-filter .signup-input-group,
+.no-backdrop-filter .floating-info-btn,
+.no-backdrop-filter .modal-content,
+.no-backdrop-filter .modal-close,
+.no-backdrop-filter .social-link,
+.no-backdrop-filter .form-group input,
+.no-backdrop-filter .form-group textarea,
+.no-backdrop-filter .checkmark,
+.no-backdrop-filter .submit-btn {
+  background: rgba(125, 125, 125, 0.1);
+  backdrop-filter: none;
 }
 
-.enhanced-contrast .description,
-.enhanced-contrast .subtitle,
-.enhanced-contrast #splash span {
+.no-backdrop-filter .description,
+.no-backdrop-filter .subtitle,
+.no-backdrop-filter #splash span {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
@@ -1166,7 +1201,7 @@ gap: var(--spacing-lg);
 
 @media (max-width: 320px) {
   #splash span { font-size: 2rem; }
-  .subtitle { font-size: 1rem; }
+  .subtitle { font-size: 0.75rem; }
   .description { font-size: 1rem; }
   
   .modal-header h2 { 
@@ -1200,6 +1235,8 @@ gap: var(--spacing-lg);
   }
   .background-video,
   .glass-pane,
+  .logo,
+  .description,
   .modal-overlay,
   .modal-content {
     animation: none !important;
@@ -1222,6 +1259,7 @@ gap: var(--spacing-lg);
   .checkmark,
   .submit-btn {
     background: #222 !important;
+    backdrop-filter: none !important;
     border-color: #444 !important;
   }
 }
