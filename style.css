@@ -1,3 +1,4 @@
+
 /* CSS Custom Properties */
 :root {
   --font-family: 'Distort', sans-serif;
@@ -123,10 +124,10 @@ body::before {
   border-radius: 0;
   position: relative;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 0.6s ease-out;
   z-index: 2;
   margin: 0;
-  will-change: transform, filter, opacity;
+  will-change: transform, filter, opacity, backdrop-filter;
 }
 
 .glass-pane::before {
@@ -186,7 +187,7 @@ body::before {
   position: relative;
   z-index: 10;
   transform-origin: center;
-  transition: font-variation-settings 0.05s ease-out;
+  transition: font-variation-settings 0.1s ease-out;
   /* Performance optimizations */
   will-change: font-variation-settings, text-shadow;
   contain: layout style;
@@ -200,11 +201,11 @@ body::before {
   position: relative;
   z-index: 10;
   cursor: pointer;
-  transition: transform 0.1s ease-out;
+  transition: transform 0.3s ease-out;
 }
 
 #splash:hover {
-  transform: scale(1.01);
+  transform: scale(1);
 }
 
 .subtitle {
@@ -212,7 +213,7 @@ body::before {
   line-height: 1.6;
   color: var(--text-color);
   margin: var(--spacing-sm) 0 var(--spacing-lg) 0;
-  font-weight: 120;
+  font-weight: 400;
   text-align: center;
   max-width: min(500px, 85vw);
   padding: 0 var(--spacing-sm);

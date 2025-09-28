@@ -5,7 +5,7 @@
 
 // Configuration
 const CONFIG = {
-  MOUSE_RANGE: 250,
+  MOUSE_RANGE: 150,
   WEIGHT_MIN: 60,
   WEIGHT_MAX: 200,
   DECAY_RATE: 0.99,
@@ -17,7 +17,6 @@ const CONFIG = {
 // Simple state
 let mouseX = 0, mouseY = 0;
 let clickEffect = 0, keyboardEffect = 0;
-let isHovering = false, hoverIntensity = 0;
 let animationId = null;
 let lastScrollY = 0;
 let scrollDirection = 'down';
@@ -38,12 +37,13 @@ function calculateEffect(letter, index, time) {
   const centerY = rect.top + rect.height / 2;
   
   const distance = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
-  const proximity = Math.max(0, 1 - distance / CONFIG.MOUSE_RANGE);
+  const normalizedDistance = Math.max(0, 1 - distance / CONFIG.MOUSE_RANGE);
+  // Create smooth exponential falloff with more gradual steps
+  const proximity = Math.pow(normalizedDistance, 3);
   
-  const hoverEffect = isHovering ? hoverIntensity * CONFIG.HOVER_INTENSITY : 0;
-  const totalEffect = proximity * 35 + hoverEffect * 25;
+  const totalEffect = proximity * 12000;
   
-  const clickPulse = clickEffect * 25;
+  const clickPulse = clickEffect * 2100;
   const keyboardRipple = Math.sin(time * 15 + index * 0.5) * 20 * keyboardEffect;
   
   return {
@@ -111,13 +111,6 @@ function animate(timestamp) {
   // Decay effects
   clickEffect *= CONFIG.DECAY_RATE;
   keyboardEffect *= CONFIG.DECAY_RATE;
-  
-  // Update hover intensity
-  if (isHovering) {
-    hoverIntensity = Math.min(1, hoverIntensity + 0.4);
-  } else {
-    hoverIntensity *= 0.6;
-  }
   
   // Update letters
   letters.forEach((letter, index) => {
@@ -200,12 +193,10 @@ function handleMouseMove(e) {
 }
 
 function handleMouseEnter() {
-  isHovering = true;
   if (video) video.classList.add('hover-active');
 }
 
 function handleMouseLeave() {
-  isHovering = false;
   if (video) video.classList.remove('hover-active');
 }
 
@@ -384,9 +375,25 @@ function createGlassGrid() {
     const pane = document.createElement('div');
     pane.className = 'glass-pane';
     pane.style.opacity = 0.7 + Math.random() * 0.3;
+    // Set random initial blur for each pane
+    randomizeGlassPaneBlur(pane);
     container.appendChild(pane);
     glassPanes.push(pane);
   }
+}
+
+// Randomize blur for a single glass pane
+function randomizeGlassPaneBlur(pane) {
+  // Generate random blur values between 5px and 35px
+  const blurAmount = 5 + Math.random() * 30;
+  pane.style.backdropFilter = `blur(${blurAmount.toFixed(1)}px)`;
+}
+
+// Randomize all glass pane blur patterns
+function randomizeAllGlassPaneBlurs() {
+  glassPanes.forEach(pane => {
+    randomizeGlassPaneBlur(pane);
+  });
 }
 
 // Form handling
@@ -508,6 +515,7 @@ function init() {
   if (splashTitle) {
     splashTitle.addEventListener('mouseenter', handleMouseEnter);
     splashTitle.addEventListener('mouseleave', handleMouseLeave);
+    splashTitle.addEventListener('click', randomizeAllGlassPaneBlurs);
   }
   
   if (floatingBtn) floatingBtn.addEventListener('click', toggleModal);
