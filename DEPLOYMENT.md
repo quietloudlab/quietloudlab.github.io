@@ -12,9 +12,10 @@ This guide will help you deploy the quietloudlab website to production.
 
 1. **Build for Production**
    ```bash
-   node build.js
+   npm install
+   npm run build
    ```
-   This will create a `dist/` directory with optimized files.
+   This will create a `dist/` directory with optimized files using Vite.
 
 2. **Upload to Your Web Server**
    Upload all contents of the `dist/` directory to your web server's public directory.
@@ -24,7 +25,7 @@ This guide will help you deploy the quietloudlab website to production.
 ### 1. Netlify (Recommended)
 
 1. Connect your GitHub repository to Netlify
-2. Set build command: `node build.js`
+2. Set build command: `npm run build`
 3. Set publish directory: `dist`
 4. Deploy automatically on git push
 
@@ -32,7 +33,7 @@ This guide will help you deploy the quietloudlab website to production.
 
 1. Install Vercel CLI: `npm i -g vercel`
 2. Run: `vercel --prod`
-3. Follow the prompts
+3. Vercel will automatically detect Vite and use the correct build command
 
 ### 3. GitHub Pages
 
@@ -42,7 +43,7 @@ This guide will help you deploy the quietloudlab website to production.
 
 ### 4. Traditional Web Hosting
 
-1. Run the build script: `node build.js`
+1. Run the build script: `npm run build`
 2. Upload all files from `dist/` to your web server's public directory
 3. Ensure your server supports `.htaccess` files (Apache)
 

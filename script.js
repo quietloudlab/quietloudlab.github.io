@@ -3,6 +3,8 @@
  * Clean, efficient implementation with all core features
  */
 
+import WebGLTextDistortion from './webgl/text-distortion.js';
+
 // Configuration
 const CONFIG = {
   MOUSE_RANGE: 150,
@@ -22,7 +24,6 @@ let lastScrollY = 0;
 let scrollDirection = 'down';
 
 // Cache DOM elements
-const letters = Array.from(document.querySelectorAll('#splash span')).slice(0, -3);
 const descriptions = document.querySelectorAll('.description');
 const logo = document.querySelector('.logo');
 const modal = document.getElementById('contactModal');
@@ -30,59 +31,6 @@ const floatingBtn = document.getElementById('floatingInfoBtn');
 const video = document.querySelector('.background-video');
 const glassPanes = [];
 
-// Simple effect calculation
-function calculateEffect(letter, index, time) {
-  const rect = letter.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
-  
-  const distance = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
-  const normalizedDistance = Math.max(0, 1 - distance / CONFIG.MOUSE_RANGE);
-  // Create smooth exponential falloff with more gradual steps
-  const proximity = Math.pow(normalizedDistance, 3);
-  
-  const totalEffect = proximity * 12000;
-  
-  const clickPulse = clickEffect * 2100;
-  const keyboardRipple = Math.sin(time * 15 + index * 0.5) * 20 * keyboardEffect;
-  
-  return {
-    weight: Math.max(CONFIG.WEIGHT_MIN, Math.min(CONFIG.WEIGHT_MAX, 
-      60 + totalEffect + clickPulse + keyboardRipple)),
-    distortion: Math.max(0, Math.min(90, totalEffect * 0.8 + clickPulse * 0.6 + keyboardRipple * 0.8)),
-    intensity: proximity
-  };
-}
-
-// Update letter appearance
-function updateLetter(letter, weight, distortion, intensity) {
-  const supportsVariation = CSS.supports('font-variation-settings', '"wght" 100');
-  
-  if (supportsVariation) {
-    letter.style.fontVariationSettings = `"wght" ${weight.toFixed(1)}, "DIST" ${distortion.toFixed(1)}`;
-  } else {
-    letter.style.fontWeight = Math.round(weight);
-    letter.style.transform = `scaleX(${1 + distortion / 100})`;
-  }
-  
-  // Rainbow/glow effect
-  if (distortion > 5) {
-    const rainbow = Math.min(1, (distortion - 5) / 20) * CONFIG.RAINBOW_INTENSITY;
-    const red = Math.sin(distortion * 0.1) * 2 * rainbow;
-    const blue = Math.cos(distortion * 0.1) * 2 * rainbow;
-    
-    letter.style.textShadow = `
-      ${red}px 0 4px rgba(255, 100, 100, ${0.3 * rainbow}),
-      ${blue}px 0 4px rgba(100, 100, 255, ${0.3 * rainbow}),
-      0 0 ${4 + rainbow * 8}px rgba(255, 255, 255, ${0.2 + rainbow * 0.3})
-    `;
-  } else if (intensity > 0.02) {
-    const glow = Math.min(1, intensity * 2);
-    letter.style.textShadow = `0 0 ${4 + glow * 8}px rgba(255, 255, 255, ${0.2 + glow * 0.3})`;
-  } else {
-    letter.style.textShadow = '';
-  }
-}
 
 // Update glass panes
 function updateGlassPanes() {
@@ -106,17 +54,9 @@ function updateGlassPanes() {
 
 // Main animation loop
 function animate(timestamp) {
-  const time = timestamp * 0.001;
-  
   // Decay effects
   clickEffect *= CONFIG.DECAY_RATE;
   keyboardEffect *= CONFIG.DECAY_RATE;
-  
-  // Update letters
-  letters.forEach((letter, index) => {
-    const effect = calculateEffect(letter, index, time);
-    updateLetter(letter, effect.weight, effect.distortion, effect.intensity);
-  });
   
   // Update glass panes
   updateGlassPanes();
@@ -505,6 +445,20 @@ function init() {
   initVideo();
   createGlassGrid();
   
+  // Initialize WebGL text distortion
+  const splashElement = document.getElementById('animate');
+  if (splashElement) {
+    window.webglDistortion = new WebGLTextDistortion(splashElement, {
+      distortRadius: 200,
+      distortStrength: 30,
+      enableRipple: true,
+      enableSwirl: false,
+      enableChromatic: true,
+      brightnessBoost: 0.8,      // Text becomes brighter white near cursor
+      fontWeightBoost: 300        // Font weight increases by up to 300 near cursor
+    });
+  }
+  
   // Event listeners
   document.addEventListener('mousemove', handleMouseMove);
   document.addEventListener('click', handleClick);
@@ -548,6 +502,10 @@ function init() {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       createGlassGrid();
+      // Trigger WebGL distortion resize if it exists
+      if (window.webglDistortion && window.webglDistortion.resize) {
+        window.webglDistortion.resize();
+      }
     }, 150);
   });
   

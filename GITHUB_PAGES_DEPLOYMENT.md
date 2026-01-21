@@ -129,20 +129,13 @@ This guide will help you deploy your quietloudlab website to GitHub Pages.
    - Select "gh-pages" branch
    - Click "Save"
 
-## Step 5: Update Build Process
+## Step 5: Build Process
 
-Since GitHub Pages doesn't support `.htaccess` files, we need to modify our build process:
+Since GitHub Pages doesn't support `.htaccess` files, the Vite build automatically excludes it:
 
-1. **Update build.js**
-   ```javascript
-   // In the createProductionDir function, remove .htaccess from files array
-   const files = [
-     'index.html',
-     'style.min.css',
-     'script.min.js',
-     'site.webmanifest',
-     'robots.txt',
-     'sitemap.xml'
+1. **Build for production**
+   ```bash
+   npm run build
      // Remove .htaccess for GitHub Pages
    ];
    ```

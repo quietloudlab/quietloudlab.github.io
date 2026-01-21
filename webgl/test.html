@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebGL Text Distortion Test</title>
+  <style>
+    @font-face {
+      font-family: 'Distort';
+      src: url('../fonts/Distort-VariableVF.ttf') format('truetype');
+      font-weight: 60 186;
+      font-style: normal;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    
+    #test-container {
+      position: relative;
+      text-align: center;
+    }
+    
+    #test-text {
+      font-family: 'Distort', sans-serif;
+      opacity: 1;
+      font-size: 6rem;
+      color: white;
+      position: relative;
+      z-index: 10;
+      padding: 2rem;
+    }
+    
+    #test-text canvas {
+      mix-blend-mode: screen;
+      opacity: 0.8;
+    }
+    
+    .controls {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      max-width: 300px;
+    }
+    
+    .controls h3 {
+      margin: 0 0 15px 0;
+      font-size: 16px;
+    }
+    
+    .control-group {
+      margin-bottom: 15px;
+    }
+    
+    .control-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+    }
+    
+    .control-group input[type="range"] {
+      width: 100%;
+    }
+    
+    .control-group input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    
+    .value-display {
+      display: inline-block;
+      min-width: 50px;
+      text-align: right;
+      font-weight: bold;
+    }
+    
+    .info {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 15px;
+      border-radius: 8px;
+      color: white;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="test-container">
+    <h1 id="test-text">quietloudlab</h1>
+  </div>
+  
+  <div class="controls">
+    <h3>WebGL Distortion Controls</h3>
+    
+    <div class="control-group">
+      <label>
+        Distort Radius: <span class="value-display" id="radiusValue">200</span>
+      </label>
+      <input type="range" id="radiusSlider" min="50" max="500" value="200" step="10">
+    </div>
+    
+    <div class="control-group">
+      <label>
+        Distort Strength: <span class="value-display" id="strengthValue">30</span>
+      </label>
+      <input type="range" id="strengthSlider" min="0" max="100" value="30" step="5">
+    </div>
+    
+    <div class="control-group">
+      <label>
+        <input type="checkbox" id="rippleCheck" checked>
+        Enable Ripple Effect
+      </label>
+    </div>
+    
+    <div class="control-group">
+      <label>
+        <input type="checkbox" id="swirlCheck">
+        Enable Swirl Effect
+      </label>
+    </div>
+    
+    <div class="control-group">
+      <label>
+        <input type="checkbox" id="chromaticCheck">
+        Enable Chromatic Aberration
+      </label>
+    </div>
+  </div>
+  
+  <div class="info">
+    <strong>Move your mouse over the text to see the distortion effect!</strong><br>
+    Use the controls on the right to adjust parameters.
+  </div>
+  
+  <script src="text-distortion.js"></script>
+  <script>
+    // Initialize WebGL distortion
+    const textElement = document.getElementById('test-text');
+    const distortion = new WebGLTextDistortion(textElement, {
+      distortRadius: 200,
+      distortStrength: 30,
+      enableRipple: true,
+      enableSwirl: false,
+      enableChromatic: false
+    });
+    
+    // Setup controls
+    const radiusSlider = document.getElementById('radiusSlider');
+    const strengthSlider = document.getElementById('strengthSlider');
+    const rippleCheck = document.getElementById('rippleCheck');
+    const swirlCheck = document.getElementById('swirlCheck');
+    const chromaticCheck = document.getElementById('chromaticCheck');
+    
+    const radiusValue = document.getElementById('radiusValue');
+    const strengthValue = document.getElementById('strengthValue');
+    
+    radiusSlider.addEventListener('input', (e) => {
+      const value = parseInt(e.target.value);
+      radiusValue.textContent = value;
+      distortion.updateOptions({ distortRadius: value });
+    });
+    
+    strengthSlider.addEventListener('input', (e) => {
+      const value = parseInt(e.target.value);
+      strengthValue.textContent = value;
+      distortion.updateOptions({ distortStrength: value });
+    });
+    
+    rippleCheck.addEventListener('change', (e) => {
+      distortion.updateOptions({ enableRipple: e.target.checked });
+    });
+    
+    swirlCheck.addEventListener('change', (e) => {
+      distortion.updateOptions({ enableSwirl: e.target.checked });
+      if (e.target.checked) {
+        rippleCheck.checked = false;
+        distortion.updateOptions({ enableRipple: false });
+      }
+    });
+    
+    chromaticCheck.addEventListener('change', (e) => {
+      distortion.updateOptions({ enableChromatic: e.target.checked });
+    });
+  </script>
+</body>
+</html>
