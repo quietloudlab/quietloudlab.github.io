@@ -1,3 +1,6 @@
+# MIME types for shader files
+AddType text/plain .glsl
+
 # Enable compression
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/plain
