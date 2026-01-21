@@ -167,46 +167,32 @@ body::before {
   padding: var(--spacing-lg) var(--spacing-sm);
 }
 
-#splash {
+.splash {
   max-width: min(800px, 90vw);
   width: 100%;
   text-align: center;
   line-height: 1.2;
   padding: 0 var(--spacing-sm);
+  font-size: 96pt;
 }
 
-#splash span {
-  display: inline-block;
-  font-family: var(--font-family);
-  font-size: var(--font-size-hero);
-  font-variation-settings: "wght" 60, "DIST" 0;
-  color: var(--text-color);
-  word-break: keep-all;
-  white-space: nowrap;
-  cursor: pointer;
-  position: relative;
-  z-index: 10;
-  transform-origin: center;
-  transition: font-variation-settings 0.1s ease-out;
-  /* Performance optimizations */
-  will-change: font-variation-settings, text-shadow;
-  contain: layout style;
-}
 
-#splash span:hover {
-  animation: none;
-}
-
-#splash {
+.splash {
   position: relative;
   z-index: 10;
   cursor: pointer;
   transition: transform 0.3s ease-out;
 }
 
-#splash:hover {
+.splash:hover {
   transform: scale(1);
 }
+/* WebGL Text Distortion Canvas */
+.splash canvas {
+  mix-blend-mode: screen;
+  opacity: 1;
+}
+
 
 .subtitle {
   font-size: var(--font-size-sm);
@@ -1073,7 +1059,7 @@ gap: var(--spacing-lg);
 
 .no-backdrop-filter .description,
 .no-backdrop-filter .subtitle,
-.no-backdrop-filter #splash span {
+.no-backdrop-filter .splash span {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
@@ -1085,7 +1071,7 @@ gap: var(--spacing-lg);
   }
   
   .hero { padding: var(--spacing-sm) var(--spacing-xs); }
-  #splash { padding: 0 var(--spacing-xs); }
+  .splash { padding: 0 var(--spacing-xs); }
   .subtitle { 
     padding: 0 var(--spacing-xs);
     margin-bottom: var(--spacing-md);
@@ -1139,7 +1125,7 @@ gap: var(--spacing-lg);
   }
   
   .hero { padding: var(--spacing-xs) 0.25rem; }
-  #splash { padding: 0 0.25rem; }
+  .splash { padding: 0 0.25rem; }
   .subtitle { 
     padding: 0 0.25rem;
     margin-bottom: var(--spacing-sm);
@@ -1201,7 +1187,7 @@ gap: var(--spacing-lg);
 }
 
 @media (max-width: 320px) {
-  #splash span { font-size: 2rem; }
+  .splash span { font-size: 2rem; }
   .subtitle { font-size: 0.75rem; }
   .description { font-size: 1rem; }
   
