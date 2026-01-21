@@ -3,6 +3,8 @@
  * Clean, efficient implementation with all core features
  */
 
+import WebGLTextDistortion from './webgl/text-distortion.js';
+
 // Configuration
 const CONFIG = {
   MOUSE_RANGE: 150,
@@ -445,7 +447,7 @@ function init() {
   
   // Initialize WebGL text distortion
   const splashElement = document.getElementById('animate');
-  if (splashElement && typeof WebGLTextDistortion !== 'undefined') {
+  if (splashElement) {
     window.webglDistortion = new WebGLTextDistortion(splashElement, {
       distortRadius: 200,
       distortStrength: 30,

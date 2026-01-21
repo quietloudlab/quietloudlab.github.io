@@ -3,6 +3,9 @@
  * Applies shader-based distortion to text based on pointer proximity
  */
 
+import vertexShaderSource from './shaders/vertex.glsl?raw';
+import fragmentShaderSource from './shaders/fragment.glsl?raw';
+
 class WebGLTextDistortion {
   constructor(targetElement, options = {}) {
     this.targetElement = targetElement;
@@ -77,25 +80,9 @@ class WebGLTextDistortion {
   
   async loadShaders() {
     try {
-      const [vertexResponse, fragmentResponse] = await Promise.all([
-        fetch('/webgl/shaders/vertex.glsl'),
-        fetch('/webgl/shaders/fragment.glsl')
-      ]);
-      
-      if (!vertexResponse.ok) {
-        throw new Error(`Failed to load vertex shader: ${vertexResponse.status} ${vertexResponse.statusText}`);
-      }
-      if (!fragmentResponse.ok) {
-        throw new Error(`Failed to load fragment shader: ${fragmentResponse.status} ${fragmentResponse.statusText}`);
-      }
-      
-      this.shaders.vertex = await vertexResponse.text();
-      this.shaders.fragment = await fragmentResponse.text();
-      
-      // Validate that we got actual shader code, not HTML
-      if (this.shaders.vertex.trim().startsWith('<') || this.shaders.fragment.trim().startsWith('<')) {
-        throw new Error('Shader files returned HTML instead of GLSL code. Check file paths and server configuration.');
-      }
+      // Shaders are now imported at the top of the file
+      this.shaders.vertex = vertexShaderSource;
+      this.shaders.fragment = fragmentShaderSource;
       
       console.log('Shaders loaded successfully');
     } catch (error) {
@@ -357,8 +344,6 @@ class WebGLTextDistortion {
 }
 
 // Export for use in other scripts
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = WebGLTextDistortion;
-}
+export default WebGLTextDistortion;
 
 // Made with Bob
