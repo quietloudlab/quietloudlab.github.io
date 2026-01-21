@@ -51,7 +51,8 @@ A modern, interactive website for quietloudlab, a critical design and innovation
 
 1. **Install dependencies and build**
    ```bash
-   node build.js
+   npm install
+   npm run build
    ```
 
 2. **Deploy the `dist/` directory**
@@ -69,7 +70,7 @@ distortfontdemo/
 ├── assets/                 # Images and video
 │   ├── img/
 │   └── video/
-├── build.js                # Build script for production
+├── vite.config.js          # Vite build configuration
 ├── .htaccess               # Apache server configuration
 ├── robots.txt              # SEO configuration
 ├── sitemap.xml             # Search engine sitemap
