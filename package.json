@@ -4,7 +4,7 @@
   "description": "A critical design and innovation studio website with interactive typography and glass morphism effects",
   "main": "index.html",
   "scripts": {
-    "dev": "python3 https_server.py",
+    "dev": "npx http-server .",
     "build": "node build.js",
     "serve": "npx serve .",
     "deploy": "npm run build && echo 'Build complete. Upload dist/ contents to your web server.'"
