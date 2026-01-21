@@ -255,26 +255,41 @@ class WebGLTextDistortion {
   
   resize() {
     const rect = this.targetElement.getBoundingClientRect();
-    this.canvas.width = rect.width;
-    this.canvas.height = rect.height;
+    const dpr = window.devicePixelRatio || 1;
+    
+    // Set canvas size with device pixel ratio for sharp rendering
+    this.canvas.width = rect.width * dpr;
+    this.canvas.height = rect.height * dpr;
+    
+    // Keep CSS size at actual element size
+    this.canvas.style.width = rect.width + 'px';
+    this.canvas.style.height = rect.height + 'px';
     
     const gl = this.gl;
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Recreate texture with new dimensions to match resized text
+    this.createTextTexture();
   }
   
   render() {
     const gl = this.gl;
+    const dpr = window.devicePixelRatio || 1;
+    
+    // Scale mouse coordinates by device pixel ratio
+    const mouseX = this.mouse.x * dpr;
+    const mouseY = this.mouse.y * dpr;
     
     // Calculate distance from mouse to center of canvas for font weight
     const centerX = this.canvas.width / 2;
     const centerY = this.canvas.height / 2;
     const distToCenter = Math.sqrt(
-      Math.pow(this.mouse.x - centerX, 2) +
-      Math.pow(this.mouse.y - centerY, 2)
+      Math.pow(mouseX - centerX, 2) +
+      Math.pow(mouseY - centerY, 2)
     );
     
     // Calculate influence (0 to 1, where 1 is closest)
-    const influence = Math.max(0, 1 - (distToCenter / this.options.distortRadius));
+    const influence = Math.max(0, 1 - (distToCenter / (this.options.distortRadius * dpr)));
     
     // Update font weight based on proximity
     const targetFontWeight = this.baseFontWeight + (influence * this.options.fontWeightBoost);
@@ -292,12 +307,12 @@ class WebGLTextDistortion {
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     
-    // Update uniforms
+    // Update uniforms with scaled values
     gl.uniform2f(this.locations.resolution, this.canvas.width, this.canvas.height);
-    gl.uniform2f(this.locations.mouse, this.mouse.x, this.mouse.y);
+    gl.uniform2f(this.locations.mouse, mouseX, mouseY);
     gl.uniform1f(this.locations.time, this.time);
-    gl.uniform1f(this.locations.distortRadius, this.options.distortRadius);
-    gl.uniform1f(this.locations.distortStrength, this.options.distortStrength);
+    gl.uniform1f(this.locations.distortRadius, this.options.distortRadius * dpr);
+    gl.uniform1f(this.locations.distortStrength, this.options.distortStrength * dpr);
     gl.uniform1i(this.locations.enableRipple, this.options.enableRipple ? 1 : 0);
     gl.uniform1i(this.locations.enableSwirl, this.options.enableSwirl ? 1 : 0);
     gl.uniform1i(this.locations.enableChromatic, this.options.enableChromatic ? 1 : 0);

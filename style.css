@@ -173,7 +173,7 @@ body::before {
   text-align: center;
   line-height: 1.2;
   padding: 0 var(--spacing-sm);
-  font-size: 96pt;
+  font-size: clamp(48pt, 12vw, 96pt);
 }
 
 

@@ -502,6 +502,10 @@ function init() {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       createGlassGrid();
+      // Trigger WebGL distortion resize if it exists
+      if (window.webglDistortion && window.webglDistortion.resize) {
+        window.webglDistortion.resize();
+      }
     }, 150);
   });
   
