@@ -169,18 +169,29 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('submitting');
-    
+
     const formData = new FormData(e.currentTarget);
-    
+    const data: Record<string, string | string[]> = {};
+
+    formData.forEach((value, key) => {
+      if (key === 'interests') {
+        if (!data[key]) data[key] = [];
+        (data[key] as string[]).push(value as string);
+      } else {
+        data[key] = value as string;
+      }
+    });
+
     try {
       const response = await fetch("https://submit-form.formspark.io/gpAWtEfDu", {
         method: "POST",
-        body: formData,
         headers: {
+          "Content-Type": "application/json",
           Accept: "application/json",
         },
+        body: JSON.stringify(data),
       });
-      
+
       if (response.ok) {
         setStatus('success');
         setMessage(''); // Clear message on success
@@ -300,18 +311,20 @@ const NewsletterForm = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('submitting');
-    
+
     const formData = new FormData(e.currentTarget);
-    
+    const data = { email: formData.get('email') as string };
+
     try {
       const response = await fetch("https://submit-form.formspark.io/rFddulOOu", {
         method: "POST",
-        body: formData,
         headers: {
+          "Content-Type": "application/json",
           Accept: "application/json",
         },
+        body: JSON.stringify(data),
       });
-      
+
       if (response.ok) {
         setStatus('success');
       } else {
