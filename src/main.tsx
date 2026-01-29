@@ -27,28 +27,29 @@ const PRACTICE_AREAS = [
 
 const OFFERINGS = [
   {
-    title: "AI System Mapping & Risk Review",
-    fit: "Teams early in planning or mid-build confusion.",
-    outcome: "A clear visual model of the system + risks surfaced.",
-    format: "90–120 min working session."
+    title: "Before the Build",
+    fit: "For teams about to invest in AI and needing clarity on what to build, why, and where human judgment belongs.",
+    outcome: "We work with you to map the system before it exists—surfacing assumptions, constraints, and responsibilities so the first build is the right build.",
+    format: "2–4 weeks"
   },
   {
-    title: "Constraint & Governance Audit",
-    fit: "Teams focused on safety, policy, reliability, or compliance.",
-    outcome: "Inventory of constraints and human-in-the-loop surfaces.",
-    format: "1–2 weeks (Async + Live)."
+    title: "Mid-Build Clarity",
+    fit: "For teams where the prototype worked but production is chaos, or where design, engineering, and product are talking past each other.",
+    outcome: "We make the system visible—identifying where confusion lives, what's actually being decided by AI vs. humans, and what constraints have been ignored.",
+    format: "2–3 weeks"
   },
   {
-    title: "AI Experience Blueprint Sprint",
-    fit: "Teams needing architectural direction and alignment.",
-    outcome: "Coherent product direction, prototypes, and decision logs.",
-    format: "4–6 weeks."
+    title: "Strategic Validation",
+    fit: "For leaders who need to pressure-test an AI investment, product direction, or roadmap before committing further resources.",
+    outcome: "We build the argument for or against—with prototypes, system maps, or decision frameworks that make the tradeoffs explicit.",
+    format: "4–6 weeks"
   },
   {
-    title: "Prototyping Sprint",
-    fit: "Teams stuck in debate; leadership needs to see 'it'.",
-    outcome: "Functional prototype-as-argument to validate feasibility.",
-    format: "1–3 weeks."
+    title: "Custom Engagement",
+    fit: "Not sure where to start? We often design engagements around emerging problems or unusual constraints.",
+    outcome: "",
+    format: "",
+    isCustom: true
   }
 ];
 
@@ -481,49 +482,29 @@ const App = () => {
                 <div key={i} className="flex flex-col bg-white/5 p-8 border border-white/5 hover:bg-white/[0.02] hover:border-lab-olive/40 transition-all duration-300 group">
                   <div className="flex-grow">
                     <h3 className="font-sans text-2xl font-medium mb-4 text-lab-white">{offer.title}</h3>
-                    
+
                     <div className="space-y-4">
-                      <div>
-                         <span className="block font-mono text-xs uppercase text-gray-400 mb-1">Best For</span>
-                         <p className="font-serif text-gray-300 text-lg leading-snug">{offer.fit}</p>
-                      </div>
-                      <div>
-                         <span className="block font-mono text-xs uppercase text-gray-400 mb-1">Format</span>
-                         <p className="font-serif text-gray-300 text-base">{offer.format}</p>
-                      </div>
-                      <div>
-                         <span className="block font-mono text-xs uppercase text-gray-400 mb-1">Outcome</span>
-                         <p className="font-serif text-gray-300 text-base">{offer.outcome}</p>
-                      </div>
+                      <p className="font-serif text-gray-300 text-lg leading-snug">{offer.fit}</p>
+                      {offer.outcome && (
+                        <p className="font-serif text-gray-400 text-base">{offer.outcome}</p>
+                      )}
+                      {offer.format && (
+                        <p className="font-mono text-xs uppercase tracking-widest text-lab-olive">Typical engagement: {offer.format}</p>
+                      )}
                     </div>
                   </div>
 
-                  <button 
-                    onClick={() => handleInquire(offer.title)}
+                  <button
+                    onClick={() => handleInquire(offer.title, (offer as any).isCustom)}
                     className="mt-8 pt-6 border-t border-white/10 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-lab-olive hover:text-white transition-colors group-hover:border-white/20 focus:outline-none focus:text-white group/btn"
-                    aria-label={`Inquire about ${offer.title}`}
+                    aria-label={(offer as any).isCustom ? "Let's define the brief" : `Inquire about ${offer.title}`}
                   >
-                    Inquire about this <ArrowRight size={14} className="transition-transform duration-300 group-hover/btn:translate-x-1" aria-hidden="true" />
+                    {(offer as any).isCustom ? "Let's define the brief" : "Inquire about this"} <ArrowRight size={14} className="transition-transform duration-300 group-hover/btn:translate-x-1" aria-hidden="true" />
                   </button>
                 </div>
               ))}
             </div>
 
-            {/* Custom/Discovery Box */}
-            <div className="bg-white/5 border border-white/5 p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:border-lab-olive/30 transition-colors">
-              <div>
-                <h3 className="font-sans text-xl font-medium mb-2 text-lab-white">Custom Engagement</h3>
-                <p className="font-serif text-gray-300 text-lg max-w-xl">
-                  Not sure where to start? We often design bespoke engagements for unique constraints or emerging problems.
-                </p>
-              </div>
-              <button 
-                onClick={() => handleInquire("Custom Engagement", true)}
-                className="shrink-0 bg-white/10 hover:bg-lab-olive text-lab-white font-mono text-xs uppercase tracking-widest px-6 py-4 rounded-sm transition-colors focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-black"
-              >
-                Let's define the brief
-              </button>
-            </div>
           </FadeIn>
         </section>
 
