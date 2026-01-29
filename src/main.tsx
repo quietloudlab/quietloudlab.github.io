@@ -171,14 +171,21 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
     setStatus('submitting');
 
     const formData = new FormData(e.currentTarget);
+    const data: Record<string, string | string[]> = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      message: formData.get('message') as string,
+      interests: formData.getAll('interests') as string[],
+    };
 
     try {
       const response = await fetch("https://submit-form.com/zJR7lYKAh", {
         method: "POST",
-        body: formData,
         headers: {
+          "Content-Type": "application/json",
           Accept: "application/json",
         },
+        body: JSON.stringify(data),
       });
 
       if (response.ok) {
@@ -302,14 +309,16 @@ const NewsletterForm = () => {
     setStatus('submitting');
 
     const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
 
     try {
       const response = await fetch("https://submit-form.com/buMSWec82", {
         method: "POST",
-        body: formData,
         headers: {
+          "Content-Type": "application/json",
           Accept: "application/json",
         },
+        body: JSON.stringify({ email }),
       });
 
       if (response.ok) {
