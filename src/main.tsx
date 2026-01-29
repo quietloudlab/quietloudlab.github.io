@@ -173,7 +173,7 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
     const formData = new FormData(e.currentTarget);
     
     try {
-      const response = await fetch("https://submit-form.com/gpAWtEfDu", {
+      const response = await fetch("https://submit-form.formspark.io/gpAWtEfDu", {
         method: "POST",
         body: formData,
         headers: {
@@ -304,7 +304,7 @@ const NewsletterForm = () => {
     const formData = new FormData(e.currentTarget);
     
     try {
-      const response = await fetch("https://submit-form.com/rFddulOOu", {
+      const response = await fetch("https://submit-form.formspark.io/rFddulOOu", {
         method: "POST",
         body: formData,
         headers: {
