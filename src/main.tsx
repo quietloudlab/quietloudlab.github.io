@@ -183,7 +183,7 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
     });
 
     try {
-      const response = await fetch("https://submit-form.formspark.io/gpAWtEfDu", {
+      const response = await fetch("https://submit-form.com/gpAWtEfDu", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -316,7 +316,7 @@ const NewsletterForm = () => {
     const data = { email: formData.get('email') as string };
 
     try {
-      const response = await fetch("https://submit-form.formspark.io/rFddulOOu", {
+      const response = await fetch("https://submit-form.com/rFddulOOu", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
