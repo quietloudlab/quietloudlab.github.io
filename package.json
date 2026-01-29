@@ -1,48 +1,25 @@
 {
-  "name": "quietloudlab-website",
+  "name": "quietloudlab",
+  "private": true,
   "version": "1.0.0",
-  "description": "A critical design and innovation studio website with interactive typography and glass morphism effects",
-  "main": "index.html",
+  "type": "module",
   "scripts": {
-    "dev": "python3 https_server.py",
-    "build": "node build.js",
-    "serve": "npx serve .",
-    "deploy": "npm run build && echo 'Build complete. Upload dist/ contents to your web server.'"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "keywords": [
-    "design",
-    "innovation",
-    "critical-design",
-    "typography",
-    "interactive",
-    "glass-morphism",
-    "studio",
-    "design-thinking",
-    "user-experience",
-    "product-design",
-    "service-design",
-    "prototyping",
-    "futures",
-    "technology",
-    "strategy",
-    "workshops",
-    "AI",
-    "experimentation"
-  ],
-  "author": "quietloudlab",
-  "license": "UNLICENSED",
+  "dependencies": {
+    "framer-motion": "^12.0.0",
+    "lucide-react": "^0.469.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
   "devDependencies": {
-    "clean-css-cli": "^5.6.0",
-    "terser": "^5.19.0",
-    "html-minifier": "^4.0.0"
-  },
-  "engines": {
-    "node": ">=14.0.0",
-    "npm": ">=6.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/quietloudlab/website.git"
-  },
-  "homepage": "https://quietloudlab.com"
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0",
+    "vite-plugin-svgr": "^4.5.0"
+  }
 }
