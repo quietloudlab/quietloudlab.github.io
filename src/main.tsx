@@ -261,7 +261,7 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
     const data: Record<string, string | string[]> = {
       name: formData.get('name') as string,
       email: formData.get('email') as string,
-      message: formData.get('message') as string,
+      message: message, // Use React state directly to capture auto-filled text
       interests: formData.getAll('interests') as string[],
     };
 
