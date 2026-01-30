@@ -4,6 +4,21 @@ import { motion, useScroll, useInView, AnimatePresence, useSpring, useTransform,
 import { ArrowRight, ArrowDown, Menu, X, Check, Loader2 } from 'lucide-react';
 import LogoSvg from './img/quietloudlab_logo_white.svg?react';
 
+// Fathom Analytics
+declare global {
+  interface Window {
+    fathom?: {
+      trackEvent: (name: string, opts?: { _value?: number }) => void;
+    };
+  }
+}
+
+const trackEvent = (name: string) => {
+  if (window.fathom) {
+    window.fathom.trackEvent(name);
+  }
+};
+
 // --- Data ---
 
 const PRACTICE_AREAS = [
@@ -278,6 +293,7 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
       if (response.ok) {
         setStatus('success');
         setMessage('');
+        trackEvent('Contact Form Submitted');
       } else {
         setStatus('error');
       }
@@ -410,6 +426,7 @@ const NewsletterForm = () => {
 
       if (response.ok) {
         setStatus('success');
+        trackEvent('Newsletter Subscribed');
       } else {
         setStatus('error');
       }
@@ -703,12 +720,12 @@ const Atlas = () => {
 
         <div className="flex flex-col md:flex-row gap-4">
           <Magnetic>
-            <a href="https://atlas.quietloudlab.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-lab-white text-lab-black px-8 py-4 font-mono text-sm uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white group">
+            <a href="https://atlas.quietloudlab.com" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Atlas Link Clicked')} className="inline-flex items-center gap-2 bg-lab-white text-lab-black px-8 py-4 font-mono text-sm uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white group">
               Explore the Atlas <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </a>
           </Magnetic>
           <Magnetic>
-            <a href="https://github.com/quietloudlab/ai-interaction-atlas" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border border-white/30 text-white px-8 py-4 font-mono text-sm uppercase tracking-widest hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white group">
+            <a href="https://github.com/quietloudlab/ai-interaction-atlas" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('GitHub Link Clicked')} className="inline-flex items-center gap-2 border border-white/30 text-white px-8 py-4 font-mono text-sm uppercase tracking-widest hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white group">
               View on GitHub
             </a>
           </Magnetic>
@@ -814,11 +831,11 @@ const Contact = ({ contactIntent }: { contactIntent: ContactIntent | null }) => 
               </div>
               <div>
                 <p className="uppercase tracking-widest mb-2 text-lab-olive">Email</p>
-                <a href="mailto:brandon@quietloudlab.com" className="hover:text-lab-olive transition-colors">brandon@quietloudlab.com</a>
+                <a href="mailto:brandon@quietloudlab.com" onClick={() => trackEvent('Email Link Clicked')} className="hover:text-lab-olive transition-colors">brandon@quietloudlab.com</a>
               </div>
               <div>
                 <p className="uppercase tracking-widest mb-2 text-lab-olive">Connect</p>
-                <a href="https://www.linkedin.com/company/quietloudlab" target="_blank" rel="noopener noreferrer" className="hover:text-lab-olive transition-colors">LinkedIn</a>
+                <a href="https://www.linkedin.com/company/quietloudlab" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('LinkedIn Link Clicked')} className="hover:text-lab-olive transition-colors">LinkedIn</a>
               </div>
             </div>
           </RevealText>
@@ -841,8 +858,8 @@ const Footer = () => {
           </div>
 
           <div className="flex flex-col md:flex-row gap-6 md:gap-12 font-mono text-sm uppercase tracking-widest text-gray-400">
-            <a href="https://www.linkedin.com/company/quietloudlab" target="_blank" rel="noopener noreferrer" className="hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive">LinkedIn</a>
-            <a href="mailto:brandon@quietloudlab.com" className="hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive">Email</a>
+            <a href="https://www.linkedin.com/company/quietloudlab" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('LinkedIn Link Clicked')} className="hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive">LinkedIn</a>
+            <a href="mailto:brandon@quietloudlab.com" onClick={() => trackEvent('Email Link Clicked')} className="hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive">Email</a>
             <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive text-left">
                Back to Top &uarr;
             </button>
@@ -873,6 +890,7 @@ const App = () => {
       : `I'm interested in exploring the "${title}" engagement for my team.`;
 
     setContactIntent({ text, id: Date.now() });
+    trackEvent(`Inquire Clicked: ${title}`);
 
     const contactSection = document.getElementById('contact');
     if (contactSection) {
