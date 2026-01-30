@@ -200,8 +200,8 @@ const TimeDisplay = () => {
   );
 };
 
-const Logo = ({ className, inverted = false }: { className?: string, inverted?: boolean }) => (
-  <LogoSvg className={`${className} ${inverted ? 'invert' : ''}`} />
+const Logo = ({ className, dark = false }: { className?: string, dark?: boolean }) => (
+  <LogoSvg className={`${className} ${dark ? 'text-lab-black' : 'text-lab-white'}`} />
 );
 
 // --- Forms ---
@@ -475,7 +475,7 @@ const Navigation = () => {
     <nav className="fixed top-0 left-0 w-full z-40 bg-lab-white/90 backdrop-blur-md border-b border-lab-black/10" role="navigation" aria-label="Main">
       <div className="max-w-screen-xl mx-auto px-6 md:px-12 h-16 md:h-20 flex justify-between items-center relative">
         <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="z-10 focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 rounded-sm block" aria-label="quietloudlab home">
-          <Logo className="h-4 md:h-5 w-auto hover:opacity-80 transition-opacity" inverted />
+          <Logo className="h-4 md:h-5 w-auto hover:opacity-80 transition-opacity" dark />
         </a>
 
         <div className="hidden md:flex items-center space-x-8 font-mono text-sm uppercase tracking-widest">
@@ -544,7 +544,7 @@ const Hero = () => {
           {/* Headline - Layered for Parallax */}
           <div className="relative z-0">
             <RevealText className="mb-6">
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-sans tracking-tight leading-tight font-medium text-lab-black selection:bg-lab-olive selection:text-white">
+                <h1 className="text-5xl md:text-6xl lg:text-8xl font-sans tracking-tight leading-tight font-medium text-lab-black selection:bg-lab-olive selection:text-white">
                   Design and research for more human futures
                 </h1>
             </RevealText>
