@@ -580,12 +580,12 @@ const Hero = () => {
             <RevealText delay={0.3}>
               <div className="mt-8 flex flex-col md:flex-row gap-4 relative z-20 pl-1">
                 <Magnetic>
-                  <a href="#engagement" className="group inline-flex items-center gap-2 bg-lab-black text-white px-8 py-3 font-mono text-sm uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive shadow-lg">
+                  <a href="#engagement" onClick={() => trackEvent('Hero CTA: See Engagements')} className="group inline-flex items-center gap-2 bg-lab-black text-white px-8 py-3 font-mono text-sm uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive shadow-lg">
                      See Engagements <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform"/>
                   </a>
                 </Magnetic>
                 <Magnetic>
-                   <a href="#contact" className="inline-flex items-center gap-2 border border-lab-black bg-white/50 backdrop-blur-sm text-lab-black px-8 py-3 font-mono text-sm uppercase tracking-widest hover:bg-lab-black hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-black">
+                   <a href="#contact" onClick={() => trackEvent('Hero CTA: Start a Conversation')} className="inline-flex items-center gap-2 border border-lab-black bg-white/50 backdrop-blur-sm text-lab-black px-8 py-3 font-mono text-sm uppercase tracking-widest hover:bg-lab-black hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-black">
                      Start a Conversation
                    </a>
                 </Magnetic>
