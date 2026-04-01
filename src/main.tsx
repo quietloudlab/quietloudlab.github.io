@@ -1056,10 +1056,10 @@ const Hero = () => {
     <div className="relative overflow-hidden bg-[#F7F7F9]">
     <section ref={setRefs} onMouseMove={trailState.onMove} className="relative flex flex-col justify-start overflow-hidden" style={{ minHeight: 'calc(100svh - 3.5rem)' }} aria-label="Introduction">
       <MouseTrailLayer state={trailState} />
-      <div className="max-w-screen-xl mx-auto w-full px-6 md:px-12 pt-32 md:pt-[14vh] relative z-10 flex flex-col flex-1 md:items-center md:justify-center">
+      <div className="max-w-screen-xl mx-auto w-full px-6 md:px-12 pt-32 md:pt-[14vh] relative z-10 flex flex-col flex-1">
         <motion.div style={{ y: headlineY }} className="relative" onMouseMove={e => e.stopPropagation()}>
           <RevealText className="mb-8">
-            <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-sans tracking-tight leading-tight font-medium text-lab-black selection:bg-lab-olive selection:text-white md:text-center">
+            <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-sans tracking-tight leading-tight font-medium text-lab-black selection:bg-lab-olive selection:text-white">
               Innovation strategy & design for the human layer of intelligent systems
             </h1>
           </RevealText>
