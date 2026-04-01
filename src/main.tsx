@@ -1043,9 +1043,7 @@ const Navigation = () => {
 const Hero = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: sectionRef as React.RefObject<HTMLElement>, offset: ['start start', 'end start'] });
-  const buttonsY = useTransform(scrollYProgress, [0, 1], ['0%', '-80%']);
   const headlineY = useTransform(scrollYProgress, [0, 1], [0, 1000]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const trailState = useMouseTrail(HERO_TRAIL_IMAGES);
 
   const setRefs = (el: HTMLElement | null) => {
@@ -1155,7 +1153,7 @@ const HouseBuiltTools = () => {
             <div className="relative z-10 p-6 md:p-8 lg:p-10 pb-0 md:pb-0 lg:pb-0">
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-3xl md:text-4xl font-sans tracking-tight leading-[1.1]">AI Interaction<br/>Atlas</h3>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-lab-olive shrink-0 mt-1 hidden sm:block">Open Source • Apache 2.0</span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white shrink-0 mt-1 hidden sm:block">Open Source • Apache 2.0</span>
               </div>
               <p className="font-sans text-[15px] text-gray-400 leading-relaxed max-w-lg mb-2">
                 A shared vocabulary for designing and governing AI systems, explicitly defining capabilities, constraints, interactions and responsibility.
@@ -1212,7 +1210,7 @@ const HouseBuiltTools = () => {
             <div className="relative z-10 p-6 md:p-8 lg:p-10 pb-0 bg-gradient-to-b from-lab-black via-lab-black/90 to-transparent">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-3xl md:text-4xl font-sans tracking-tight leading-[1.1]">AI Interaction<br/>Studio</h3>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-lab-olive shrink-0 mt-1 hidden sm:block">Visual Mapping Tool</span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white shrink-0 mt-1 hidden sm:block">Visual Mapping Tool</span>
               </div>
               <p className="font-sans text-[15px] text-gray-400 leading-relaxed max-w-lg mb-4">
                 Ideate and visualize any human-AI experience, documenting how the system lives in the world, built on the Atlas taxonomy.
