@@ -1060,7 +1060,7 @@ const Hero = () => {
         <motion.div style={{ y: headlineY }} className="relative" onMouseMove={e => e.stopPropagation()}>
           <RevealText className="mb-8">
             <h1 className="text-5xl md:text-6xl lg:text-[5rem] font-sans tracking-tight leading-tight font-medium text-lab-black selection:bg-lab-olive selection:text-white">
-              Product design for the human layer of intelligent systems
+              Innovation strategy & design for the human layer of intelligent systems
             </h1>
           </RevealText>
         </motion.div>
@@ -1082,7 +1082,7 @@ const Hero = () => {
     </div>
 
     {/* Intro */}
-    <section className="pt-40 md:pt-52 pb-24 md:pb-36 px-6 md:px-12">
+    <section className="pt-40 md:pt-52 pb-40 md:pb-52 px-6 md:px-12">
       <div className="max-w-screen-2xl mx-auto">
         <RevealText>
           <p className="font-mono text-sm text-gray-500 uppercase tracking-widest mb-6">[ EST. 2024 ] Exploring spaces between people, systems, technology, and futures.</p>
