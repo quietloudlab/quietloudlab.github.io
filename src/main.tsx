@@ -430,7 +430,7 @@ const MobileVideoPlayer = ({ videos, index, onEnded }: { videos: TrailImageItem[
           muted
           playsInline
           onEnded={() => i === index && onEnded()}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === index ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 w-full h-full object-cover ${i === index ? 'opacity-100' : 'opacity-0'}`}
         />
       ))}
     </div>
@@ -1088,7 +1088,7 @@ const Hero = () => {
           <p className="font-mono text-sm text-gray-500 uppercase tracking-widest mb-6">[ EST. 2024 ] Exploring spaces between people, systems, technology, and futures.</p>
         </RevealText>
         <RevealText delay={0.1}>
-          <p className="text-3xl md:text-5xl lg:text-6xl font-sans text-gray-700" style={{ lineHeight: 1.4 }}>
+          <p className="text-3xl md:text-5xl lg:text-6xl font-sans text-gray-700" style={{ lineHeight: 1.6 }}>
             quietloudlab is a partner for building with emerging technologies in complex environments. We help future-facing clients and partners see the current state for what it is, decide what needs to be made, and make it land with the people we build for. We perform strategy, design systems, facilitate teams in exploration, and prototype new concepts.
           </p>
         </RevealText>
