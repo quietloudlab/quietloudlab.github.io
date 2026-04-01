@@ -405,6 +405,38 @@ const useMouseTrail = (items: TrailImageItem[]) => {
   return { trail, isMobile, mobileIndex, mobileVideos, onMove, containerRef, items, advanceMobile };
 };
 
+const MobileVideoPlayer = ({ videos, index, onEnded }: { videos: TrailImageItem[], index: number, onEnded: () => void }) => {
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  useEffect(() => {
+    videoRefs.current.forEach((vid, i) => {
+      if (!vid) return;
+      if (i === index) {
+        vid.currentTime = 0;
+        vid.play().catch(() => {});
+      } else {
+        vid.pause();
+      }
+    });
+  }, [index]);
+
+  return (
+    <div className="absolute inset-0 opacity-30">
+      {videos.map((vid, i) => (
+        <video
+          key={i}
+          ref={(el) => { videoRefs.current[i] = el; }}
+          src={vid.media}
+          muted
+          playsInline
+          onEnded={() => i === index && onEnded()}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === index ? 'opacity-100' : 'opacity-0'}`}
+        />
+      ))}
+    </div>
+  );
+};
+
 const MouseTrailLayer = ({ state }: { state: ReturnType<typeof useMouseTrail> }) => {
   const { trail, isMobile, mobileIndex, mobileVideos, items, advanceMobile } = state;
 
@@ -439,17 +471,7 @@ const MouseTrailLayer = ({ state }: { state: ReturnType<typeof useMouseTrail> })
           ))}
         </AnimatePresence>
       ) : (
-        <div className="absolute inset-0 opacity-30">
-          <video
-            key={mobileIndex}
-            src={mobileVideos[mobileIndex]?.media}
-            autoPlay
-            muted
-            playsInline
-            onEnded={advanceMobile}
-            className="w-full h-full object-cover"
-          />
-        </div>
+        <MobileVideoPlayer videos={mobileVideos} index={mobileIndex} onEnded={advanceMobile} />
       )}
     </div>
   );
@@ -579,9 +601,6 @@ const StickyPhaseShowcase = ({ phases }: { phases: PhaseShowcaseItem[] }) => {
                     className="flex flex-col"
                   >
                     <motion.div className="max-w-[22rem] ml-auto" variants={fadeUp}>
-                      <div className="mb-[clamp(1.4rem,2svh,2rem)] inline-block">
-                        <OliveTag>{phases[active].timeline}</OliveTag>
-                      </div>
                       <p className="font-sans font-medium text-lab-black" style={{ fontSize: 'clamp(0.8rem, 1.8svh, 1rem)' }}>Typical Engagements</p>
                       <div className="space-y-[clamp(0.5rem,1.5svh,1rem)]" style={{ marginTop: 'clamp(0.5rem,1.5svh,1rem)' }}>
                         {phases[active].engagements.map(([title, body]) => (
@@ -657,10 +676,6 @@ const StickyPhaseShowcase = ({ phases }: { phases: PhaseShowcaseItem[] }) => {
             <div className="font-sans font-medium text-lab-black" style={{ fontSize: 'clamp(3rem, 13vw, 4.5rem)', lineHeight: 0.92, letterSpacing: '-0.06em' }}>
               {phase.title}
             </div>
-            <div className="mt-4">
-              <OliveTag>{phase.timeline}</OliveTag>
-            </div>
-
             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-6">
                 <div>
@@ -1052,7 +1067,7 @@ const Hero = () => {
           </RevealText>
         </motion.div>
 
-        <motion.div style={{ opacity, y: buttonsY }} className="mt-auto border-t border-lab-black/20 pt-4 pb-[4vh] flex justify-between items-center" onMouseMove={e => e.stopPropagation()}>
+        <div className="mt-auto border-t border-lab-black/20 pt-4 pb-[4vh] flex justify-between items-center" onMouseMove={e => e.stopPropagation()}>
           <RevealText delay={0.2}>
             <div className="flex flex-col md:flex-row gap-4">
               <Magnetic>
@@ -1063,7 +1078,7 @@ const Hero = () => {
             </div>
           </RevealText>
           <ArrowDown size={16} className="text-gray-500 animate-bounce hidden md:block" />
-        </motion.div>
+        </div>
       </div>
     </section>
     </div>
