@@ -1064,17 +1064,18 @@ const Hero = () => {
             </h1>
           </RevealText>
         </motion.div>
+      </div>
 
-        <div className="mt-auto border-t border-lab-black/20 pt-4 pb-[4vh] flex justify-between items-center" onMouseMove={e => e.stopPropagation()}>
-          <RevealText delay={0.2}>
-            <div className="flex flex-col md:flex-row gap-4">
-              <Magnetic>
-                 <a href="#contact" onClick={() => trackEvent('Hero CTA: Start a Conversation')} className="inline-flex items-center gap-2 border border-lab-black bg-white/50 backdrop-blur-sm text-lab-black px-8 py-3 font-mono text-sm uppercase tracking-widest hover:bg-lab-black hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-black">
-                   Start a Conversation
-                 </a>
-              </Magnetic>
-            </div>
-          </RevealText>
+      {/* CTA pinned to bottom of hero, not affected by scroll transforms */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 px-6 md:px-12">
+        <div className="max-w-screen-xl mx-auto w-full border-t border-lab-black/20 pt-4 pb-[4vh] flex justify-between items-center">
+          <div className="flex flex-col md:flex-row gap-4">
+            <Magnetic>
+               <a href="#contact" onClick={() => trackEvent('Hero CTA: Start a Conversation')} className="inline-flex items-center gap-2 border border-lab-black bg-white/50 backdrop-blur-sm text-lab-black px-8 py-3 font-mono text-sm uppercase tracking-widest hover:bg-lab-black hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-black">
+                 Start a Conversation
+               </a>
+            </Magnetic>
+          </div>
           <ArrowDown size={16} className="text-gray-500 animate-bounce hidden md:block" />
         </div>
       </div>
