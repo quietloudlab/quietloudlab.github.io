@@ -1093,6 +1093,16 @@ const Hero = () => {
             quietloudlab is a partner for building with emerging technologies in complex environments. We help future-facing clients and partners see the current state for what it is, decide what needs to be made, and make it land with the people we build for. We perform strategy, design systems, facilitate teams in exploration, and prototype new concepts.
           </p>
         </RevealText>
+        <RevealText delay={0.2}>
+          <div className="mt-12">
+            <a href="https://calendly.com/brandonaharwood/ai-interaction-review" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Book AI Interaction Review')} className="inline-flex items-center gap-2 bg-lab-black text-white px-8 py-4 font-mono text-sm uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-black">
+              Book an AI Interaction Review <ArrowRight size={14} />
+            </a>
+            <p className="mt-4 max-w-2xl font-sans text-base text-gray-500 leading-relaxed">
+              A free 30-minute session where we look at your AI product or concept through the lens of the Atlas and identify the biggest gaps in how your system works for your users. You&apos;ll leave with 2–3 specific things to fix or explore.
+            </p>
+          </div>
+        </RevealText>
       </div>
     </section>
     </>
