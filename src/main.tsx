@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { motion, useScroll, useInView, AnimatePresence, useSpring, useTransform, useReducedMotion, useMotionValueEvent } from 'framer-motion';
-import { ArrowRight, ArrowDown, Menu, X, Check, Loader2, BrainCircuit, User, Settings, Database, SlidersHorizontal, Smartphone } from 'lucide-react';
+import { ArrowRight, ArrowDown, Menu, X, Check, Loader2, BrainCircuit, User, Settings, Database, SlidersHorizontal, Smartphone, Users, Compass, Sparkles, Code2, Building2, Video, Mic, type LucideIcon } from 'lucide-react';
 import LogoSvg from './img/quietloudlab_logo_white.svg?react';
 
 // Fathom Analytics
@@ -17,6 +17,64 @@ const trackEvent = (name: string) => {
   if (window.fathom) {
     window.fathom.trackEvent(name);
   }
+};
+
+// --- Routing (minimal, dependency-free) ---
+
+const usePath = () => {
+  const [path, setPath] = useState(() => window.location.pathname);
+  useEffect(() => {
+    const onChange = () => setPath(window.location.pathname);
+    window.addEventListener('popstate', onChange);
+    return () => window.removeEventListener('popstate', onChange);
+  }, []);
+  return path;
+};
+
+const navigateTo = (to: string) => {
+  const [, hash] = to.split('#');
+  if (to === window.location.pathname + window.location.hash) {
+    if (hash) {
+      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    return;
+  }
+  window.history.pushState({}, '', to);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+  requestAnimationFrame(() => {
+    if (hash) {
+      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  });
+};
+
+const PageLink = ({
+  to,
+  children,
+  className,
+  onClick,
+  ...rest
+}: {
+  to: string;
+  children?: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+} & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'onClick'>) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    e.preventDefault();
+    onClick?.();
+    navigateTo(to);
+  };
+  return (
+    <a href={to} onClick={handleClick} className={className} {...rest}>
+      {children}
+    </a>
+  );
 };
 
 // --- Data ---
@@ -975,17 +1033,18 @@ const Navigation = () => {
   });
 
   const navItems = [
-      { name: "Practice", href: "#practice" },
-      { name: "Tools", href: "#atlas" },
-      { name: "Contact", href: "#contact" },
+      { name: "Practice", href: "/#practice" },
+      { name: "Tools", href: "/#atlas" },
+      { name: "Speaking", href: "/speaking" },
+      { name: "Contact", href: "/#contact" },
   ];
 
   return (
     <nav className="fixed top-0 left-0 w-full z-40 bg-lab-white/90 backdrop-blur-md border-b border-lab-black/10" role="navigation" aria-label="Main">
       <div className="max-w-screen-2xl mx-auto px-6 md:px-12 h-12 md:h-14 flex justify-between items-center relative">
-        <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="z-10 focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 rounded-sm block" aria-label="quietloudlab home">
+        <PageLink to="/" className="z-10 focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 rounded-sm block" aria-label="quietloudlab home">
           <Logo className="h-3 md:h-3.5 w-auto hover:opacity-80 transition-opacity" dark />
-        </a>
+        </PageLink>
 
         <div className="hidden md:flex items-center space-x-8 font-mono text-sm uppercase tracking-widest">
            <TimeDisplay />
@@ -993,9 +1052,9 @@ const Navigation = () => {
            {navItems.map((item) => (
                <React.Fragment key={item.name}>
                    <Magnetic>
-                       <a href={item.href} className="hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive block px-2 py-1 text-lab-black">
+                       <PageLink to={item.href} className="hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive block px-2 py-1 text-lab-black">
                            {item.name}
-                       </a>
+                       </PageLink>
                    </Magnetic>
                </React.Fragment>
            ))}
@@ -1028,7 +1087,7 @@ const Navigation = () => {
             className="absolute top-16 left-0 w-full bg-lab-white border-b border-lab-black/10 p-4 flex flex-col space-y-4 md:hidden"
           >
              {navItems.map(item => (
-                 <a key={item.name} href={item.href} className="font-mono text-base uppercase p-2 block focus:outline-none focus:ring-2 focus:ring-lab-olive text-lab-black" onClick={() => setIsOpen(false)}>{item.name}</a>
+                 <PageLink key={item.name} to={item.href} className="font-mono text-base uppercase p-2 block focus:outline-none focus:ring-2 focus:ring-lab-olive text-lab-black" onClick={() => setIsOpen(false)}>{item.name}</PageLink>
              ))}
              <div className="pt-4 border-t border-gray-200">
                <TimeDisplay />
@@ -1319,35 +1378,1358 @@ const Footer = () => {
   );
 };
 
-// --- App ---
+// --- Speaking: shared primitives ---
 
-const App = () => {
+type StatusTone = 'confirmed' | 'pending';
+
+const SpeakingStatusBadge = ({ label, tone }: { label: string; tone: StatusTone }) => {
+  const toneClass =
+    tone === 'confirmed'
+      ? 'bg-lab-olive/15 text-lab-olive border-lab-olive/30'
+      : 'bg-lab-black/5 text-gray-500 border-lab-black/10';
+  const dotClass = tone === 'confirmed' ? 'bg-lab-olive' : 'bg-gray-400';
   return (
-    <div className="w-full bg-lab-white min-h-screen selection:bg-lab-olive selection:text-white relative">
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-lab-black focus:text-lab-white focus:p-4 focus:font-mono focus:text-sm">Skip to content</a>
+    <span className={`inline-flex items-center gap-2 border px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${toneClass}`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${dotClass}`} aria-hidden="true" />
+      {label}
+    </span>
+  );
+};
 
-      <Navigation />
+const SpeakingBackLink = () => (
+  <PageLink
+    to="/speaking"
+    className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-gray-500 hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive"
+  >
+    <span aria-hidden="true">←</span> Speaking
+  </PageLink>
+);
 
-      <main id="main-content">
-        <Hero />
-        <div className="bg-lab-olive/20">
-          <StickyPhaseShowcase phases={METHODOLOGY_PHASES} />
+const DetailSectionHeader = ({ id, number, title, kicker }: { id?: string; number: string; title: string; kicker?: string }) => (
+  <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
+    <div className="mr-6 text-lab-olive mb-2 md:mb-0">
+      <span className="font-mono text-sm md:text-base">(</span>
+      <ScrambleText text={number} className="font-mono text-sm md:text-base" />
+      <span className="font-mono text-sm md:text-base">)</span>
+    </div>
+    <h2 id={id} className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">{title}</h2>
+    {kicker ? <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-500">{kicker}</p> : null}
+  </div>
+);
+
+// --- Speaking: hub data ---
+
+type SpeakingCard = {
+  id: string;
+  sortDate: string;
+  formatTag: string;
+  title: string;
+  date: string;
+  location: string;
+  venue?: string;
+  summary: string;
+  href: string;
+  status?: { label: string; tone: StatusTone };
+};
+
+const UPCOMING_CARDS: SpeakingCard[] = [
+  {
+    id: 'idea-lab-mastermind-2026',
+    sortDate: '2026-05-05',
+    formatTag: 'Lunch Talk · Chamber Members Only',
+    title: 'Idea Lab Mastermind',
+    date: 'Tue, May 5, 2026 · 11:30–1:00',
+    location: 'Dallas, TX',
+    venue: "McRae's American Bistro",
+    summary: 'A 60-minute lunch session for East Dallas chamber members on practical AI for small business — what it actually solves, and how to set up Claude Cowork on a real problem.',
+    href: '/speaking/idea-lab-mastermind',
+  },
+  {
+    id: 'uxlx-2026',
+    sortDate: '2026-05-12',
+    formatTag: 'Conference · Talk + Workshop',
+    title: 'UXLX 2026',
+    date: 'May 12–15, 2026',
+    location: 'Lisbon, Portugal',
+    summary: 'A keynote and a three-hour workshop on the UXLX program — a week with the European design community.',
+    href: '/speaking/uxlx-2026',
+  },
+  {
+    id: 'ai-as-design-material-2026',
+    sortDate: '2026-05-29',
+    formatTag: 'Public Workshop · Two Dates',
+    title: 'AI as a Design Material',
+    date: 'May 29 & 30, 2026',
+    location: 'The Hague · Amsterdam',
+    summary: 'A three-hour working session on evaluating AI as a design material, co-facilitated with Matthijs Zwinderman. Running on back-to-back days across the Netherlands.',
+    href: '/speaking/ai-as-design-material',
+    status: { label: 'Two sessions', tone: 'confirmed' },
+  },
+];
+
+const OPEN_WINDOWS_CARDS: SpeakingCard[] = [
+  {
+    id: 'barcelona-2026',
+    sortDate: '2026-05-17',
+    formatTag: 'Open Window · Seeking Partners',
+    title: 'Barcelona',
+    date: 'May 17–22, 2026',
+    location: 'Spain',
+    summary: 'Open dates for private in-company workshops, co-hosted public sessions, or dropping into a local event. A few ways we could put something together.',
+    href: '/speaking/barcelona-2026',
+  },
+  {
+    id: 'berlin-2026',
+    sortDate: '2026-05-22',
+    formatTag: 'Open Window · Seeking Partners',
+    title: 'Berlin',
+    date: 'May 22–27, 2026',
+    location: 'Germany',
+    summary: 'Same setup as Barcelona — open to private sessions, co-hosted workshops, or a guest talk at an existing event.',
+    href: '/speaking/berlin-2026',
+  },
+];
+
+type PastEvent = {
+  id: string;
+  date: string;
+  title: string;
+  location: string;
+  format: string;
+  link?: { label: string; href: string };
+};
+
+const PAST_EVENTS: PastEvent[] = [];
+
+// --- Speaking: city option (Barcelona / Berlin) data ---
+
+type EngagementOption = {
+  icon: LucideIcon;
+  title: string;
+  fitsWhen: string;
+  description: string;
+};
+
+const ENGAGEMENT_OPTIONS: EngagementOption[] = [
+  {
+    icon: Building2,
+    title: 'Private in-company workshop',
+    fitsWhen: 'Your team has a specific AI product or initiative to work through.',
+    description: "A half- or full-day session built entirely around your organization's product, users, and the design decisions you're facing. Same frameworks; outputs are yours.",
+  },
+  {
+    icon: Users,
+    title: 'Co-hosted public workshop',
+    fitsWhen: "You run a design community or innovation hub and want to put on a public session.",
+    description: 'You bring the audience; we bring the workshop. Open to attendees from across your community, ticketed on the honor-system tier structure we use elsewhere.',
+  },
+  {
+    icon: Video,
+    title: 'Remote session',
+    fitsWhen: "The calendar doesn't align for in-person, but the team still wants the workshop.",
+    description: "Same three-hour session, held remotely. Works best for distributed teams or when the in-person window doesn't quite fit.",
+  },
+  {
+    icon: Mic,
+    title: 'Guest talk at a local event',
+    fitsWhen: "You're organizing a meetup, conference, or internal event and want a talk on AI design.",
+    description: 'A keynote-style session on AI as a design material, the human layer, or whatever angle fits the room. Shorter and lighter-weight than a workshop.',
+  },
+];
+
+type CityOptionConfig = {
+  slug: string;
+  city: string;
+  country: string;
+  dateRange: string;
+  shortDate: string;
+  lead: string;
+  engagements: EngagementOption[];
+};
+
+const CITY_OPTIONS: Record<string, CityOptionConfig> = {
+  'barcelona-2026': {
+    slug: 'barcelona-2026',
+    city: 'Barcelona',
+    country: 'Spain',
+    dateRange: 'May 17–22, 2026',
+    shortDate: 'May 17–22',
+    lead: "Brandon is in Barcelona from May 17–22, 2026. Nothing on the calendar is confirmed yet — which means there's still room to put something together. Here are a few ways that could work.",
+    engagements: ENGAGEMENT_OPTIONS,
+  },
+  'berlin-2026': {
+    slug: 'berlin-2026',
+    city: 'Berlin',
+    country: 'Germany',
+    dateRange: 'May 22–27, 2026',
+    shortDate: 'May 22–27',
+    lead: "Brandon is in Berlin from May 22–27, 2026. Same setup as Barcelona — open for private sessions, co-hosted workshops, or dropping into an existing event. A few shapes this could take:",
+    engagements: ENGAGEMENT_OPTIONS,
+  },
+};
+
+// --- Speaking: hub components ---
+
+const SpeakingHubHero = () => (
+  <div className="bg-[#F7F7F9]">
+    <section className="pt-28 md:pt-36 pb-16 md:pb-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-label="Speaking introduction">
+      <RevealText>
+        <p className="font-mono text-sm text-gray-500 uppercase tracking-widest mb-6">
+          [ NOW SPEAKING ] Talks · Workshops · Appearances
+        </p>
+      </RevealText>
+      <RevealText delay={0.1}>
+        <h1 className="text-4xl md:text-6xl lg:text-[4.5rem] font-sans tracking-tight leading-[1.05] font-medium text-lab-black max-w-5xl mb-8">
+          Rooms we're showing up in.
+        </h1>
+      </RevealText>
+      <RevealText delay={0.2}>
+        <p className="font-sans text-lg md:text-2xl text-gray-700 max-w-3xl leading-relaxed">
+          A running list of public talks, workshops, and appearances. If you'd like us in a room of your own, there's a link at the bottom.
+        </p>
+      </RevealText>
+    </section>
+  </div>
+);
+
+type HubCardVariant = 'upcoming' | 'open-window';
+
+const SpeakingHubCard = ({ card, variant = 'upcoming' }: { card: SpeakingCard; variant?: HubCardVariant }) => {
+  const isOpenWindow = variant === 'open-window';
+  const surfaceClass = isOpenWindow
+    ? 'bg-lab-concrete border border-lab-black/10 hover:border-lab-olive'
+    : 'bg-lab-white border border-lab-black/15 hover:border-lab-olive';
+  const ctaLabel = isOpenWindow ? 'Explore options' : 'Learn more';
+  return (
+    <PageLink
+      to={card.href}
+      onClick={() => trackEvent(`Speaking Hub: ${card.id}`)}
+      className={`group block rounded-2xl p-6 md:p-7 h-full flex flex-col transition-colors focus:outline-none focus:border-lab-olive focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 ${surfaceClass}`}
+    >
+      <div className="flex justify-between items-start gap-3 mb-6">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-lab-olive leading-snug">
+          {card.formatTag}
+        </p>
+        {card.status ? <SpeakingStatusBadge label={card.status.label} tone={card.status.tone} /> : null}
+      </div>
+      <h3 className="font-sans text-2xl md:text-[1.625rem] font-medium tracking-tight leading-tight text-lab-black group-hover:text-lab-olive transition-colors">
+        {card.title}
+      </h3>
+      <p className="mt-4 font-serif text-base text-gray-600 leading-relaxed flex-1">
+        {card.summary}
+      </p>
+      <div className="mt-6 pt-5 border-t border-lab-black/10 flex items-center gap-2">
+        <span className="h-1.5 w-1.5 rounded-full bg-lab-olive" aria-hidden="true" />
+        <p className="font-mono text-xs uppercase tracking-widest text-gray-600 leading-relaxed">
+          {card.date}
+        </p>
+      </div>
+      <p className="font-mono text-xs uppercase tracking-widest text-gray-500 leading-relaxed mt-1 ml-4">
+        {card.location}
+        {card.venue ? ` · ${card.venue}` : ''}
+      </p>
+      <p className="mt-5 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-lab-black">
+        {ctaLabel}
+        <ArrowRight size={12} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
+      </p>
+    </PageLink>
+  );
+};
+
+const SpeakingUpcoming = () => {
+  const cards: Array<{ card: SpeakingCard; variant: HubCardVariant }> = [
+    ...UPCOMING_CARDS.map((card) => ({ card, variant: 'upcoming' as const })),
+    ...OPEN_WINDOWS_CARDS.map((card) => ({ card, variant: 'open-window' as const })),
+  ].sort((a, b) => a.card.sortDate.localeCompare(b.card.sortDate));
+  return (
+    <section id="upcoming" className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="upcoming-heading">
+      <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
+        <div className="mr-6 text-lab-olive mb-2 md:mb-0">
+          <span className="font-mono text-sm md:text-base">(</span>
+          <ScrambleText text="01" className="font-mono text-sm md:text-base" />
+          <span className="font-mono text-sm md:text-base">)</span>
         </div>
-        <Practice />
-        <HouseBuiltTools />
-        <Contact contactIntent={null} />
-      </main>
+        <h2 id="upcoming-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
+          Upcoming
+        </h2>
+        <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-500">
+          Europe · May 2026
+        </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {cards.map(({ card, variant }, i) => (
+          <RevealText key={card.id} delay={i * 0.08}>
+            <SpeakingHubCard card={card} variant={variant} />
+          </RevealText>
+        ))}
+      </div>
+    </section>
+  );
+};
 
-      <Footer />
+const SpeakingPast = () => (
+  <section id="past" className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="past-heading">
+    <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
+      <div className="mr-6 text-lab-olive mb-2 md:mb-0">
+        <span className="font-mono text-sm md:text-base">(</span>
+        <ScrambleText text="02" className="font-mono text-sm md:text-base" />
+        <span className="font-mono text-sm md:text-base">)</span>
+      </div>
+      <h2 id="past-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
+        Past
+      </h2>
+    </div>
+    <RevealText>
+      <div className="border-t border-lab-black/15">
+        {PAST_EVENTS.map((event) => (
+          <div key={event.id} className="border-b border-lab-black/15 py-5 md:py-6 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6">
+            <p className="md:col-span-2 font-mono text-sm text-gray-500">{event.date}</p>
+            <div className="md:col-span-6">
+              <p className="font-mono text-[11px] uppercase tracking-widest text-lab-olive mb-1">{event.format}</p>
+              <h3 className="font-sans text-lg md:text-xl font-medium tracking-tight text-lab-black">{event.title}</h3>
+            </div>
+            <p className="md:col-span-2 font-mono text-sm text-gray-500">{event.location}</p>
+            <div className="md:col-span-2 md:text-right">
+              {event.link ? (
+                <a
+                  href={event.link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent(`Speaking Past: ${event.id}`)}
+                  className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-lab-black hover:text-lab-olive transition-colors"
+                >
+                  {event.link.label} <ArrowRight size={12} aria-hidden="true" />
+                </a>
+              ) : null}
+            </div>
+          </div>
+        ))}
+      </div>
+    </RevealText>
+  </section>
+);
 
-      {/* Mobile Nav Bar */}
-      <nav aria-label="Mobile Navigation" className="md:hidden fixed bottom-0 left-0 w-full bg-lab-white border-t border-lab-black/10 p-4 flex justify-between overflow-x-auto gap-6 z-40">
-        <a href="#practice" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors">Practice</a>
-        <a href="#atlas" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors">Atlas</a>
-        <a href="#contact" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors">Contact</a>
-      </nav>
+const SpeakingHireCTA = ({ number }: { number: string }) => (
+  <section id="hire" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="hire-heading">
+    <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
+      <div className="mr-6 text-lab-olive mb-2 md:mb-0">
+        <span className="font-mono text-sm md:text-base">(</span>
+        <ScrambleText text={number} className="font-mono text-sm md:text-base" />
+        <span className="font-mono text-sm md:text-base">)</span>
+      </div>
+      <h2 id="hire-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
+        Bring quietloudlab to your team
+      </h2>
+    </div>
+    <LabGrid>
+      <div className="col-span-1 md:col-span-7">
+        <RevealText>
+          <p className="font-serif text-xl md:text-2xl text-gray-700 leading-relaxed max-w-2xl">
+            Whether you're starting an AI initiative, shipping an AI-enabled product, or trying to build a shared language across a team — we run talks, public workshops, and private in-company sessions. A thirty-minute call is usually enough to figure out if there's a fit and what the shape of it would be.
+          </p>
+        </RevealText>
+        <RevealText delay={0.15}>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Magnetic>
+              <a
+                href="https://calendly.com/brandonaharwood/quietloud-collab-speaking"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent('Speaking: Hub Calendly')}
+                className="inline-flex items-center gap-2 bg-lab-black text-white px-8 py-4 font-mono text-sm uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+              >
+                Book a 30-min call <ArrowRight size={14} aria-hidden="true" />
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a
+                href="mailto:brandon@quietloudlab.com?subject=Speaking%20%2F%20Workshop%20Inquiry"
+                onClick={() => trackEvent('Speaking: Hub Email')}
+                className="inline-flex items-center gap-2 border border-lab-black/20 text-lab-black px-8 py-4 font-mono text-sm uppercase tracking-widest hover:border-lab-olive hover:text-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+              >
+                Send an email
+              </a>
+            </Magnetic>
+          </div>
+        </RevealText>
+      </div>
+
+      <div className="col-span-1 md:col-span-5 hidden md:block">
+        <RevealText delay={0.2}>
+          <div className="md:sticky md:top-32 font-mono text-sm text-gray-500 space-y-8 pl-8 border-l border-lab-black/10">
+            <div>
+              <p className="uppercase tracking-widest mb-2 text-lab-olive">Formats</p>
+              <p className="leading-relaxed">Keynote · 45–60 min<br />Workshop · 3 hrs — full day<br />Private in-company · Half / full day</p>
+            </div>
+            <div>
+              <p className="uppercase tracking-widest mb-2 text-lab-olive">Based</p>
+              <p>Dallas, TX · Amsterdam (late 2026)</p>
+            </div>
+            <div>
+              <p className="uppercase tracking-widest mb-2 text-lab-olive">Email</p>
+              <a
+                href="mailto:brandon@quietloudlab.com"
+                onClick={() => trackEvent('Speaking: Hub Direct Email')}
+                className="hover:text-lab-olive transition-colors"
+              >
+                brandon@quietloudlab.com
+              </a>
+            </div>
+          </div>
+        </RevealText>
+      </div>
+    </LabGrid>
+  </section>
+);
+
+const SpeakingPage = () => {
+  useEffect(() => {
+    document.title = 'Speaking · quietloudlab';
+  }, []);
+  const showPast = PAST_EVENTS.length > 0;
+  const hireNumber = showPast ? '03' : '02';
+  return (
+    <PageShell>
+      <SpeakingHubHero />
+      <SpeakingUpcoming />
+      {showPast ? <SpeakingPast /> : null}
+      <SpeakingHireCTA number={hireNumber} />
+    </PageShell>
+  );
+};
+
+// --- Speaking detail: shared hero ---
+
+const DetailHero = ({
+  eyebrow,
+  title,
+  lead,
+  meta,
+}: {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  meta: Array<{ key: string; value: React.ReactNode }>;
+}) => (
+  <div className="bg-[#F7F7F9]">
+    <section className="pt-24 md:pt-32 pb-16 md:pb-20 px-6 md:px-12 max-w-screen-xl mx-auto" aria-label="Event overview">
+      <RevealText>
+        <div className="mb-10">
+          <SpeakingBackLink />
+        </div>
+      </RevealText>
+      <LabGrid>
+        <div className="col-span-1 md:col-span-8">
+          <RevealText>
+            <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-6">
+              {eyebrow}
+            </p>
+          </RevealText>
+          <RevealText delay={0.08}>
+            <h1 className="text-4xl md:text-6xl lg:text-[4.25rem] font-sans tracking-tight leading-[1.05] font-medium text-lab-black mb-8">
+              {title}
+            </h1>
+          </RevealText>
+          <RevealText delay={0.14}>
+            <p className="font-sans text-lg md:text-xl text-gray-700 leading-relaxed max-w-2xl">
+              {lead}
+            </p>
+          </RevealText>
+        </div>
+        <div className="col-span-1 md:col-span-4">
+          <RevealText delay={0.2}>
+            <dl className="bg-lab-white rounded-2xl border border-lab-black/10 p-5 md:p-6">
+              {meta.map((row, i) => (
+                <div key={row.key} className={`flex justify-between items-baseline py-2.5 gap-6 ${i < meta.length - 1 ? 'border-b border-lab-black/10' : ''}`}>
+                  <dt className="font-mono text-[11px] uppercase tracking-widest text-gray-500">
+                    {row.key}
+                  </dt>
+                  <dd className="font-mono text-sm text-lab-black text-right">
+                    {row.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </RevealText>
+        </div>
+      </LabGrid>
+    </section>
+  </div>
+);
+
+// --- Speaking detail: UXLX 2026 ---
+
+// --- Speaking detail: Idea Lab Mastermind (Greater East Dallas Chamber) ---
+
+const IDEA_LAB_REGISTER_URL = 'https://business.eastdallaschamber.com/gedcc-calendar/Details/idea-lab-mastermind-1712133?sourceTypeId=Hub';
+
+type IdeaLabTopic = {
+  tag: string;
+  title: string;
+  body: string;
+};
+
+const IDEA_LAB_TOPICS: IdeaLabTopic[] = [
+  {
+    tag: 'Part one',
+    title: 'Why organizations actually use AI',
+    body: 'Not "AI for everything" and not "AI is overhyped." We work through the handful of reasons organizations adopt AI — and the traps they tend to fall into along the way.',
+  },
+  {
+    tag: 'Part two',
+    title: 'The five kinds of problems AI solves',
+    body: "A practical framework for recognizing which problems in your operations are AI-shaped, and which aren't. If you can name the problem, you can usually see the solution.",
+  },
+  {
+    tag: 'Part three',
+    title: 'Claude Cowork, set up live',
+    body: "We take one problem from the room and configure Claude Cowork to work on it in real time. Bring a laptop if you want to follow along — optional, not required.",
+  },
+];
+
+const IdeaLabMastermindPage = () => {
+  useEffect(() => { document.title = 'Idea Lab Mastermind · Speaking · quietloudlab'; }, []);
+
+  return (
+    <PageShell>
+      <DetailHero
+        eyebrow="Lunch Talk · Greater East Dallas Chamber"
+        title="Idea Lab Mastermind"
+        lead="A 60-minute lunch session for East Dallas chamber members on practical AI for small business — what it actually solves, where it fits in your operations, and how to set up Claude Cowork on a real problem from the room."
+        meta={[
+          { key: 'Date', value: 'Tue, May 5, 2026' },
+          { key: 'Time', value: '11:30 AM – 1:00 PM' },
+          { key: 'Venue', value: "McRae's American Bistro" },
+          { key: 'Access', value: 'Members · Free' },
+        ]}
+      />
+
+      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="idea-lab-cover-heading">
+        <DetailSectionHeader id="idea-lab-cover-heading" number="01" title="What we'll cover" kicker="Three parts in sixty minutes" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+          {IDEA_LAB_TOPICS.map((topic, i) => (
+            <RevealText key={topic.title} delay={i * 0.08}>
+              <div className="bg-lab-concrete rounded-2xl p-6 md:p-7 h-full flex flex-col">
+                <OliveTag>{topic.tag}</OliveTag>
+                <h3 className="mt-4 font-sans text-xl md:text-2xl font-medium tracking-tight leading-tight text-lab-black mb-3">{topic.title}</h3>
+                <p className="font-serif text-base text-gray-600 leading-relaxed">{topic.body}</p>
+              </div>
+            </RevealText>
+          ))}
+        </div>
+
+        <RevealText delay={0.2}>
+          <div className="mt-8 bg-lab-olive/10 rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
+            <p className="font-mono text-xs uppercase tracking-widest text-lab-olive shrink-0">
+              Bring if you want
+            </p>
+            <p className="font-sans text-sm md:text-base text-gray-700 leading-relaxed">
+              A laptop, a problem from your own work, and an open mind. Lunch is available for purchase from the venue directly.
+            </p>
+          </div>
+        </RevealText>
+      </section>
+
+      <section className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto">
+        <RevealText>
+          <div className="bg-lab-concrete rounded-2xl p-6 md:p-10">
+            <LabGrid>
+              <div className="col-span-1 md:col-span-7">
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-4">Members only · Space limited</p>
+                <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight text-lab-black mb-4">
+                  Register through the chamber.
+                </h3>
+                <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-xl">
+                  Registration happens through the Greater East Dallas Chamber of Commerce portal. You'll need to sign in with your active membership email. If you're not a chamber member but the topic sounds useful, reach out directly and we can talk about whether a private version makes sense.
+                </p>
+              </div>
+              <div className="col-span-1 md:col-span-5 flex flex-col md:items-end justify-end gap-3 mt-6 md:mt-0">
+                <a
+                  href={IDEA_LAB_REGISTER_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('Speaking Detail: Idea Lab Register')}
+                  className="inline-flex items-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+                >
+                  Register via chamber <ArrowRight size={14} aria-hidden="true" />
+                </a>
+                <a
+                  href="mailto:brandon@quietloudlab.com?subject=Idea%20Lab%20Mastermind%20%E2%80%94%20May%205"
+                  onClick={() => trackEvent('Speaking Detail: Idea Lab Email')}
+                  className="inline-flex items-center gap-2 border border-lab-black/20 text-lab-black px-6 py-3 font-mono text-xs uppercase tracking-widest hover:border-lab-olive hover:text-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+                >
+                  Say hello
+                </a>
+              </div>
+            </LabGrid>
+          </div>
+        </RevealText>
+      </section>
+    </PageShell>
+  );
+};
+
+const UXLX_PROGRAM_URL = 'https://ux-lx.com/speakers/brandon-harwood.html';
+
+const UXLXDetailPage = () => {
+  useEffect(() => { document.title = 'UXLX 2026 · Speaking · quietloudlab'; }, []);
+
+  const sessions: Array<{
+    type: string;
+    title: string;
+    description: string;
+    duration: string;
+    href: string;
+    event: string;
+  }> = [
+    {
+      type: 'Talk',
+      title: 'The Wobbly Chair at the Table',
+      description:
+        "How design's pursuit of institutional legitimacy may have enabled its own commodification — and what designers can do about it now. A love letter to the field, not a polemic.",
+      duration: '45–60 min · Main stage',
+      href: `${UXLX_PROGRAM_URL}#talk`,
+      event: 'Speaking Detail: UXLX Talk',
+    },
+    {
+      type: 'Workshop',
+      title: 'Designing AI within Creative Fields',
+      description:
+        'A three-hour session on setting meaningful boundaries for AI within creative roles — ensuring it supplements rather than supplants the human decisions that matter most.',
+      duration: '3 hours · Workshop program',
+      href: `${UXLX_PROGRAM_URL}#workshop`,
+      event: 'Speaking Detail: UXLX Workshop',
+    },
+  ];
+
+  return (
+    <PageShell>
+      <DetailHero
+        eyebrow="Conference · Speaker + Workshop Facilitator"
+        title="UXLX 2026"
+        lead="A week with the European design community in Lisbon. Brandon appears at UXLX as both a speaker and a workshop facilitator, with two distinct sessions on the program."
+        meta={[
+          { key: 'Dates', value: 'May 12–15, 2026' },
+          { key: 'Location', value: 'Lisbon, Portugal' },
+          { key: 'Role', value: 'Speaker + Facilitator' },
+          { key: 'Sessions', value: 'Talk · Workshop' },
+        ]}
+      />
+
+      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="uxlx-sessions-heading">
+        <DetailSectionHeader id="uxlx-sessions-heading" number="01" title="On the program" kicker="Two sessions at UXLX" />
+        <div className="space-y-6">
+          {sessions.map((session, i) => (
+            <RevealText key={session.title} delay={i * 0.08}>
+              <article className="border-t border-lab-black/15 pt-8 md:pt-10 pb-8">
+                <LabGrid>
+                  <div className="col-span-1 md:col-span-3">
+                    <OliveTag>{session.type}</OliveTag>
+                    <p className="mt-4 font-mono text-xs uppercase tracking-widest text-gray-500 leading-relaxed">
+                      {session.duration}
+                    </p>
+                  </div>
+                  <div className="col-span-1 md:col-span-9">
+                    <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight leading-tight text-lab-black mb-4">
+                      {session.title}
+                    </h3>
+                    <p className="font-serif text-lg text-gray-600 leading-relaxed max-w-2xl">
+                      {session.description}
+                    </p>
+                    <a
+                      href={session.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackEvent(session.event)}
+                      className="mt-5 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-lab-black hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive"
+                    >
+                      See on UXLX program <ArrowRight size={12} aria-hidden="true" />
+                    </a>
+                  </div>
+                </LabGrid>
+              </article>
+            </RevealText>
+          ))}
+        </div>
+      </section>
+
+      <section className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto">
+        <RevealText>
+          <div className="bg-lab-concrete rounded-2xl p-6 md:p-10">
+            <LabGrid>
+              <div className="col-span-1 md:col-span-7">
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-4">If you'll be in Lisbon</p>
+                <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight text-lab-black mb-4">
+                  Say hello at UXLX.
+                </h3>
+                <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-xl">
+                  If you're attending the conference, reach out and let's grab coffee between sessions.
+                </p>
+              </div>
+              <div className="col-span-1 md:col-span-5 flex flex-col md:items-end justify-end gap-3 mt-6 md:mt-0">
+                <a
+                  href={UXLX_PROGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('Speaking Detail: UXLX Program')}
+                  className="inline-flex items-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+                >
+                  UXLX Program <ArrowRight size={14} aria-hidden="true" />
+                </a>
+                <a
+                  href="mailto:brandon@quietloudlab.com?subject=Say%20hello%20at%20UXLX"
+                  onClick={() => trackEvent('Speaking Detail: UXLX Email')}
+                  className="inline-flex items-center gap-2 border border-lab-black/20 text-lab-black px-6 py-3 font-mono text-xs uppercase tracking-widest hover:border-lab-olive hover:text-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+                >
+                  Say hello
+                </a>
+              </div>
+            </LabGrid>
+          </div>
+        </RevealText>
+      </section>
+    </PageShell>
+  );
+};
+
+// --- Speaking detail: AI as a Design Material ---
+
+type WorkshopAudience = {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  note?: string;
+};
+
+const WORKSHOP_AUDIENCES: WorkshopAudience[] = [
+  {
+    icon: Compass,
+    title: 'Designers integrating AI into their practice',
+    description: "You're already working alongside AI, or about to, and want shared language and frameworks for deciding where and how it fits.",
+  },
+  {
+    icon: Users,
+    title: 'Product managers and owners',
+    description: "You're responsible for what gets built. You want a clearer way to evaluate AI opportunities, communicate tradeoffs, and align teams around what good looks like.",
+  },
+  {
+    icon: Sparkles,
+    title: 'Teams starting an AI sprint or initiative',
+    description: "You're kicking off something new and want to frame it correctly from day one — building shared criteria before you start building product.",
+  },
+  {
+    icon: Code2,
+    title: 'Developers working alongside design',
+    description: 'The session is built for design and product practitioners, but developers who want to understand the design layer around AI systems will find it useful.',
+    note: 'Not a coding or engineering workshop.',
+  },
+];
+
+const WORKSHOP_OUTCOMES = [
+  'A shared language for discussing AI system behavior across your team',
+  'A framework for evaluating whether AI is the right fit for a given interaction',
+  "A mapped view of your product's AI touchpoints and where the gaps are",
+  'Reusable templates your team can apply to future design decisions independently',
+  'A clearer sense of where not to use AI — as important as where to use it',
+];
+
+type WorkshopSession = {
+  city: string;
+  venue: string;
+  date: string;
+  status: { label: string; tone: StatusTone };
+  rsvpHref: string;
+  event: string;
+};
+
+const WORKSHOP_SESSIONS: WorkshopSession[] = [
+  {
+    city: 'The Hague',
+    venue: 'Worth Works',
+    date: 'Friday, May 29, 2026 · Afternoon',
+    status: { label: 'Venue confirmed', tone: 'confirmed' },
+    rsvpHref: 'mailto:brandon@quietloudlab.com?subject=The%20Hague%20Workshop%20%E2%80%94%20May%2029',
+    event: 'Speaking Detail: Hague RSVP',
+  },
+  {
+    city: 'Amsterdam',
+    venue: 'Venue TBD',
+    date: 'Saturday, May 30, 2026 · Afternoon',
+    status: { label: 'Venue pending', tone: 'pending' },
+    rsvpHref: 'mailto:brandon@quietloudlab.com?subject=Amsterdam%20Workshop%20%E2%80%94%20May%2030',
+    event: 'Speaking Detail: Amsterdam RSVP',
+  },
+];
+
+const WORKSHOP_PRICING = [
+  { tier: 'Company / Reimbursed', sub: 'Your employer is covering this', amount: '€175' },
+  { tier: 'Individual / Out-of-Pocket', sub: "You're paying yourself", amount: '€89' },
+  { tier: 'Need-Based', sub: 'Student or currently without work — limited to 5 tickets', amount: '€35' },
+];
+
+const WORKSHOP_APPROACH = [
+  {
+    title: 'Your context, not ours',
+    body: "Sessions are structured around your team's actual products and challenges — not generic case studies or hypothetical scenarios.",
+  },
+  {
+    title: 'Tools you keep',
+    body: 'Every session produces reusable canvases and frameworks your team can apply independently — long after the workshop ends.',
+  },
+  {
+    title: 'Process, not prescription',
+    body: "Built around IBM Design Thinking's observe, reflect, make practice — not a rigid process you have to follow in order.",
+  },
+];
+
+const WORKSHOP_FAQ = [
+  {
+    q: 'Do participants need prior AI experience?',
+    a: 'No. The workshop is designed for practitioners who work with product — designers, PMs, strategists — not engineers or data scientists. You bring the domain knowledge; we bring the AI design framework.',
+  },
+  {
+    q: "What's the difference between the public workshop and a private in-company session?",
+    a: "The public workshops are open to anyone and cover the full framework. A private in-company session is structured entirely around your organization's product, users, and specific challenges. Private sessions are available as half-day or full-day formats.",
+  },
+  {
+    q: 'My company needs to pay via invoice — is that possible?',
+    a: "Yes. If your company requires an invoice rather than a direct ticket purchase, reach out before the event and we'll make it work. Matthijs handles billing through his Dutch company, which makes the process straightforward for European organizations.",
+  },
+  {
+    q: 'What do participants need to bring or prepare?',
+    a: "An open mind and some familiarity with your own product or work context. It helps to come with a specific project or challenge in mind — the more concrete, the more useful the session's outputs. All materials and canvases are provided on the day.",
+  },
+  {
+    q: 'Will there be more workshop dates after May?',
+    a: 'Yes. Brandon is relocating to Amsterdam in late 2026 and will be running workshops in-person across the Netherlands and Europe on an ongoing basis. Email to be notified when the next dates are confirmed.',
+  },
+];
+
+const WorkshopFAQ = () => {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  return (
+    <div className="border-t border-lab-black/15">
+      {WORKSHOP_FAQ.map((item, i) => {
+        const isOpen = openIndex === i;
+        return (
+          <div key={item.q} className="border-b border-lab-black/15">
+            <button
+              type="button"
+              onClick={() => setOpenIndex(isOpen ? null : i)}
+              className="w-full flex justify-between items-center gap-6 py-5 text-left font-sans text-base md:text-lg text-lab-black hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive"
+              aria-expanded={isOpen}
+            >
+              <span className="pr-6">{item.q}</span>
+              <span className={`font-mono text-xl text-gray-500 transition-transform shrink-0 ${isOpen ? 'rotate-45' : ''}`} aria-hidden="true">+</span>
+            </button>
+            <AnimatePresence initial={false}>
+              {isOpen ? (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                  className="overflow-hidden"
+                >
+                  <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed pb-6 pr-12 max-w-2xl">{item.a}</p>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
+        );
+      })}
     </div>
   );
+};
+
+const AIAsDesignMaterialPage = () => {
+  useEffect(() => {
+    document.title = 'AI as a Design Material · Speaking · quietloudlab';
+  }, []);
+
+  return (
+    <PageShell>
+      <DetailHero
+        eyebrow="Workshop Series · Europe · May 2026"
+        title="AI as a Design Material"
+        lead="Most AI training teaches tools. This workshop teaches design and product teams to think through AI as a design material — where it fits, how to design the human layer around it, and what frameworks you'll actually use afterward."
+        meta={[
+          { key: 'Duration', value: '3 hours' },
+          { key: 'Format', value: 'In-person' },
+          { key: 'Group size', value: 'Up to 50' },
+          { key: 'Sessions', value: 'The Hague · Amsterdam' },
+        ]}
+      />
+
+      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="audience-heading">
+        <DetailSectionHeader id="audience-heading" number="01" title="Who this is for" kicker="Design, product, and the people adjacent to them" />
+        <LabGrid>
+          <div className="col-span-1 md:col-span-4">
+            <RevealText>
+              <p className="font-serif text-lg text-gray-600 leading-relaxed max-w-md">
+                Built for the practitioners actually making decisions about AI in products — not watching from the sidelines, and not looking for a ChatGPT productivity course.
+              </p>
+            </RevealText>
+          </div>
+          <div className="col-span-1 md:col-span-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {WORKSHOP_AUDIENCES.map((audience, i) => {
+                const Icon = audience.icon;
+                return (
+                  <RevealText key={audience.title} delay={i * 0.06}>
+                    <div className="bg-lab-concrete rounded-2xl p-6 h-full">
+                      <Icon size={20} className="text-lab-olive mb-4" aria-hidden="true" strokeWidth={1.5} />
+                      <h3 className="font-sans text-lg font-medium text-lab-black mb-2 leading-snug">{audience.title}</h3>
+                      <p className="font-serif text-sm text-gray-600 leading-relaxed">{audience.description}</p>
+                      {audience.note ? <p className="mt-3 pt-3 border-t border-lab-black/10 font-mono text-[10px] uppercase tracking-widest text-gray-500 italic">{audience.note}</p> : null}
+                    </div>
+                  </RevealText>
+                );
+              })}
+            </div>
+          </div>
+        </LabGrid>
+
+        <RevealText delay={0.15}>
+          <div className="mt-8 bg-lab-olive/10 rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
+            <p className="font-mono text-xs uppercase tracking-widest text-lab-olive shrink-0">
+              Not for you if
+            </p>
+            <p className="font-sans text-sm md:text-base text-gray-700 leading-relaxed">
+              You're looking for a prompt engineering course, a "ChatGPT for productivity" session, or a general AI literacy overview. This is for people already building AI into products, and want to do it thoughtfully.
+            </p>
+          </div>
+        </RevealText>
+      </section>
+
+      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="cover-heading">
+        <DetailSectionHeader id="cover-heading" number="02" title="What we cover" kicker="A working session, not a lecture" />
+        <LabGrid>
+          <div className="col-span-1 md:col-span-6">
+            <RevealText>
+              <p className="font-serif text-lg md:text-xl text-gray-600 leading-relaxed max-w-xl mb-6">
+                Over three hours, your team builds a shared vocabulary and a practical toolkit for evaluating AI use cases — grounded in your actual product context, not hypothetical scenarios. You leave with reusable frameworks, not a slide deck you'll forget about.
+              </p>
+            </RevealText>
+            <RevealText delay={0.1}>
+              <p className="font-serif text-base text-gray-600 leading-relaxed max-w-xl">
+                The session is structured around IBM Design Thinking's observe, reflect, make practice. Tools are pulled from whatever is most useful for the people in the room — not a rigid process you have to follow in order.
+              </p>
+            </RevealText>
+            <RevealText delay={0.15}>
+              <div className="mt-8 flex flex-wrap gap-2">
+                {['3 hours', 'In-person', 'Up to 50 people', 'Design & Product teams'].map((tag) => (
+                  <span key={tag} className="border border-lab-black/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-widest text-gray-600">{tag}</span>
+                ))}
+              </div>
+            </RevealText>
+          </div>
+          <div className="col-span-1 md:col-span-6">
+            <RevealText delay={0.1}>
+              <p className="font-mono text-xs uppercase tracking-widest text-gray-500 mb-4">What you'll leave with</p>
+              <ul className="border-t border-lab-black/15">
+                {WORKSHOP_OUTCOMES.map((outcome) => (
+                  <li key={outcome} className="flex gap-3 border-b border-lab-black/15 py-3 font-sans text-base text-lab-black leading-relaxed">
+                    <span className="text-lab-olive shrink-0" aria-hidden="true">—</span>
+                    <span>{outcome}</span>
+                  </li>
+                ))}
+              </ul>
+            </RevealText>
+          </div>
+        </LabGrid>
+      </section>
+
+      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="sessions-heading">
+        <DetailSectionHeader id="sessions-heading" number="03" title="Sessions" kicker="Two dates — two cities" />
+        <LabGrid>
+          <div className="col-span-1 md:col-span-7">
+            <div className="border-t border-lab-black/15">
+              {WORKSHOP_SESSIONS.map((session, i) => (
+                <RevealText key={session.city} delay={i * 0.08}>
+                  <div id={session.city === 'The Hague' ? 'hague' : 'amsterdam'} className="border-b border-lab-black/15 py-6 md:py-7 scroll-mt-20">
+                    <div className="flex flex-wrap justify-between items-start gap-3 mb-3">
+                      <p className="font-mono text-xs uppercase tracking-widest text-lab-olive">
+                        Session {i + 1}
+                      </p>
+                      <SpeakingStatusBadge label={session.status.label} tone={session.status.tone} />
+                    </div>
+                    <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight leading-tight text-lab-black mb-3">
+                      {session.city}
+                    </h3>
+                    <p className="font-mono text-sm text-gray-600 leading-relaxed">{session.venue}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-lab-olive" aria-hidden="true" />
+                      <p className="font-mono text-sm text-gray-600 leading-relaxed">{session.date}</p>
+                    </div>
+                    <div className="mt-5">
+                      <a
+                        href={session.rsvpHref}
+                        onClick={() => trackEvent(session.event)}
+                        className="inline-flex items-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+                      >
+                        Reserve a seat <ArrowRight size={12} aria-hidden="true" />
+                      </a>
+                    </div>
+                  </div>
+                </RevealText>
+              ))}
+            </div>
+          </div>
+          <div className="col-span-1 md:col-span-5">
+            <RevealText delay={0.15}>
+              <div className="rounded-xl overflow-hidden border border-lab-black/10">
+                <div className="px-5 py-3 bg-lab-olive/10 border-b border-lab-black/10">
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-lab-olive">Ticket pricing — per session</p>
+                </div>
+                {WORKSHOP_PRICING.map((row, i) => (
+                  <div key={row.tier} className={`px-5 py-4 flex justify-between items-center gap-4 bg-lab-white ${i < WORKSHOP_PRICING.length - 1 ? 'border-b border-lab-black/10' : ''}`}>
+                    <div>
+                      <p className="font-sans text-sm text-lab-black">{row.tier}</p>
+                      <p className="mt-0.5 font-mono text-[11px] text-gray-500 leading-relaxed">{row.sub}</p>
+                    </div>
+                    <p className="font-sans text-xl text-lab-black font-medium shrink-0">{row.amount}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 font-serif italic text-sm text-gray-500 leading-relaxed">
+                Pricing tiers run on the honor system. If you're wondering whether you qualify for need-based, that's usually a sign you don't — it's for students and those without work for whom the cost would otherwise be prohibitive.
+              </p>
+              <p className="mt-4 font-sans text-sm text-gray-600 leading-relaxed bg-lab-concrete rounded-xl p-4">
+                <span className="font-medium text-lab-black">Prefer to be invoiced?</span> If your company needs to pay via invoice rather than upfront, that's fine — reach out directly and we'll sort it out.
+              </p>
+            </RevealText>
+          </div>
+        </LabGrid>
+      </section>
+
+      <div className="bg-lab-concrete">
+        <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="approach-heading">
+          <DetailSectionHeader id="approach-heading" number="04" title="How we work" kicker="A few commitments, not a methodology" />
+          <div className="grid grid-cols-1 md:grid-cols-3 border-t border-lab-black/15">
+            {WORKSHOP_APPROACH.map((row, i) => (
+              <RevealText key={row.title} delay={i * 0.08}>
+                <div className={`py-8 md:py-10 ${i > 0 ? 'md:pl-8' : ''} ${i < WORKSHOP_APPROACH.length - 1 ? 'md:pr-8 md:border-r border-lab-black/15' : ''}`}>
+                  <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-3">
+                    {row.title}
+                  </p>
+                  <p className="font-serif text-base text-gray-600 leading-relaxed">
+                    {row.body}
+                  </p>
+                </div>
+              </RevealText>
+            ))}
+          </div>
+
+          <RevealText delay={0.2}>
+            <div className="mt-10 md:mt-12 bg-lab-white rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
+              <p className="font-mono text-xs uppercase tracking-widest text-gray-500 shrink-0">Built on</p>
+              <p className="font-sans text-base text-lab-black leading-relaxed">
+                The workshop is grounded in the{' '}
+                <a href="https://ai-interaction.com" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Speaking Detail: Atlas Link')} className="text-lab-olive underline decoration-lab-olive/40 hover:decoration-lab-olive transition">
+                  AI Interaction Atlas
+                </a>
+                , an open-source framework for mapping AI capabilities across human interactions.
+              </p>
+            </div>
+          </RevealText>
+        </section>
+      </div>
+
+      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="facilitators-heading">
+        <DetailSectionHeader id="facilitators-heading" number="05" title="Facilitators" kicker="Who's in the room" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <RevealText>
+            <div className="bg-lab-concrete rounded-2xl p-6 md:p-8 h-full">
+              <h3 className="font-sans text-2xl font-medium text-lab-black">Brandon Harwood</h3>
+              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Founder, quietloudlab</p>
+              <p className="mt-1 font-mono text-xs text-gray-500">Dallas · Amsterdam (late 2026)</p>
+              <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
+                A decade at IBM Innovation Studio leading AI prototyping and enterprise innovation work — designing human-centered AI systems for clients across banking, healthcare, aviation, and beyond. His practice is built around a simple conviction: most AI products fail not because the AI is wrong, but because nobody designed the human layer.
+              </p>
+              <ul className="mt-6 space-y-2">
+                {['Decade at IBM Innovation Studio', 'CHI 2023 published research', 'Creator, AI Interaction Atlas', 'Speaker, UXLX 2026'].map((c) => (
+                  <li key={c} className="pl-3 border-l-2 border-lab-olive font-mono text-[11px] uppercase tracking-widest text-lab-black leading-relaxed">{c}</li>
+                ))}
+              </ul>
+            </div>
+          </RevealText>
+          <RevealText delay={0.08}>
+            <div className="bg-lab-concrete rounded-2xl p-6 md:p-8 h-full">
+              <h3 className="font-sans text-2xl font-medium text-lab-black">Matthijs Zwinderman</h3>
+              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Strategic Product Designer</p>
+              <p className="mt-1 font-mono text-xs text-gray-500">The Hague · Netherlands dates only</p>
+              <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
+                A background spanning AI research (Carnegie Mellon), enterprise service design at PostNL, and product strategy across Dutch startups and scaleups. Matthijs has been building and organizing design communities in the Netherlands for years — including LeanUX The Hague — and brings that grounding into every room.
+              </p>
+              <ul className="mt-6 space-y-2">
+                {['AI Research, Carnegie Mellon University', 'Enterprise Service Design, PostNL', 'Organizer, LeanUX The Hague'].map((c) => (
+                  <li key={c} className="pl-3 border-l-2 border-lab-olive font-mono text-[11px] uppercase tracking-widest text-lab-black leading-relaxed">{c}</li>
+                ))}
+              </ul>
+            </div>
+          </RevealText>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="faq-heading">
+        <DetailSectionHeader id="faq-heading" number="06" title="FAQ" kicker="Logistics and common questions" />
+        <LabGrid>
+          <div className="col-span-1 md:col-span-4">
+            <RevealText>
+              <p className="font-serif text-base text-gray-600 leading-relaxed max-w-sm">
+                A few common questions about the workshop, format, and logistics. If yours isn't here, ask directly.
+              </p>
+            </RevealText>
+          </div>
+          <div className="col-span-1 md:col-span-8">
+            <RevealText delay={0.1}>
+              <WorkshopFAQ />
+            </RevealText>
+          </div>
+        </LabGrid>
+      </section>
+
+      <section className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto">
+        <RevealText>
+          <div className="bg-lab-concrete rounded-2xl p-6 md:p-10">
+            <LabGrid>
+              <div className="col-span-1 md:col-span-7">
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-4">Bring it in-house</p>
+                <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight text-lab-black mb-4">
+                  Need a private session for your team?
+                </h3>
+                <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-xl">
+                  The public workshops are open to anyone. If your team wants a session built entirely around your product, your context, and your specific design decisions — private half-day and full-day formats are available. Get in touch and we'll scope it out.
+                </p>
+              </div>
+              <div className="col-span-1 md:col-span-5 flex flex-col md:items-end justify-end gap-3 mt-6 md:mt-0">
+                <a
+                  href="https://calendly.com/brandonaharwood/quietloud-collab-speaking"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('Speaking Detail: Workshop Calendly')}
+                  className="inline-flex items-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+                >
+                  Book a 30-min call <ArrowRight size={14} aria-hidden="true" />
+                </a>
+                <a
+                  href="mailto:brandon@quietloudlab.com?subject=Private%20Workshop%20Inquiry"
+                  onClick={() => trackEvent('Speaking Detail: Workshop Email')}
+                  className="inline-flex items-center gap-2 border border-lab-black/20 text-lab-black px-6 py-3 font-mono text-xs uppercase tracking-widest hover:border-lab-olive hover:text-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+                >
+                  Send an email
+                </a>
+              </div>
+            </LabGrid>
+          </div>
+        </RevealText>
+      </section>
+    </PageShell>
+  );
+};
+
+// --- Speaking: routes ---
+
+// --- Speaking detail: City Option pages (Barcelona / Berlin) ---
+
+const CityOptionPage = ({ config }: { config: CityOptionConfig }) => {
+  useEffect(() => {
+    document.title = `${config.city} · Speaking · quietloudlab`;
+  }, [config.city]);
+
+  return (
+    <PageShell>
+      <DetailHero
+        eyebrow={`Open Window · ${config.city}, ${config.country}`}
+        title={`A few days in ${config.city}.`}
+        lead={config.lead}
+        meta={[
+          { key: 'Dates', value: config.dateRange },
+          { key: 'Status', value: 'Seeking partners' },
+          { key: 'Formats', value: 'In-person · Remote' },
+          { key: 'Looking for', value: 'Companies · Co-hosts' },
+        ]}
+      />
+
+      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="ways-heading">
+        <DetailSectionHeader id="ways-heading" number="01" title="Ways we could work together" kicker="A few examples, not a menu" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {config.engagements.map((option, i) => {
+            const Icon = option.icon;
+            return (
+              <RevealText key={option.title} delay={i * 0.08}>
+                <div className="bg-lab-concrete rounded-2xl p-6 md:p-8 h-full flex flex-col">
+                  <Icon size={22} className="text-lab-olive mb-4" aria-hidden="true" strokeWidth={1.5} />
+                  <h3 className="font-sans text-xl md:text-2xl font-medium tracking-tight leading-tight text-lab-black mb-3">{option.title}</h3>
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-lab-olive mb-3 leading-relaxed">
+                    {option.fitsWhen}
+                  </p>
+                  <p className="font-serif text-base text-gray-600 leading-relaxed">
+                    {option.description}
+                  </p>
+                </div>
+              </RevealText>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto">
+        <RevealText>
+          <div className="bg-lab-olive/10 rounded-2xl p-6 md:p-10">
+            <LabGrid>
+              <div className="col-span-1 md:col-span-7">
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-4">Next step</p>
+                <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight text-lab-black mb-4">
+                  Let's figure out the shape together.
+                </h3>
+                <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-xl">
+                  Share a few details about your team, event, or community — or grab a 30-minute call. Either gets us to the same place: a quick conversation about whether any of this fits.
+                </p>
+              </div>
+              <div className="col-span-1 md:col-span-5 flex flex-col md:items-end justify-end gap-3 mt-6 md:mt-0">
+                <a
+                  href={`mailto:brandon@quietloudlab.com?subject=${encodeURIComponent(`${config.city} (${config.shortDate}) — Expression of interest`)}`}
+                  onClick={() => trackEvent(`Speaking ${config.city}: EOI`)}
+                  className="inline-flex items-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+                >
+                  Share an expression of interest <ArrowRight size={14} aria-hidden="true" />
+                </a>
+                <a
+                  href="https://calendly.com/brandonaharwood/quietloud-collab-speaking"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent(`Speaking ${config.city}: Calendly`)}
+                  className="inline-flex items-center gap-2 border border-lab-black/20 text-lab-black px-6 py-3 font-mono text-xs uppercase tracking-widest hover:border-lab-olive hover:text-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+                >
+                  Schedule a 30-min call
+                </a>
+              </div>
+            </LabGrid>
+          </div>
+        </RevealText>
+      </section>
+    </PageShell>
+  );
+};
+
+const BarcelonaOptionPage = () => <CityOptionPage config={CITY_OPTIONS['barcelona-2026']} />;
+const BerlinOptionPage = () => <CityOptionPage config={CITY_OPTIONS['berlin-2026']} />;
+
+const SPEAKING_ROUTES: Record<string, () => React.ReactElement> = {
+  '/speaking': SpeakingPage,
+  '/speaking/idea-lab-mastermind': IdeaLabMastermindPage,
+  '/speaking/uxlx-2026': UXLXDetailPage,
+  '/speaking/ai-as-design-material': AIAsDesignMaterialPage,
+  '/speaking/barcelona-2026': BarcelonaOptionPage,
+  '/speaking/berlin-2026': BerlinOptionPage,
+};
+
+const SpeakingNotFound = () => {
+  useEffect(() => {
+    document.title = 'Not found · Speaking · quietloudlab';
+  }, []);
+  return (
+    <PageShell>
+      <section className="min-h-[60vh] pt-28 md:pt-40 pb-16 px-6 md:px-12 max-w-screen-xl mx-auto">
+        <RevealText>
+          <p className="font-mono text-sm uppercase tracking-widest text-lab-olive mb-6">
+            Speaking · Not found
+          </p>
+        </RevealText>
+        <RevealText delay={0.1}>
+          <h1 className="text-4xl md:text-6xl font-sans font-medium tracking-tight text-lab-black max-w-3xl leading-tight mb-8">
+            This event isn't on the list.
+          </h1>
+        </RevealText>
+        <RevealText delay={0.2}>
+          <p className="font-serif text-lg md:text-xl text-gray-600 max-w-2xl leading-relaxed">
+            The page may have moved or was never here. Start from the Speaking hub, or get in touch directly.
+          </p>
+        </RevealText>
+        <RevealText delay={0.25}>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <PageLink
+              to="/speaking"
+              className="inline-flex items-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+            >
+              ← Speaking
+            </PageLink>
+            <PageLink
+              to="/"
+              className="inline-flex items-center gap-2 border border-lab-black/20 text-lab-black px-6 py-3 font-mono text-xs uppercase tracking-widest hover:border-lab-olive hover:text-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+            >
+              Home
+            </PageLink>
+          </div>
+        </RevealText>
+      </section>
+    </PageShell>
+  );
+};
+
+const resolveSpeakingRoute = (path: string): (() => React.ReactElement) | null => {
+  const normalized = path.replace(/\/$/, '') || '/';
+  return SPEAKING_ROUTES[normalized] ?? null;
+};
+
+// --- Pages & Shell ---
+
+const MobileNavBar = () => (
+  <nav aria-label="Mobile Navigation" className="md:hidden fixed bottom-0 left-0 w-full bg-lab-white border-t border-lab-black/10 p-4 flex justify-between overflow-x-auto gap-6 z-40">
+    <PageLink to="/#practice" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors">Practice</PageLink>
+    <PageLink to="/#atlas" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors">Atlas</PageLink>
+    <PageLink to="/speaking" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors">Speaking</PageLink>
+    <PageLink to="/#contact" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors">Contact</PageLink>
+  </nav>
+);
+
+const PageShell = ({ children }: { children?: React.ReactNode }) => (
+  <div className="w-full bg-lab-white min-h-screen selection:bg-lab-olive selection:text-white relative">
+    <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-lab-black focus:text-lab-white focus:p-4 focus:font-mono focus:text-sm">Skip to content</a>
+    <Navigation />
+    <main id="main-content">{children}</main>
+    <Footer />
+    <MobileNavBar />
+  </div>
+);
+
+const HomePage = () => {
+  useEffect(() => {
+    document.title = 'quietloudlab';
+  }, []);
+  return (
+    <PageShell>
+      <Hero />
+      <div className="bg-lab-olive/20">
+        <StickyPhaseShowcase phases={METHODOLOGY_PHASES} />
+      </div>
+      <Practice />
+      <HouseBuiltTools />
+      <Contact contactIntent={null} />
+    </PageShell>
+  );
+};
+
+const App = () => {
+  const path = usePath();
+
+  useEffect(() => {
+    // Scroll to hash target when hash is present on any route change
+    const { hash } = window.location;
+    if (hash) {
+      const id = hash.slice(1);
+      requestAnimationFrame(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+  }, [path]);
+
+  const SpeakingRoute = resolveSpeakingRoute(path);
+  if (SpeakingRoute) return <SpeakingRoute />;
+  if (path.startsWith('/speaking')) return <SpeakingNotFound />;
+  return <HomePage />;
 };
 
 const root = createRoot(document.getElementById('root')!);
