@@ -1554,7 +1554,7 @@ const CITY_OPTIONS: Record<string, CityOptionConfig> = {
     country: 'Spain',
     dateRange: 'May 17–22, 2026',
     shortDate: 'May 17–22',
-    lead: "Brandon is in Barcelona from May 17–22, 2026. Nothing on the calendar is confirmed yet — which means there's still room to put something together. Here are a few ways that could work.",
+    lead: "Brandon is in Barcelona from May 17–22, 2026. Nothing on the calendar is confirmed yet, which means there's still room to put something together. A few ways that could work:",
     engagements: ENGAGEMENT_OPTIONS,
   },
   'berlin-2026': {
@@ -1563,7 +1563,7 @@ const CITY_OPTIONS: Record<string, CityOptionConfig> = {
     country: 'Germany',
     dateRange: 'May 22–27, 2026',
     shortDate: 'May 22–27',
-    lead: "Brandon is in Berlin from May 22–27, 2026. Same setup as Barcelona — open for private sessions, co-hosted workshops, or dropping into an existing event. A few shapes this could take:",
+    lead: "Brandon is in Berlin from May 22–27, 2026. Same setup as Barcelona: open for private sessions, co-hosted workshops, or dropping into an existing event. A few shapes this could take:",
     engagements: ENGAGEMENT_OPTIONS,
   },
 };
@@ -1585,7 +1585,7 @@ const SpeakingHubHero = () => (
       </RevealText>
       <RevealText delay={0.2}>
         <p className="font-sans text-lg md:text-2xl text-gray-700 max-w-3xl leading-relaxed">
-          A running list of public talks, workshops, and appearances. If you'd like us in a room of your own, there's a link at the bottom.
+          Public talks, workshops, and appearances. If you want us in a room of your own, there's a CTA at the bottom.
         </p>
       </RevealText>
     </section>
@@ -1725,7 +1725,7 @@ const SpeakingHireCTA = ({ number }: { number: string }) => (
       <div className="col-span-1 md:col-span-7">
         <RevealText>
           <p className="font-serif text-xl md:text-2xl text-gray-700 leading-relaxed max-w-2xl">
-            Whether you're starting an AI initiative, shipping an AI-enabled product, or trying to build a shared language across a team — we run talks, public workshops, and private in-company sessions. A thirty-minute call is usually enough to figure out if there's a fit and what the shape of it would be.
+            If you're starting an AI initiative or shipping an AI-enabled product, we run talks, workshops, and private in-company sessions that might fit. Thirty minutes on a call is usually enough to tell.
           </p>
         </RevealText>
         <RevealText delay={0.15}>
@@ -1995,7 +1995,7 @@ const UXLXDetailPage = () => {
       type: 'Workshop',
       title: 'Designing AI within Creative Fields',
       description:
-        'A three-hour session on setting meaningful boundaries for AI within creative roles — ensuring it supplements rather than supplants the human decisions that matter most.',
+        'A three-hour session on setting meaningful boundaries for AI in creative work — so it supports the human decisions instead of replacing them.',
       duration: '3 hours · Workshop program',
       href: `${UXLX_PROGRAM_URL}#workshop`,
       event: 'Speaking Detail: UXLX Workshop',
@@ -2007,7 +2007,7 @@ const UXLXDetailPage = () => {
       <DetailHero
         eyebrow="Conference · Speaker + Workshop Facilitator"
         title="UXLX 2026"
-        lead="A week with the European design community in Lisbon. Brandon appears at UXLX as both a speaker and a workshop facilitator, with two distinct sessions on the program."
+        lead="Brandon is on the UXLX program twice — once as a speaker, once as a workshop facilitator. A week with the European design community in Lisbon."
         meta={[
           { key: 'Dates', value: 'May 12–15, 2026' },
           { key: 'Location', value: 'Lisbon, Portugal' },
@@ -2110,7 +2110,7 @@ const WORKSHOP_AUDIENCES: WorkshopAudience[] = [
   {
     icon: Users,
     title: 'Product managers and owners',
-    description: "You're responsible for what gets built. You want a clearer way to evaluate AI opportunities, communicate tradeoffs, and align teams around what good looks like.",
+    description: "You're responsible for what gets built. You want a clearer way to evaluate AI opportunities, communicate tradeoffs, and get a team agreeing on what 'done' looks like.",
   },
   {
     icon: Sparkles,
@@ -2126,10 +2126,10 @@ const WORKSHOP_AUDIENCES: WorkshopAudience[] = [
 ];
 
 const WORKSHOP_OUTCOMES = [
-  'A shared language for discussing AI system behavior across your team',
-  'A framework for evaluating whether AI is the right fit for a given interaction',
-  "A mapped view of your product's AI touchpoints and where the gaps are",
-  'Reusable templates your team can apply to future design decisions independently',
+  'Shared language for discussing AI system behavior as a team',
+  "A framework for deciding when AI is the right fit for an interaction, and when it isn't",
+  "A map of where AI already shows up in your product, and where the gaps are",
+  'Templates your team can reuse on its own, after the workshop ends',
   'A clearer sense of where not to use AI — as important as where to use it',
 ];
 
@@ -2185,7 +2185,7 @@ const WORKSHOP_APPROACH = [
 const WORKSHOP_FAQ = [
   {
     q: 'Do participants need prior AI experience?',
-    a: 'No. The workshop is designed for practitioners who work with product — designers, PMs, strategists — not engineers or data scientists. You bring the domain knowledge; we bring the AI design framework.',
+    a: 'No. The workshop is for practitioners who work with product (designers, PMs, strategists), not engineers or data scientists. You bring the domain knowledge; we bring the AI design framework.',
   },
   {
     q: "What's the difference between the public workshop and a private in-company session?",
@@ -2201,7 +2201,7 @@ const WORKSHOP_FAQ = [
   },
   {
     q: 'Will there be more workshop dates after May?',
-    a: 'Yes. Brandon is relocating to Amsterdam in late 2026 and will be running workshops in-person across the Netherlands and Europe on an ongoing basis. Email to be notified when the next dates are confirmed.',
+    a: 'Yes. Brandon is relocating to Amsterdam in late 2026 and will be running workshops in-person across the Netherlands and Europe regularly. Email to be notified when the next dates are confirmed.',
   },
 ];
 
@@ -2393,7 +2393,7 @@ const AIAsDesignMaterialPage = () => {
                 ))}
               </div>
               <p className="mt-4 font-serif italic text-sm text-gray-500 leading-relaxed">
-                Pricing tiers run on the honor system. If you're wondering whether you qualify for need-based, that's usually a sign you don't — it's for students and those without work for whom the cost would otherwise be prohibitive.
+                Pricing tiers run on the honor system. If you're wondering whether you qualify for the need-based tier, you probably don't — it's for students and folks currently out of work, where the cost would otherwise be out of reach.
               </p>
               <p className="mt-4 font-sans text-sm text-gray-600 leading-relaxed bg-lab-concrete rounded-xl p-4">
                 <span className="font-medium text-lab-black">Prefer to be invoiced?</span> If your company needs to pay via invoice rather than upfront, that's fine — reach out directly and we'll sort it out.
@@ -2425,7 +2425,7 @@ const AIAsDesignMaterialPage = () => {
             <div className="mt-10 md:mt-12 bg-lab-white rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
               <p className="font-mono text-xs uppercase tracking-widest text-gray-500 shrink-0">Built on</p>
               <p className="font-sans text-base text-lab-black leading-relaxed">
-                The workshop is grounded in the{' '}
+                The workshop runs on the{' '}
                 <a href="https://ai-interaction.com" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Speaking Detail: Atlas Link')} className="text-lab-olive underline decoration-lab-olive/40 hover:decoration-lab-olive transition">
                   AI Interaction Atlas
                 </a>
@@ -2445,7 +2445,7 @@ const AIAsDesignMaterialPage = () => {
               <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Founder, quietloudlab</p>
               <p className="mt-1 font-mono text-xs text-gray-500">Dallas · Amsterdam (late 2026)</p>
               <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
-                A decade at IBM Innovation Studio leading AI prototyping and enterprise innovation work — designing human-centered AI systems for clients across banking, healthcare, aviation, and beyond. His practice is built around a simple conviction: most AI products fail not because the AI is wrong, but because nobody designed the human layer.
+                A decade at IBM Innovation Studio leading AI prototyping and enterprise innovation work — designing human-centered AI systems for clients across banking, healthcare, and aviation. His practice is built around one idea: most AI products fail not because the AI is wrong, but because nobody designed the human layer.
               </p>
               <ul className="mt-6 space-y-2">
                 {['Decade at IBM Innovation Studio', 'CHI 2023 published research', 'Creator, AI Interaction Atlas', 'Speaker, UXLX 2026'].map((c) => (
@@ -2460,7 +2460,7 @@ const AIAsDesignMaterialPage = () => {
               <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Strategic Product Designer</p>
               <p className="mt-1 font-mono text-xs text-gray-500">The Hague · Netherlands dates only</p>
               <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
-                A background spanning AI research (Carnegie Mellon), enterprise service design at PostNL, and product strategy across Dutch startups and scaleups. Matthijs has been building and organizing design communities in the Netherlands for years — including LeanUX The Hague — and brings that grounding into every room.
+                Matthijs's background covers AI research (Carnegie Mellon), enterprise service design at PostNL, and product strategy with Dutch startups and scaleups. He's been building and running design communities in the Netherlands for years, including LeanUX The Hague, and that ground-level knowledge shapes every session.
               </p>
               <ul className="mt-6 space-y-2">
                 {['AI Research, Carnegie Mellon University', 'Enterprise Service Design, PostNL', 'Organizer, LeanUX The Hague'].map((c) => (
