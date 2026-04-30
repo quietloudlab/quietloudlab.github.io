@@ -1805,11 +1805,13 @@ const DetailHero = ({
   title,
   lead,
   meta,
+  cta,
 }: {
   eyebrow: string;
   title: string;
   lead: string;
   meta: Array<{ key: string; value: React.ReactNode }>;
+  cta?: React.ReactNode;
 }) => (
   <div className="bg-[#F7F7F9]">
     <section className="pt-24 md:pt-32 pb-16 md:pb-20 px-6 md:px-12 max-w-screen-xl mx-auto" aria-label="Event overview">
@@ -1835,6 +1837,11 @@ const DetailHero = ({
               {lead}
             </p>
           </RevealText>
+          {cta ? (
+            <RevealText delay={0.2}>
+              <div className="mt-8">{cta}</div>
+            </RevealText>
+          ) : null}
         </div>
         <div className="col-span-1 md:col-span-4">
           <RevealText delay={0.2}>
@@ -2235,6 +2242,32 @@ const WorkshopFAQ = () => {
   );
 };
 
+const HAGUE_TICKETS_URL = 'https://www.eventbrite.com/e/workshop-ai-as-a-design-material-the-hague-tickets-1988565280284?aff=oddtdtcreator';
+const AMSTERDAM_TICKETS_URL = 'https://www.eventbrite.com/e/workshop-ai-as-a-design-material-amsterdam-tickets-1988569576133?aff=oddtdtcreator';
+
+const HeaderTicketCTA = () => (
+  <div className="flex flex-col sm:flex-row gap-3">
+    <a
+      href={HAGUE_TICKETS_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => trackEvent('Speaking Header: Hague Tickets')}
+      className="inline-flex items-center justify-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+    >
+      Get tickets — The Hague <ArrowRight size={12} aria-hidden="true" />
+    </a>
+    <a
+      href={AMSTERDAM_TICKETS_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => trackEvent('Speaking Header: Amsterdam Tickets')}
+      className="inline-flex items-center justify-center gap-2 border border-lab-black/20 text-lab-black px-6 py-3 font-mono text-xs uppercase tracking-widest hover:border-lab-olive hover:text-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+    >
+      Get tickets — Amsterdam <ArrowRight size={12} aria-hidden="true" />
+    </a>
+  </div>
+);
+
 const StickyTicketBar = () => {
   const reduceMotion = useReducedMotion();
   const [visible, setVisible] = useState(false);
@@ -2248,50 +2281,91 @@ const StickyTicketBar = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const slideOffset = reduceMotion ? 0 : 60;
+  const mobileSlide = reduceMotion ? 0 : 60;
+  const desktopSlide = reduceMotion ? 0 : -20;
 
   return (
-    <AnimatePresence>
-      {visible ? (
-        <motion.aside
-          aria-label="Reserve a workshop seat"
-          initial={{ y: slideOffset, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: slideOffset, opacity: 0 }}
-          transition={{ duration: 0.25, ease: 'easeOut' }}
-          className="fixed bottom-[68px] md:bottom-0 left-0 right-0 z-30 bg-lab-black text-white border-t border-lab-olive/30 shadow-2xl"
-        >
-          <div className="max-w-screen-xl mx-auto px-4 md:px-12 py-3 md:py-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3 shrink-0">
-              <span className="h-1.5 w-1.5 rounded-full bg-lab-olive animate-pulse" aria-hidden="true" />
-              <p className="font-mono text-[11px] md:text-xs uppercase tracking-widest text-white/80">
-                Reserve a seat
-              </p>
+    <>
+      {/* Mobile: full-width bottom bar (sits above the mobile nav) */}
+      <AnimatePresence>
+        {visible ? (
+          <motion.aside
+            aria-label="Reserve a workshop seat"
+            initial={{ y: mobileSlide, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: mobileSlide, opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="md:hidden fixed bottom-[68px] left-0 right-0 z-30 bg-lab-black text-white border-t border-lab-olive/30 shadow-2xl"
+          >
+            <div className="px-4 py-3 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="h-1.5 w-1.5 rounded-full bg-lab-olive animate-pulse" aria-hidden="true" />
+                <p className="font-mono text-[10px] uppercase tracking-widest text-white/80">Tickets</p>
+              </div>
+              <div className="flex gap-2">
+                <a
+                  href={HAGUE_TICKETS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('Speaking Sticky: Hague Tickets')}
+                  className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black px-3 py-2 font-mono text-[10px] uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
+                >
+                  The Hague
+                </a>
+                <a
+                  href={AMSTERDAM_TICKETS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('Speaking Sticky: Amsterdam Tickets')}
+                  className="inline-flex items-center justify-center gap-1.5 border border-white/30 text-white px-3 py-2 font-mono text-[10px] uppercase tracking-widest hover:bg-lab-olive hover:border-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
+                >
+                  Amsterdam
+                </a>
+              </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          </motion.aside>
+        ) : null}
+      </AnimatePresence>
+
+      {/* Desktop: centered top pill */}
+      <AnimatePresence>
+        {visible ? (
+          <motion.aside
+            aria-label="Reserve a workshop seat"
+            initial={{ y: desktopSlide, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: desktopSlide, opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="hidden md:flex fixed top-16 left-0 right-0 z-30 px-4 justify-center pointer-events-none"
+          >
+            <div className="pointer-events-auto bg-lab-black text-white border border-lab-olive/30 rounded-full shadow-2xl flex items-center gap-2 px-3 py-2 max-w-full">
+              <span className="flex items-center gap-2 pl-2 pr-1 shrink-0">
+                <span className="h-1.5 w-1.5 rounded-full bg-lab-olive animate-pulse" aria-hidden="true" />
+                <p className="font-mono text-[10px] uppercase tracking-widest text-white/80">Tickets</p>
+              </span>
               <a
-                href="https://www.eventbrite.com/e/workshop-ai-as-a-design-material-the-hague-tickets-1988565280284?aff=oddtdtcreator"
+                href={HAGUE_TICKETS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('Speaking Sticky: Hague Tickets')}
-                className="inline-flex items-center justify-center gap-2 bg-white text-lab-black px-4 md:px-5 py-2.5 font-mono text-[11px] md:text-xs uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black"
+                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
               >
-                The Hague · May 29 <ArrowRight size={12} aria-hidden="true" />
+                The Hague · May 29
               </a>
               <a
-                href="https://www.eventbrite.com/e/workshop-ai-as-a-design-material-amsterdam-tickets-1988569576133?aff=oddtdtcreator"
+                href={AMSTERDAM_TICKETS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('Speaking Sticky: Amsterdam Tickets')}
-                className="inline-flex items-center justify-center gap-2 border border-white/30 text-white px-4 md:px-5 py-2.5 font-mono text-[11px] md:text-xs uppercase tracking-widest hover:bg-lab-olive hover:border-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black"
+                className="inline-flex items-center justify-center gap-1.5 border border-white/30 text-white rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-widest hover:bg-lab-olive hover:border-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
               >
-                Amsterdam · May 30 <ArrowRight size={12} aria-hidden="true" />
+                Amsterdam · May 30
               </a>
             </div>
-          </div>
-        </motion.aside>
-      ) : null}
-    </AnimatePresence>
+          </motion.aside>
+        ) : null}
+      </AnimatePresence>
+    </>
   );
 };
 
@@ -2313,6 +2387,7 @@ const AIAsDesignMaterialPage = () => {
           { key: 'Group size', value: 'Up to 50' },
           { key: 'Sessions', value: 'The Hague · Amsterdam' },
         ]}
+        cta={<HeaderTicketCTA />}
       />
 
       <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="audience-heading">
