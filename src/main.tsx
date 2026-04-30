@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { motion, useScroll, useInView, AnimatePresence, useSpring, useTransform, useReducedMotion, useMotionValueEvent } from 'framer-motion';
-import { ArrowRight, ArrowDown, Menu, X, Check, Loader2, BrainCircuit, User, Settings, Database, SlidersHorizontal, Smartphone, Users, Compass, Sparkles, Code2, Building2, Video, Mic, type LucideIcon } from 'lucide-react';
+import { ArrowRight, ArrowDown, Menu, X, Check, Loader2, BrainCircuit, User, Settings, Database, SlidersHorizontal, Smartphone, Users, Compass, Code2, Building2, Video, Mic, type LucideIcon } from 'lucide-react';
 import LogoSvg from './img/quietloudlab_logo_white.svg?react';
 
 // Fathom Analytics
@@ -2113,24 +2113,24 @@ const WORKSHOP_AUDIENCES: WorkshopAudience[] = [
     description: "You're responsible for what gets built. You want a clearer way to evaluate AI opportunities, communicate tradeoffs, and get a team agreeing on what 'done' looks like.",
   },
   {
-    icon: Sparkles,
-    title: 'Teams starting an AI sprint or initiative',
-    description: "You're kicking off something new and want to frame it correctly from day one — building shared criteria before you start building product.",
+    icon: Building2,
+    title: 'Founders figuring out where AI fits',
+    description: "You're trying to work out whether AI belongs in your product or business at all — and want a clearer framework for deciding before you commit a roadmap to it.",
   },
   {
     icon: Code2,
-    title: 'Developers working alongside design',
+    title: 'Developers evaluating what’s feasible',
     description: 'The session is built for design and product practitioners, but developers who want to understand the design layer around AI systems will find it useful.',
     note: 'Not a coding or engineering workshop.',
   },
 ];
 
 const WORKSHOP_OUTCOMES = [
-  'Shared language for discussing AI system behavior as a team',
-  "A framework for deciding when AI is the right fit for an interaction, and when it isn't",
-  "A map of where AI already shows up in your product, and where the gaps are",
-  'Templates your team can reuse on its own, after the workshop ends',
-  'A clearer sense of where not to use AI — as important as where to use it',
+  'Treat AI as a design material with specific functions and values — not a magic fix to slap on top of an existing experience',
+  "Identify the gaps in your users' context worth designing AI solutions for, and the gaps that don't need AI at all",
+  'Determine which AI enablements provide real value for your users and your business',
+  'Evaluate the specific AI capabilities that should sit underneath a given user experience',
+  'A shared language your team uses to communicate clearly around AI design and development',
 ];
 
 type WorkshopSession = {
@@ -2162,9 +2162,9 @@ const WORKSHOP_SESSIONS: WorkshopSession[] = [
 ];
 
 const WORKSHOP_PRICING = [
-  { tier: 'Company / Reimbursed', sub: 'Your employer is covering this', amount: '€175' },
-  { tier: 'Individual / Out-of-Pocket', sub: "You're paying yourself", amount: '€89' },
-  { tier: 'Need-Based', sub: 'Student or currently without work — limited to 5 tickets', amount: '€35' },
+  { tier: 'Workshop Registration', sub: 'Your company is reimbursing you, or purchasing the ticket directly', amount: '€175' },
+  { tier: 'Out-of-Pocket / Individual', sub: "You won't be reimbursed by your employer or organization", amount: '€89' },
+  { tier: 'Need a Break', sub: 'Student or low-income — a very limited number of subsidized seats', amount: '€35' },
 ];
 
 const WORKSHOP_APPROACH = [
@@ -2178,30 +2178,38 @@ const WORKSHOP_APPROACH = [
   },
   {
     title: 'Process, not prescription',
-    body: "Built around IBM Design Thinking's observe, reflect, make practice — not a rigid process you have to follow in order.",
+    body: 'Modular tools and activities pulled to match the room — not a fixed script you have to follow in order.',
   },
 ];
 
 const WORKSHOP_FAQ = [
   {
-    q: 'Do participants need prior AI experience?',
-    a: 'No. The workshop is for practitioners who work with product (designers, PMs, strategists), not engineers or data scientists. You bring the domain knowledge; we bring the AI design framework.',
+    q: "How is this different from other AI workshops I've seen?",
+    a: "Most AI workshops teach you how to use AI tools more efficiently. This one teaches you how to think about where AI belongs in the first place. You won't leave with a list of prompts — you'll leave with a framework for evaluating AI decisions your team keeps using after the session ends.",
   },
   {
-    q: "What's the difference between the public workshop and a private in-company session?",
-    a: "The public workshops are open to anyone and cover the full framework. A private in-company session is structured entirely around your organization's product, users, and specific challenges. Private sessions are available as half-day or full-day formats.",
+    q: 'Do I need to know how to code or have a technical AI background?',
+    a: 'No. This workshop is about design thinking and decision-making around AI, not building or implementing it. You bring the product and human context; we bring the framework for working with it.',
   },
   {
-    q: 'My company needs to pay via invoice — is that possible?',
-    a: "Yes. If your company requires an invoice rather than a direct ticket purchase, reach out before the event and we'll make it work. Matthijs handles billing through his Dutch company, which makes the process straightforward for European organizations.",
+    q: 'What should I bring or prepare?',
+    a: "No major prep needed. If you'd like to ground the work in reality, come with a product, project, or design challenge in mind. All materials and canvases are provided on the day, and an example scenario is on hand for anyone coming in fresh.",
   },
   {
-    q: 'What do participants need to bring or prepare?',
-    a: "An open mind and some familiarity with your own product or work context. It helps to come with a specific project or challenge in mind — the more concrete, the more useful the session's outputs. All materials and canvases are provided on the day.",
+    q: 'Can my whole team attend?',
+    a: "Yes — and honestly, it works better that way. If you'd like to bring a larger group, or want a session built entirely around your organization's context, reach out about a private in-company format or group ticket pricing.",
   },
   {
-    q: 'Will there be more workshop dates after May?',
-    a: 'Yes. Brandon is relocating to Amsterdam in late 2026 and will be running workshops in-person across the Netherlands and Europe regularly. Email to be notified when the next dates are confirmed.',
+    q: 'Do I qualify for the €35 ticket?',
+    a: "The €35 tier exists for people who otherwise couldn't afford to attend — students or those currently without work. It runs on the honor system, with a very limited number of seats at this price. If you can afford the €89 ticket, please pick that one.",
+  },
+  {
+    q: 'My company needs to pay via invoice rather than upfront — is that possible?',
+    a: "Yes. Reach out before the event at brandon@quietloudlab.com and we'll sort it out. This is common, not a problem.",
+  },
+  {
+    q: 'Is the workshop in English?',
+    a: 'Yes — the session is conducted entirely in English.',
   },
 ];
 
@@ -2252,7 +2260,7 @@ const AIAsDesignMaterialPage = () => {
       <DetailHero
         eyebrow="Workshop Series · Europe · May 2026"
         title="AI as a Design Material"
-        lead="Most AI training teaches tools. This workshop teaches design and product teams to think through AI as a design material — where it fits, how to design the human layer around it, and what frameworks you'll actually use afterward."
+        lead="A hands-on workshop for designers and product teams who want to build AI that works for real people and real businesses. Three hours on where AI belongs (and where it doesn't), how to design the human layer around it, and the frameworks your team keeps using after."
         meta={[
           { key: 'Duration', value: '3 hours' },
           { key: 'Format', value: 'In-person' },
@@ -2308,12 +2316,12 @@ const AIAsDesignMaterialPage = () => {
           <div className="col-span-1 md:col-span-6">
             <RevealText>
               <p className="font-serif text-lg md:text-xl text-gray-600 leading-relaxed max-w-xl mb-6">
-                Over three hours, your team builds a shared vocabulary and a practical toolkit for evaluating AI use cases — grounded in your actual product context, not hypothetical scenarios. You leave with reusable frameworks, not a slide deck you'll forget about.
+                Three hours on the conceptual foundation and a working toolkit for designing useful AI solutions — well beyond building chatbots. Your team leaves with reusable frameworks, not a slide deck you'll forget about.
               </p>
             </RevealText>
             <RevealText delay={0.1}>
               <p className="font-serif text-base text-gray-600 leading-relaxed max-w-xl">
-                The session is structured around IBM Design Thinking's observe, reflect, make practice. Tools are pulled from whatever is most useful for the people in the room — not a rigid process you have to follow in order.
+                You'll pull from modular tools and activities based on the actual needs of your team and users. The workshop is not a fixed script — it adapts to your use case.
               </p>
             </RevealText>
             <RevealText delay={0.15}>
@@ -2393,7 +2401,7 @@ const AIAsDesignMaterialPage = () => {
                 ))}
               </div>
               <p className="mt-4 font-serif italic text-sm text-gray-500 leading-relaxed">
-                Pricing tiers run on the honor system. If you're wondering whether you qualify for the need-based tier, you probably don't — it's for students and folks currently out of work, where the cost would otherwise be out of reach.
+                Pricing runs on the honor system. The €35 tier is for students and folks whose circumstances make the regular price cost-prohibitive — please don't take one if you can afford the €89 ticket, and please don't take one and not show up. You'd be keeping someone else from getting it.
               </p>
               <p className="mt-4 font-sans text-sm text-gray-600 leading-relaxed bg-lab-concrete rounded-xl p-4">
                 <span className="font-medium text-lab-black">Prefer to be invoiced?</span> If your company needs to pay via invoice rather than upfront, that's fine — reach out directly and we'll sort it out.
@@ -2445,7 +2453,7 @@ const AIAsDesignMaterialPage = () => {
               <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Founder, quietloudlab</p>
               <p className="mt-1 font-mono text-xs text-gray-500">Dallas · Amsterdam (late 2026)</p>
               <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
-                A decade at IBM Innovation Studio leading AI prototyping and enterprise innovation work — designing human-centered AI systems for clients across banking, healthcare, and aviation. His practice is built around one idea: most AI products fail not because the AI is wrong, but because nobody designed the human layer.
+                Independent designer and researcher, founder at quietloudlab, and creator of the AI Interaction Atlas. Over a decade at IBM Innovation Studio designing human-centered AI systems for clients across industry sectors and advising IBM Research on human-AI co-creativity. CHI 2023 research informs his approach: AI products that empower human creativity rather than replace it. Through quietloudlab, he works with startups and innovation teams on emerging tech experiences grounded in cognitive psychology, practical product strategy, and the everyday human experience.
               </p>
               <ul className="mt-6 space-y-2">
                 {['Decade at IBM Innovation Studio', 'CHI 2023 published research', 'Creator, AI Interaction Atlas', 'Speaker, UXLX 2026'].map((c) => (
@@ -2460,10 +2468,10 @@ const AIAsDesignMaterialPage = () => {
               <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Strategic Product Designer</p>
               <p className="mt-1 font-mono text-xs text-gray-500">The Hague · Netherlands dates only</p>
               <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
-                Matthijs's background covers AI research (Carnegie Mellon), enterprise service design at PostNL, and product strategy with Dutch startups and scaleups. He's been building and running design communities in the Netherlands for years, including LeanUX The Hague, and that ground-level knowledge shapes every session.
+                Matthijs's background covers AI research (Carnegie Mellon), enterprise service design, and product strategy with Dutch startups, scaleups, and enterprises. He's been building and running design communities in the Netherlands for years, including LeanUX The Hague — practical, pragmatic, ground-level knowledge that shapes every session.
               </p>
               <ul className="mt-6 space-y-2">
-                {['AI Research, Carnegie Mellon University', 'Enterprise Service Design, PostNL', 'Organizer, LeanUX The Hague'].map((c) => (
+                {['AI Research, Carnegie Mellon University', 'Enterprise service design & product strategy', 'Organizer, LeanUX The Hague'].map((c) => (
                   <li key={c} className="pl-3 border-l-2 border-lab-olive font-mono text-[11px] uppercase tracking-widest text-lab-black leading-relaxed">{c}</li>
                 ))}
               </ul>
