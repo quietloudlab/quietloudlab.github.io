@@ -2104,33 +2104,33 @@ type WorkshopAudience = {
 const WORKSHOP_AUDIENCES: WorkshopAudience[] = [
   {
     icon: Compass,
-    title: 'Designers integrating AI into their practice',
-    description: "You're already working alongside AI, or about to, and want shared language and frameworks for deciding where and how it fits.",
+    title: 'Designers',
+    description: 'This workshop was built with you in mind.',
   },
   {
     icon: Users,
-    title: 'Product managers and owners',
-    description: "You're responsible for what gets built. You want a clearer way to evaluate AI opportunities, communicate tradeoffs, and get a team agreeing on what 'done' looks like.",
+    title: 'Product managers',
+    description: "Trying to figure out what to build.",
   },
   {
     icon: Building2,
-    title: 'Founders figuring out where AI fits',
-    description: "You're trying to work out whether AI belongs in your product or business at all — and want a clearer framework for deciding before you commit a roadmap to it.",
+    title: 'Founders',
+    description: 'Wondering where AI fits in your business.',
   },
   {
     icon: Code2,
-    title: 'Developers evaluating what’s feasible',
-    description: 'The session is built for design and product practitioners, but developers who want to understand the design layer around AI systems will find it useful.',
+    title: 'Developers',
+    description: "Evaluating what's feasible.",
     note: 'Not a coding or engineering workshop.',
   },
 ];
 
 const WORKSHOP_OUTCOMES = [
-  'Treat AI as a design material with specific functions and values — not a magic fix to slap on top of an existing experience',
-  "Identify the gaps in your users' context worth designing AI solutions for, and the gaps that don't need AI at all",
-  'Determine which AI enablements provide real value for your users and your business',
-  'Evaluate the specific AI capabilities that should sit underneath a given user experience',
-  'A shared language your team uses to communicate clearly around AI design and development',
+  'Treat AI as a design material, with specific functions and values, rather than a magic fix to slap on top of an existing experience.',
+  "Identify gaps in your users' context worth designing AI solutions for vs. gaps that don't need AI at all.",
+  'Determine what AI enablements provide real value for your users and business.',
+  'Evaluate which specific AI capabilities create the foundation for a given user experience.',
+  'Build a shared language your team can use to clearly communicate around AI design and development.',
 ];
 
 type WorkshopSession = {
@@ -2147,69 +2147,54 @@ const WORKSHOP_SESSIONS: WorkshopSession[] = [
     city: 'The Hague',
     venue: 'Worth Works',
     date: 'Friday, May 29, 2026 · Afternoon',
-    status: { label: 'Venue confirmed', tone: 'confirmed' },
-    rsvpHref: 'mailto:brandon@quietloudlab.com?subject=The%20Hague%20Workshop%20%E2%80%94%20May%2029',
-    event: 'Speaking Detail: Hague RSVP',
+    status: { label: 'Tickets on sale', tone: 'confirmed' },
+    rsvpHref: 'https://www.eventbrite.com/e/workshop-ai-as-a-design-material-the-hague-tickets-1988565280284?aff=oddtdtcreator',
+    event: 'Speaking Detail: Hague Tickets',
   },
   {
     city: 'Amsterdam',
     venue: 'Venue TBD',
     date: 'Saturday, May 30, 2026 · Afternoon',
-    status: { label: 'Venue pending', tone: 'pending' },
-    rsvpHref: 'mailto:brandon@quietloudlab.com?subject=Amsterdam%20Workshop%20%E2%80%94%20May%2030',
-    event: 'Speaking Detail: Amsterdam RSVP',
+    status: { label: 'Tickets on sale', tone: 'confirmed' },
+    rsvpHref: 'https://www.eventbrite.com/e/workshop-ai-as-a-design-material-amsterdam-tickets-1988569576133?aff=oddtdtcreator',
+    event: 'Speaking Detail: Amsterdam Tickets',
   },
 ];
 
 const WORKSHOP_PRICING = [
-  { tier: 'Workshop Registration', sub: 'Your company is reimbursing you, or purchasing the ticket directly', amount: '€175' },
-  { tier: 'Out-of-Pocket / Individual', sub: "You won't be reimbursed by your employer or organization", amount: '€89' },
-  { tier: 'Need a Break', sub: 'Student or low-income — a very limited number of subsidized seats', amount: '€35' },
-];
-
-const WORKSHOP_APPROACH = [
-  {
-    title: 'Your context, not ours',
-    body: "Sessions are structured around your team's actual products and challenges — not generic case studies or hypothetical scenarios.",
-  },
-  {
-    title: 'Tools you keep',
-    body: 'Every session produces reusable canvases and frameworks your team can apply independently — long after the workshop ends.',
-  },
-  {
-    title: 'Process, not prescription',
-    body: 'Modular tools and activities pulled to match the room — not a fixed script you have to follow in order.',
-  },
+  { tier: 'Workshop Registration', sub: 'Select this price if your company is reimbursing you, or directly purchasing your ticket.', amount: '€175' },
+  { tier: 'Out-of-pocket / Individual', sub: 'Select this price if you will NOT be reimbursed by your employer or other organization.', amount: '€89' },
+  { tier: 'Need a break', sub: "For those whose personal circumstances (student/low income) make participating cost-prohibitive, we offer a very limited number of subsidized tickets.", amount: '€35' },
 ];
 
 const WORKSHOP_FAQ = [
   {
+    q: 'Do I qualify for a €35 ticket?',
+    a: "The €35 ticket exists for people who otherwise couldn't afford to attend e.g. students or those currently without work. This is run on the honor system, but there are a very limited amount of tickets at these prices, so please, if you can afford the €89 ticket, purchase that one.",
+  },
+  {
     q: "How is this different from other AI workshops I've seen?",
-    a: "Most AI workshops teach you how to use AI tools more efficiently. This one teaches you how to think about where AI belongs in the first place. You won't leave with a list of prompts — you'll leave with a framework for evaluating AI decisions your team keeps using after the session ends.",
+    a: "Most AI workshops teach you how to use AI tools more efficiently. This one teaches you how to think about where AI belongs in the first place. You won't leave with a list of prompts. You'll leave with a framework for evaluating AI decisions your team can keep using after the session ends.",
+  },
+  {
+    q: 'What should I bring or prepare?',
+    a: "No major prep needed! If you'd like to ground this work in reality, come with a product, project, or design challenge in mind. All materials and canvases are provided on the day of, and an example scenario will be provided for those who want to come in fresh.",
+  },
+  {
+    q: 'Is this workshop in English?',
+    a: 'Yes, the session is conducted entirely in English.',
+  },
+  {
+    q: 'Can my whole team attend?',
+    a: "Yes, and honestly it works better that way. If you'd like to bring a larger group or want a session built entirely around your organization's context, reach out about a private in-company format or group ticket prices.",
+  },
+  {
+    q: 'My company needs to pay via invoice rather than upfront. Is that possible?',
+    a: "Yes. Reach out before the event at brandon@quietloudlab.com and we'll sort it out. This is common, and not a problem.",
   },
   {
     q: 'Do I need to know how to code or have a technical AI background?',
     a: 'No. This workshop is about design thinking and decision-making around AI, not building or implementing it. You bring the product and human context; we bring the framework for working with it.',
-  },
-  {
-    q: 'What should I bring or prepare?',
-    a: "No major prep needed. If you'd like to ground the work in reality, come with a product, project, or design challenge in mind. All materials and canvases are provided on the day, and an example scenario is on hand for anyone coming in fresh.",
-  },
-  {
-    q: 'Can my whole team attend?',
-    a: "Yes — and honestly, it works better that way. If you'd like to bring a larger group, or want a session built entirely around your organization's context, reach out about a private in-company format or group ticket pricing.",
-  },
-  {
-    q: 'Do I qualify for the €35 ticket?',
-    a: "The €35 tier exists for people who otherwise couldn't afford to attend — students or those currently without work. It runs on the honor system, with a very limited number of seats at this price. If you can afford the €89 ticket, please pick that one.",
-  },
-  {
-    q: 'My company needs to pay via invoice rather than upfront — is that possible?',
-    a: "Yes. Reach out before the event at brandon@quietloudlab.com and we'll sort it out. This is common, not a problem.",
-  },
-  {
-    q: 'Is the workshop in English?',
-    a: 'Yes — the session is conducted entirely in English.',
   },
 ];
 
@@ -2250,6 +2235,66 @@ const WorkshopFAQ = () => {
   );
 };
 
+const StickyTicketBar = () => {
+  const reduceMotion = useReducedMotion();
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setVisible(window.scrollY > 500);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const slideOffset = reduceMotion ? 0 : 60;
+
+  return (
+    <AnimatePresence>
+      {visible ? (
+        <motion.aside
+          aria-label="Reserve a workshop seat"
+          initial={{ y: slideOffset, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: slideOffset, opacity: 0 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
+          className="fixed bottom-[68px] md:bottom-0 left-0 right-0 z-30 bg-lab-black text-white border-t border-lab-olive/30 shadow-2xl"
+        >
+          <div className="max-w-screen-xl mx-auto px-4 md:px-12 py-3 md:py-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="h-1.5 w-1.5 rounded-full bg-lab-olive animate-pulse" aria-hidden="true" />
+              <p className="font-mono text-[11px] md:text-xs uppercase tracking-widest text-white/80">
+                Reserve a seat
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <a
+                href="https://www.eventbrite.com/e/workshop-ai-as-a-design-material-the-hague-tickets-1988565280284?aff=oddtdtcreator"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent('Speaking Sticky: Hague Tickets')}
+                className="inline-flex items-center justify-center gap-2 bg-white text-lab-black px-4 md:px-5 py-2.5 font-mono text-[11px] md:text-xs uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black"
+              >
+                The Hague · May 29 <ArrowRight size={12} aria-hidden="true" />
+              </a>
+              <a
+                href="https://www.eventbrite.com/e/workshop-ai-as-a-design-material-amsterdam-tickets-1988569576133?aff=oddtdtcreator"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent('Speaking Sticky: Amsterdam Tickets')}
+                className="inline-flex items-center justify-center gap-2 border border-white/30 text-white px-4 md:px-5 py-2.5 font-mono text-[11px] md:text-xs uppercase tracking-widest hover:bg-lab-olive hover:border-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black"
+              >
+                Amsterdam · May 30 <ArrowRight size={12} aria-hidden="true" />
+              </a>
+            </div>
+          </div>
+        </motion.aside>
+      ) : null}
+    </AnimatePresence>
+  );
+};
+
 const AIAsDesignMaterialPage = () => {
   useEffect(() => {
     document.title = 'AI as a Design Material · Speaking · quietloudlab';
@@ -2257,10 +2302,11 @@ const AIAsDesignMaterialPage = () => {
 
   return (
     <PageShell>
+      <StickyTicketBar />
       <DetailHero
         eyebrow="Workshop Series · Europe · May 2026"
         title="AI as a Design Material"
-        lead="A hands-on workshop for designers and product teams who want to build AI that works for real people and real businesses. Three hours on where AI belongs (and where it doesn't), how to design the human layer around it, and the frameworks your team keeps using after."
+        lead="A hands-on workshop for designers and product teams who want to build AI that works for real people and real businesses."
         meta={[
           { key: 'Duration', value: '3 hours' },
           { key: 'Format', value: 'In-person' },
@@ -2275,7 +2321,7 @@ const AIAsDesignMaterialPage = () => {
           <div className="col-span-1 md:col-span-4">
             <RevealText>
               <p className="font-serif text-lg text-gray-600 leading-relaxed max-w-md">
-                Built for the practitioners actually making decisions about AI in products — not watching from the sidelines, and not looking for a ChatGPT productivity course.
+                This workshop was built with designers in mind, and the lessons span across product teams. If you're a product manager trying to figure out what to build, a developer evaluating what's feasible, or a founder wondering where AI fits in your business, you'll leave with clarity you didn't walk in with.
               </p>
             </RevealText>
           </div>
@@ -2297,17 +2343,6 @@ const AIAsDesignMaterialPage = () => {
             </div>
           </div>
         </LabGrid>
-
-        <RevealText delay={0.15}>
-          <div className="mt-8 bg-lab-olive/10 rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
-            <p className="font-mono text-xs uppercase tracking-widest text-lab-olive shrink-0">
-              Not for you if
-            </p>
-            <p className="font-sans text-sm md:text-base text-gray-700 leading-relaxed">
-              You're looking for a prompt engineering course, a "ChatGPT for productivity" session, or a general AI literacy overview. This is for people already building AI into products, and want to do it thoughtfully.
-            </p>
-          </div>
-        </RevealText>
       </section>
 
       <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="cover-heading">
@@ -2316,25 +2351,28 @@ const AIAsDesignMaterialPage = () => {
           <div className="col-span-1 md:col-span-6">
             <RevealText>
               <p className="font-serif text-lg md:text-xl text-gray-600 leading-relaxed max-w-xl mb-6">
-                Three hours on the conceptual foundation and a working toolkit for designing useful AI solutions — well beyond building chatbots. Your team leaves with reusable frameworks, not a slide deck you'll forget about.
+                From the creator of the AI Interaction Atlas, this workshop is designed to help you think differently about how we make AI systems work well for actual humans, and build the foundational skills for identifying and communicating why &amp; how we might use AI within a larger solution.
               </p>
             </RevealText>
             <RevealText delay={0.1}>
-              <p className="font-serif text-base text-gray-600 leading-relaxed max-w-xl">
-                You'll pull from modular tools and activities based on the actual needs of your team and users. The workshop is not a fixed script — it adapts to your use case.
+              <p className="font-serif text-base text-gray-600 leading-relaxed max-w-xl mb-6">
+                AI is a powerful technology that seems to be the answer to every problem, but in reality only provides value when designed right. Wanting AI and knowing where it belongs are two very different things.
               </p>
             </RevealText>
             <RevealText delay={0.15}>
-              <div className="mt-8 flex flex-wrap gap-2">
-                {['3 hours', 'In-person', 'Up to 50 people', 'Design & Product teams'].map((tag) => (
-                  <span key={tag} className="border border-lab-black/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-widest text-gray-600">{tag}</span>
-                ))}
-              </div>
+              <p className="font-serif text-base text-gray-600 leading-relaxed max-w-xl mb-6">
+                Too often, teams are compelled to implement AI (often by their stakeholders) without ever asking the important questions: does the problem truly call for AI? What's the ROI? Where specifically is AI needed? How might we best take advantage of the capabilities AI can perform? What happens to the people we design AI solutions for?
+              </p>
+            </RevealText>
+            <RevealText delay={0.2}>
+              <p className="font-serif italic text-base text-gray-600 leading-relaxed max-w-xl">
+                You can design AI systems that genuinely improve people's work and lives, but it requires a new framing that understands the materiality of AI within the contexts we build.
+              </p>
             </RevealText>
           </div>
           <div className="col-span-1 md:col-span-6">
             <RevealText delay={0.1}>
-              <p className="font-mono text-xs uppercase tracking-widest text-gray-500 mb-4">What you'll leave with</p>
+              <p className="font-mono text-xs uppercase tracking-widest text-gray-500 mb-4">In this three-hour workshop you'll learn how to</p>
               <ul className="border-t border-lab-black/15">
                 {WORKSHOP_OUTCOMES.map((outcome) => (
                   <li key={outcome} className="flex gap-3 border-b border-lab-black/15 py-3 font-sans text-base text-lab-black leading-relaxed">
@@ -2346,6 +2384,25 @@ const AIAsDesignMaterialPage = () => {
             </RevealText>
           </div>
         </LabGrid>
+
+        <RevealText delay={0.2}>
+          <p className="mt-12 md:mt-16 font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl">
+            This workshop gives you a conceptual foundation and a working toolkit for designing innovative and useful AI solutions (beyond building chatbots). You'll pull from modular tools and activities based on the actual needs of your team and users. The workshop is not a fixed script, but adapts to your use case.
+          </p>
+        </RevealText>
+
+        <RevealText delay={0.25}>
+          <div className="mt-8 bg-lab-concrete rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
+            <p className="font-mono text-xs uppercase tracking-widest text-gray-500 shrink-0">Built on</p>
+            <p className="font-sans text-base text-lab-black leading-relaxed">
+              The workshop runs on the{' '}
+              <a href="https://ai-interaction.com" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Speaking Detail: Atlas Link')} className="text-lab-olive underline decoration-lab-olive/40 hover:decoration-lab-olive transition">
+                AI Interaction Atlas
+              </a>
+              , an open-source framework for mapping AI capabilities across human interactions.
+            </p>
+          </div>
+        </RevealText>
       </section>
 
       <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="sessions-heading">
@@ -2373,10 +2430,12 @@ const AIAsDesignMaterialPage = () => {
                     <div className="mt-5">
                       <a
                         href={session.rsvpHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         onClick={() => trackEvent(session.event)}
                         className="inline-flex items-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
                       >
-                        Reserve a seat <ArrowRight size={12} aria-hidden="true" />
+                        Get tickets on Eventbrite <ArrowRight size={12} aria-hidden="true" />
                       </a>
                     </div>
                   </div>
@@ -2401,51 +2460,15 @@ const AIAsDesignMaterialPage = () => {
                 ))}
               </div>
               <p className="mt-4 font-serif italic text-sm text-gray-500 leading-relaxed">
-                Pricing runs on the honor system. The €35 tier is for students and folks whose circumstances make the regular price cost-prohibitive — please don't take one if you can afford the €89 ticket, and please don't take one and not show up. You'd be keeping someone else from getting it.
-              </p>
-              <p className="mt-4 font-sans text-sm text-gray-600 leading-relaxed bg-lab-concrete rounded-xl p-4">
-                <span className="font-medium text-lab-black">Prefer to be invoiced?</span> If your company needs to pay via invoice rather than upfront, that's fine — reach out directly and we'll sort it out.
+                Please don't take a €35 ticket if you can afford the Out-of-pocket ticket, and please don't take one and not show up. You're keeping someone else from getting it.
               </p>
             </RevealText>
           </div>
         </LabGrid>
       </section>
 
-      <div className="bg-lab-concrete">
-        <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="approach-heading">
-          <DetailSectionHeader id="approach-heading" number="04" title="How we work" kicker="A few commitments, not a methodology" />
-          <div className="grid grid-cols-1 md:grid-cols-3 border-t border-lab-black/15">
-            {WORKSHOP_APPROACH.map((row, i) => (
-              <RevealText key={row.title} delay={i * 0.08}>
-                <div className={`py-8 md:py-10 ${i > 0 ? 'md:pl-8' : ''} ${i < WORKSHOP_APPROACH.length - 1 ? 'md:pr-8 md:border-r border-lab-black/15' : ''}`}>
-                  <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-3">
-                    {row.title}
-                  </p>
-                  <p className="font-serif text-base text-gray-600 leading-relaxed">
-                    {row.body}
-                  </p>
-                </div>
-              </RevealText>
-            ))}
-          </div>
-
-          <RevealText delay={0.2}>
-            <div className="mt-10 md:mt-12 bg-lab-white rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
-              <p className="font-mono text-xs uppercase tracking-widest text-gray-500 shrink-0">Built on</p>
-              <p className="font-sans text-base text-lab-black leading-relaxed">
-                The workshop runs on the{' '}
-                <a href="https://ai-interaction.com" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Speaking Detail: Atlas Link')} className="text-lab-olive underline decoration-lab-olive/40 hover:decoration-lab-olive transition">
-                  AI Interaction Atlas
-                </a>
-                , an open-source framework for mapping AI capabilities across human interactions.
-              </p>
-            </div>
-          </RevealText>
-        </section>
-      </div>
-
       <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="facilitators-heading">
-        <DetailSectionHeader id="facilitators-heading" number="05" title="Facilitators" kicker="Who's in the room" />
+        <DetailSectionHeader id="facilitators-heading" number="04" title="Facilitators" kicker="Who's in the room" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <RevealText>
             <div className="bg-lab-concrete rounded-2xl p-6 md:p-8 h-full">
@@ -2453,7 +2476,7 @@ const AIAsDesignMaterialPage = () => {
               <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Founder, quietloudlab</p>
               <p className="mt-1 font-mono text-xs text-gray-500">Dallas · Amsterdam (late 2026)</p>
               <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
-                Independent designer and researcher, founder at quietloudlab, and creator of the AI Interaction Atlas. Over a decade at IBM Innovation Studio designing human-centered AI systems for clients across industry sectors and advising IBM Research on human-AI co-creativity. CHI 2023 research informs his approach: AI products that empower human creativity rather than replace it. Through quietloudlab, he works with startups and innovation teams on emerging tech experiences grounded in cognitive psychology, practical product strategy, and the everyday human experience.
+                Brandon Harwood is an independent designer and researcher, founder at quietloudlab, and the creator of the AI Interaction Atlas. He has over a decade of experience at IBM Innovation Studio, designing human-centered AI systems for clients across industry sectors and advising IBM Research on human-AI co-creativity, with research published at CHI 2023 informing his approach to designing AI products that empowers human creativity rather than replace it. Through quietloudlab, he works with startups and innovation teams to design emerging technology experiences grounded in cognitive psychology, practical product strategy, and the everyday human experience.
               </p>
               <ul className="mt-6 space-y-2">
                 {['Decade at IBM Innovation Studio', 'CHI 2023 published research', 'Creator, AI Interaction Atlas', 'Speaker, UXLX 2026'].map((c) => (
@@ -2468,7 +2491,7 @@ const AIAsDesignMaterialPage = () => {
               <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Strategic Product Designer</p>
               <p className="mt-1 font-mono text-xs text-gray-500">The Hague · Netherlands dates only</p>
               <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
-                Matthijs's background covers AI research (Carnegie Mellon), enterprise service design, and product strategy with Dutch startups, scaleups, and enterprises. He's been building and running design communities in the Netherlands for years, including LeanUX The Hague — practical, pragmatic, ground-level knowledge that shapes every session.
+                Matthijs Zwinderman's background covers AI research (Carnegie Mellon), enterprise service design, and product strategy with Dutch startups, scaleups, and enterprises. He's been building and running design communities in the Netherlands for years, including LeanUX The Hague, using his practical and pragmatic ground-level knowledge to shape every session.
               </p>
               <ul className="mt-6 space-y-2">
                 {['AI Research, Carnegie Mellon University', 'Enterprise service design & product strategy', 'Organizer, LeanUX The Hague'].map((c) => (
@@ -2481,7 +2504,7 @@ const AIAsDesignMaterialPage = () => {
       </section>
 
       <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="faq-heading">
-        <DetailSectionHeader id="faq-heading" number="06" title="FAQ" kicker="Logistics and common questions" />
+        <DetailSectionHeader id="faq-heading" number="05" title="FAQ" kicker="Logistics and common questions" />
         <LabGrid>
           <div className="col-span-1 md:col-span-4">
             <RevealText>
