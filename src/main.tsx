@@ -2420,38 +2420,37 @@ const AIAsDesignMaterialPage = () => {
         </LabGrid>
       </section>
 
-      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="cover-heading">
+      <section className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="cover-heading">
         <DetailSectionHeader id="cover-heading" number="02" title="What we cover" kicker="A working session, not a lecture" />
-        <LabGrid>
-          <div className="col-span-1 md:col-span-6">
+
+        <RevealText>
+          <p className="mt-12 md:mt-16 font-serif text-xl md:text-2xl text-lab-black leading-relaxed max-w-3xl">
+            From the creator of the AI Interaction Atlas, this workshop is designed to help you think differently about how we make AI systems work well for actual humans, and build the foundational skills for identifying and communicating why &amp; how we might use AI within a larger solution.
+          </p>
+        </RevealText>
+
+        <LabGrid className="mt-16 md:mt-24">
+          <div className="col-span-1 md:col-span-7 space-y-6 md:space-y-7">
             <RevealText>
-              <p className="font-serif text-lg md:text-xl text-gray-600 leading-relaxed max-w-xl mb-6">
-                From the creator of the AI Interaction Atlas, this workshop is designed to help you think differently about how we make AI systems work well for actual humans, and build the foundational skills for identifying and communicating why &amp; how we might use AI within a larger solution.
-              </p>
-            </RevealText>
-            <RevealText delay={0.1}>
-              <p className="font-serif text-base text-gray-600 leading-relaxed max-w-xl mb-6">
+              <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-2xl">
                 AI is a powerful technology that seems to be the answer to every problem, but in reality only provides value when designed right. Wanting AI and knowing where it belongs are two very different things.
               </p>
             </RevealText>
-            <RevealText delay={0.15}>
-              <p className="font-serif text-base text-gray-600 leading-relaxed max-w-xl mb-6">
+            <RevealText delay={0.08}>
+              <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-2xl">
                 Too often, teams are compelled to implement AI (often by their stakeholders) without ever asking the important questions: does the problem truly call for AI? What's the ROI? Where specifically is AI needed? How might we best take advantage of the capabilities AI can perform? What happens to the people we design AI solutions for?
               </p>
             </RevealText>
-            <RevealText delay={0.2}>
-              <p className="font-serif italic text-base text-gray-600 leading-relaxed max-w-xl">
-                You can design AI systems that genuinely improve people's work and lives, but it requires a new framing that understands the materiality of AI within the contexts we build.
-              </p>
-            </RevealText>
           </div>
-          <div className="col-span-1 md:col-span-6">
-            <RevealText delay={0.1}>
-              <p className="font-mono text-xs uppercase tracking-widest text-gray-500 mb-4">In this three-hour workshop you'll learn how to</p>
-              <ul className="border-t border-lab-black/15">
+          <div className="col-span-1 md:col-span-5 mt-10 md:mt-0">
+            <RevealText delay={0.12}>
+              <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-6">
+                In this three-hour workshop you'll learn how to
+              </p>
+              <ul className="space-y-5 md:space-y-6">
                 {WORKSHOP_OUTCOMES.map((outcome) => (
-                  <li key={outcome} className="flex gap-3 border-b border-lab-black/15 py-3 font-sans text-base text-lab-black leading-relaxed">
-                    <span className="text-lab-olive shrink-0" aria-hidden="true">—</span>
+                  <li key={outcome} className="flex gap-3.5 font-sans text-base text-lab-black leading-relaxed">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-lab-olive shrink-0" aria-hidden="true" />
                     <span>{outcome}</span>
                   </li>
                 ))}
@@ -2460,14 +2459,22 @@ const AIAsDesignMaterialPage = () => {
           </div>
         </LabGrid>
 
-        <RevealText delay={0.2}>
-          <p className="mt-12 md:mt-16 font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl">
+        <RevealText delay={0.18}>
+          <figure className="mt-20 md:mt-28 max-w-3xl border-l-2 border-lab-olive pl-6 md:pl-8">
+            <blockquote className="font-serif italic text-xl md:text-2xl text-lab-black leading-relaxed">
+              You can design AI systems that genuinely improve people's work and lives, but it requires a new framing that understands the materiality of AI within the contexts we build.
+            </blockquote>
+          </figure>
+        </RevealText>
+
+        <RevealText delay={0.22}>
+          <p className="mt-20 md:mt-28 font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl">
             This workshop gives you a conceptual foundation and a working toolkit for designing innovative and useful AI solutions (beyond building chatbots). You'll pull from modular tools and activities based on the actual needs of your team and users. The workshop is not a fixed script, but adapts to your use case.
           </p>
         </RevealText>
 
-        <RevealText delay={0.25}>
-          <div className="mt-8 bg-lab-concrete rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
+        <RevealText delay={0.26}>
+          <div className="mt-10 md:mt-12 bg-lab-concrete rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
             <p className="font-mono text-xs uppercase tracking-widest text-gray-500 shrink-0">Built on</p>
             <p className="font-sans text-base text-lab-black leading-relaxed">
               The workshop runs on the{' '}
