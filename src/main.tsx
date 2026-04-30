@@ -1908,7 +1908,7 @@ const DetailHero = ({
             </h1>
           </RevealText>
           <RevealText delay={0.14}>
-            <p className="font-sans text-lg md:text-xl text-gray-700 leading-relaxed max-w-2xl">
+            <p className="font-sans text-base text-lab-black leading-relaxed max-w-2xl">
               {lead}
             </p>
           </RevealText>
@@ -2511,14 +2511,14 @@ const AIAsDesignMaterialPage = () => {
               <PageLink
                 to="/speaking/barcelona-2026"
                 onClick={() => trackEvent('Speaking Header: Barcelona Notice')}
-                className="font-sans text-sm text-gray-700 hover:text-lab-olive transition-colors inline-flex items-center gap-1.5"
+                className="font-sans text-sm text-lab-black hover:text-lab-olive transition-colors inline-flex items-center gap-1.5"
               >
                 Barcelona · May 17–22 <ArrowRight size={12} aria-hidden="true" />
               </PageLink>
               <PageLink
                 to="/speaking/berlin-2026"
                 onClick={() => trackEvent('Speaking Header: Berlin Notice')}
-                className="font-sans text-sm text-gray-700 hover:text-lab-olive transition-colors inline-flex items-center gap-1.5"
+                className="font-sans text-sm text-lab-black hover:text-lab-olive transition-colors inline-flex items-center gap-1.5"
               >
                 Berlin · May 22–27 <ArrowRight size={12} aria-hidden="true" />
               </PageLink>
@@ -2549,7 +2549,7 @@ const AIAsDesignMaterialPage = () => {
         <LabGrid>
           <div className="col-span-1 md:col-span-6">
             <RevealText>
-              <p className="font-serif text-lg text-gray-600 leading-relaxed max-w-xl">
+              <p className="font-serif text-base text-gray-600 leading-relaxed max-w-xl">
                 This workshop was built with designers in mind, and the lessons span across product teams. If you're a product manager trying to figure out what to build, a developer evaluating what's feasible, or a founder wondering where AI fits in your business, you'll leave with clarity you didn't walk in with.
               </p>
             </RevealText>
@@ -2718,11 +2718,11 @@ const AIAsDesignMaterialPage = () => {
                       <p className="font-sans text-sm text-lab-black">{row.tier}</p>
                       <p className="mt-0.5 font-mono text-sm text-gray-600 leading-relaxed">{row.sub}</p>
                     </div>
-                    <p className="font-sans text-xl text-lab-black font-medium shrink-0">{row.amount}</p>
+                    <p className="font-sans text-lg text-lab-black font-medium shrink-0">{row.amount}</p>
                   </div>
                 ))}
               </div>
-              <p className="mt-6 font-serif italic text-sm text-gray-600 leading-relaxed max-w-sm mx-auto">
+              <p className="mt-6 font-serif text-sm text-gray-600 leading-relaxed max-w-sm mx-auto">
                 Please don't take a €35 ticket if you can afford the Out-of-pocket ticket, and please don't take one and not show up. You're keeping someone else from getting it.
               </p>
             </RevealText>
