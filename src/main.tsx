@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { motion, useScroll, useInView, AnimatePresence, useSpring, useTransform, useReducedMotion, useMotionValueEvent } from 'framer-motion';
-import { ArrowRight, ArrowDown, Menu, X, Check, Loader2, BrainCircuit, User, Settings, Database, SlidersHorizontal, Smartphone, Users, Compass, Code2, Building2, Video, Mic, type LucideIcon } from 'lucide-react';
+import { ArrowRight, ArrowDown, Menu, X, Check, Loader2, BrainCircuit, User, Settings, Database, SlidersHorizontal, Smartphone, Users, Compass, Code2, Building2, Video, Mic, Plus, type LucideIcon } from 'lucide-react';
 import LogoSvg from './img/quietloudlab_logo_white.svg?react';
 
 // Fathom Analytics
@@ -326,7 +326,7 @@ const TimeDisplay = () => {
   }, []);
 
   return (
-    <div className="flex items-center space-x-2 font-mono text-sm text-gray-500" aria-label="Current time in Dallas">
+    <div className="flex items-center space-x-2 font-mono text-sm text-gray-600" aria-label="Current time in Dallas">
       <div className="w-2 h-2 rounded-full bg-lab-olive animate-pulse" aria-hidden="true" />
       <span>DAL {time}</span>
     </div>
@@ -454,7 +454,7 @@ const ImagePlaceholder = ({
     ) : (
       <>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.8),_transparent_55%),linear-gradient(135deg,_rgba(107,116,86,0.12),_rgba(255,227,77,0.18))]" />
-        <div className="absolute inset-0 p-4 text-gray-500">
+        <div className="absolute inset-0 p-4 text-gray-600">
           {index ? <div className="mb-4 text-xs font-bold">#{index}</div> : null}
           <div className="flex h-full items-center justify-center text-center text-xs font-medium leading-5 sm:text-sm">
             {description}
@@ -940,7 +940,7 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <div>
-        <label htmlFor="name" className="block font-mono text-xs uppercase tracking-widest text-gray-500 mb-2">Name *</label>
+        <label htmlFor="name" className="block font-mono text-xs uppercase tracking-widest text-gray-600 mb-2">Name *</label>
         <input
           type="text"
           name="name"
@@ -953,7 +953,7 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
       </div>
 
       <div>
-        <label htmlFor="email" className="block font-mono text-xs uppercase tracking-widest text-gray-500 mb-2">Email *</label>
+        <label htmlFor="email" className="block font-mono text-xs uppercase tracking-widest text-gray-600 mb-2">Email *</label>
         <input
           type="email"
           name="email"
@@ -966,7 +966,7 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
       </div>
 
       <div>
-        <label htmlFor="message" className="block font-mono text-xs uppercase tracking-widest text-gray-500 mb-2">Message</label>
+        <label htmlFor="message" className="block font-mono text-xs uppercase tracking-widest text-gray-600 mb-2">Message</label>
         <textarea
           ref={textareaRef}
           name="message"
@@ -980,7 +980,7 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
       </div>
 
       <div className="pt-2">
-        <label className="block font-mono text-xs uppercase tracking-widest text-gray-500 mb-4">I'm interested in...</label>
+        <label className="block font-mono text-xs uppercase tracking-widest text-gray-600 mb-4">I'm interested in...</label>
         <div className="space-y-3">
           {INTEREST_OPTIONS.map((option, i) => (
             <label key={i} className="flex items-start gap-3 cursor-pointer group">
@@ -1063,7 +1063,7 @@ const NewsletterForm = () => {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-2">
-      <label htmlFor="newsletter-email" className="font-mono text-xs uppercase tracking-widest text-gray-500">Stay Updated</label>
+      <label htmlFor="newsletter-email" className="font-mono text-xs uppercase tracking-widest text-gray-600">Stay Updated</label>
       <div className="flex gap-0">
         <input
           type="email"
@@ -1083,7 +1083,7 @@ const NewsletterForm = () => {
           {status === 'submitting' ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <ArrowRight size={14} aria-hidden="true" />}
         </button>
       </div>
-      {status === 'error' && <p role="alert" className="text-red-600 font-mono text-[10px]">Error subscribing.</p>}
+      {status === 'error' && <p role="alert" className="text-red-600 font-mono text-xs">Error subscribing.</p>}
     </form>
   );
 };
@@ -1202,7 +1202,7 @@ const Hero = () => {
                </a>
             </Magnetic>
           </div>
-          <ArrowDown size={16} className="text-gray-500 animate-bounce hidden md:block" />
+          <ArrowDown size={16} className="text-gray-600 animate-bounce hidden md:block" />
         </div>
       </div>
     </section>
@@ -1212,7 +1212,7 @@ const Hero = () => {
     <section className="pt-40 md:pt-52 pb-40 md:pb-52 px-6 md:px-12">
       <div className="max-w-screen-2xl mx-auto">
         <RevealText>
-          <p className="font-mono text-sm text-gray-500 uppercase tracking-widest mb-6">[ EST. 2024 ] Exploring spaces between people, systems, technology, and futures.</p>
+          <p className="font-mono text-sm text-gray-600 uppercase tracking-widest mb-6">[ EST. 2024 ] Exploring spaces between people, systems, technology, and futures.</p>
         </RevealText>
         <RevealText delay={0.1}>
           <p className="text-3xl md:text-5xl lg:text-6xl font-sans text-gray-700" style={{ lineHeight: 1.6 }}>
@@ -1224,7 +1224,7 @@ const Hero = () => {
             <a href="https://calendly.com/brandonaharwood/ai-interaction-review" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Book AI Interaction Review')} className="inline-flex items-center gap-2 bg-lab-black text-white px-8 py-4 font-mono text-sm uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-black">
               Book an AI Interaction Review <ArrowRight size={14} />
             </a>
-            <p className="mt-4 max-w-2xl font-sans text-base text-gray-500 leading-relaxed">
+            <p className="mt-4 max-w-2xl font-sans text-base text-gray-600 leading-relaxed">
               A free 30-minute session where we look at your AI product or concept through the lens of the Atlas and identify the biggest gaps in how your system works for your users. You&apos;ll leave with 2–3 specific things to fix or explore.
             </p>
           </div>
@@ -1290,7 +1290,7 @@ const HouseBuiltTools = () => {
             <div className="relative z-10 p-6 md:p-8 lg:p-10 pb-0 md:pb-0 lg:pb-0">
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-3xl md:text-4xl font-sans tracking-tight leading-[1.1]">AI Interaction<br/>Atlas</h3>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white shrink-0 mt-1 hidden sm:block">Open Source • Apache 2.0</span>
+                <span className="font-mono text-xs uppercase tracking-[0.2em] text-white shrink-0 mt-1 hidden sm:block">Open Source • Apache 2.0</span>
               </div>
               <p className="font-sans text-[15px] text-gray-400 leading-relaxed max-w-lg mb-2">
                 A shared vocabulary for designing and governing AI systems, explicitly defining capabilities, constraints, interactions and responsibility.
@@ -1311,7 +1311,7 @@ const HouseBuiltTools = () => {
                   <div key={dim.name} className="bg-lab-black p-3 lg:p-4">
                     <dim.icon size={18} className={`${dim.color} mb-2`} />
                     <p className="font-sans text-[13px] font-medium text-white mb-1">{dim.name}</p>
-                    <p className="font-mono text-[10px] text-gray-500 leading-relaxed">{dim.desc}</p>
+                    <p className="font-mono text-xs text-gray-600 leading-relaxed">{dim.desc}</p>
                   </div>
                 ))}
               </div>
@@ -1347,7 +1347,7 @@ const HouseBuiltTools = () => {
             <div className="relative z-10 p-6 md:p-8 lg:p-10 pb-0 bg-gradient-to-b from-lab-black via-lab-black/90 to-transparent">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-3xl md:text-4xl font-sans tracking-tight leading-[1.1]">AI Interaction<br/>Studio</h3>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white shrink-0 mt-1 hidden sm:block">Visual Mapping Tool</span>
+                <span className="font-mono text-xs uppercase tracking-[0.2em] text-white shrink-0 mt-1 hidden sm:block">Visual Mapping Tool</span>
               </div>
               <p className="font-sans text-[15px] text-gray-400 leading-relaxed max-w-lg mb-4">
                 Ideate and visualize any human-AI experience, documenting how the system lives in the world, built on the Atlas taxonomy.
@@ -1390,7 +1390,7 @@ const Contact = ({ contactIntent }: { contactIntent: ContactIntent | null }) => 
 
         <div className="col-span-1 md:col-span-5 hidden md:block">
           <RevealText delay={0.2}>
-            <div className="md:sticky md:top-32 font-mono text-sm text-gray-500 space-y-8 pl-8 border-l border-lab-black/10">
+            <div className="md:sticky md:top-32 font-mono text-sm text-gray-600 space-y-8 pl-8 border-l border-lab-black/10">
               <div>
                 <p className="uppercase tracking-widest mb-2 text-lab-olive">Location</p>
                 <p>Dallas, TX / Remote</p>
@@ -1432,7 +1432,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-t border-white/20 pt-8 font-mono text-xs text-gray-500">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-t border-white/20 pt-8 font-mono text-xs text-gray-600">
           <div className="mb-4 md:mb-0">
             <span>&copy; 2026 quietloudlab. All rights reserved.</span>
           </div>
@@ -1456,7 +1456,7 @@ const SpeakingStatusBadge = ({ label, tone }: { label: string; tone: StatusTone 
       : 'bg-lab-black/5 text-gray-700 border-lab-black/10';
   const dotClass = tone === 'confirmed' ? 'bg-lab-olive' : 'bg-gray-400';
   return (
-    <span className={`inline-flex items-center gap-2 border px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${toneClass}`}>
+    <span className={`inline-flex items-center gap-2 border px-2 py-1 font-mono text-xs uppercase tracking-widest ${toneClass}`}>
       <span className={`h-1.5 w-1.5 rounded-full ${dotClass}`} aria-hidden="true" />
       {label}
     </span>
@@ -1466,7 +1466,7 @@ const SpeakingStatusBadge = ({ label, tone }: { label: string; tone: StatusTone 
 const SpeakingBackLink = () => (
   <PageLink
     to="/speaking"
-    className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-gray-500 hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive"
+    className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive"
   >
     <span aria-hidden="true">←</span> Speaking
   </PageLink>
@@ -1481,8 +1481,8 @@ const DetailSectionHeader = ({ id, number, title, kicker }: { id?: string; numbe
         <span className="font-mono text-sm md:text-base">)</span>
       </div>
     ) : null}
-    <h2 id={id} className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">{title}</h2>
-    {kicker ? <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-500">{kicker}</p> : null}
+    <h2 id={id} className="text-2xl md:text-4xl font-sans font-medium text-lab-black">{title}</h2>
+    {kicker ? <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-600">{kicker}</p> : null}
   </div>
 );
 
@@ -1643,7 +1643,7 @@ const SpeakingHubHero = () => (
   <div className="bg-[#F7F7F9]">
     <section className="pt-28 md:pt-36 pb-16 md:pb-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-label="Speaking introduction">
       <RevealText>
-        <p className="font-mono text-sm text-gray-500 uppercase tracking-widest mb-6">
+        <p className="font-mono text-sm text-gray-600 uppercase tracking-widest mb-6">
           [ NOW SPEAKING ] Talks · Workshops · Appearances
         </p>
       </RevealText>
@@ -1676,7 +1676,7 @@ const SpeakingHubCard = ({ card, variant = 'upcoming' }: { card: SpeakingCard; v
       className={`group block rounded-2xl p-6 md:p-7 h-full flex flex-col transition-colors focus:outline-none focus:border-lab-olive focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 ${surfaceClass}`}
     >
       <div className="flex justify-between items-start gap-3 mb-6">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-lab-olive leading-snug">
+        <p className="font-mono text-xs uppercase tracking-widest text-lab-olive leading-snug">
           {card.formatTag}
         </p>
         {card.status ? <SpeakingStatusBadge label={card.status.label} tone={card.status.tone} /> : null}
@@ -1693,7 +1693,7 @@ const SpeakingHubCard = ({ card, variant = 'upcoming' }: { card: SpeakingCard; v
           {card.date}
         </p>
       </div>
-      <p className="font-mono text-xs uppercase tracking-widest text-gray-500 leading-relaxed mt-1 ml-4">
+      <p className="font-mono text-xs uppercase tracking-widest text-gray-600 leading-relaxed mt-1 ml-4">
         {card.location}
         {card.venue ? ` · ${card.venue}` : ''}
       </p>
@@ -1721,7 +1721,7 @@ const SpeakingUpcoming = () => {
         <h2 id="upcoming-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
           Upcoming
         </h2>
-        <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-500">
+        <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-600">
           Europe · May 2026
         </p>
       </div>
@@ -1752,12 +1752,12 @@ const SpeakingPast = () => (
       <div className="border-t border-lab-black/15">
         {PAST_EVENTS.map((event) => (
           <div key={event.id} className="border-b border-lab-black/15 py-5 md:py-6 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6">
-            <p className="md:col-span-2 font-mono text-sm text-gray-500">{event.date}</p>
+            <p className="md:col-span-2 font-mono text-sm text-gray-600">{event.date}</p>
             <div className="md:col-span-6">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-lab-olive mb-1">{event.format}</p>
+              <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-1">{event.format}</p>
               <h3 className="font-sans text-lg md:text-xl font-medium tracking-tight text-lab-black">{event.title}</h3>
             </div>
-            <p className="md:col-span-2 font-mono text-sm text-gray-500">{event.location}</p>
+            <p className="md:col-span-2 font-mono text-sm text-gray-600">{event.location}</p>
             <div className="md:col-span-2 md:text-right">
               {event.link ? (
                 <a
@@ -1825,7 +1825,7 @@ const SpeakingHireCTA = ({ number }: { number: string }) => (
 
       <div className="col-span-1 md:col-span-5 hidden md:block">
         <RevealText delay={0.2}>
-          <div className="md:sticky md:top-32 font-mono text-sm text-gray-500 space-y-8 pl-8 border-l border-lab-black/10">
+          <div className="md:sticky md:top-32 font-mono text-sm text-gray-600 space-y-8 pl-8 border-l border-lab-black/10">
             <div>
               <p className="uppercase tracking-widest mb-2 text-lab-olive">Formats</p>
               <p className="leading-relaxed">Keynote · 45–60 min<br />Workshop · 3 hrs — full day<br />Private in-company · Half / full day</p>
@@ -1923,7 +1923,7 @@ const DetailHero = ({
             <dl className="bg-lab-white rounded-2xl border border-lab-black/10 p-5 md:p-6 md:mt-8">
               {meta.map((row, i) => (
                 <div key={row.key} className={`flex justify-between items-baseline py-2.5 gap-6 ${i < meta.length - 1 ? 'border-b border-lab-black/10' : ''}`}>
-                  <dt className="font-mono text-[11px] uppercase tracking-widest text-gray-500">
+                  <dt className="font-mono text-xs uppercase tracking-widest text-gray-600">
                     {row.key}
                   </dt>
                   <dd className="font-mono text-sm text-lab-black text-right">
@@ -2107,7 +2107,7 @@ const UXLXDetailPage = () => {
                 <LabGrid>
                   <div className="col-span-1 md:col-span-3">
                     <OliveTag>{session.type}</OliveTag>
-                    <p className="mt-4 font-mono text-xs uppercase tracking-widest text-gray-500 leading-relaxed">
+                    <p className="mt-4 font-mono text-xs uppercase tracking-widest text-gray-600 leading-relaxed">
                       {session.duration}
                     </p>
                   </div>
@@ -2297,7 +2297,7 @@ const WorkshopFAQ = () => {
               aria-expanded={isOpen}
             >
               <span className="pr-6">{item.q}</span>
-              <span className={`font-mono text-xl text-gray-500 transition-transform shrink-0 ${isOpen ? 'rotate-45' : ''}`} aria-hidden="true">+</span>
+              <Plus size={18} className={`text-gray-600 transition-transform shrink-0 ${isOpen ? 'rotate-45' : ''}`} aria-hidden="true" />
             </button>
             <AnimatePresence initial={false}>
               {isOpen ? (
@@ -2390,14 +2390,14 @@ const StickyTicketBar = () => {
             <div className="pointer-events-auto bg-lab-black text-white border border-lab-olive/30 rounded-full shadow-2xl flex items-center gap-2 px-3 py-2 max-w-full">
               <span className="flex items-center gap-2 pl-2 pr-1 shrink-0">
                 <span className="h-1.5 w-1.5 rounded-full bg-lab-olive animate-pulse" aria-hidden="true" />
-                <p className="font-mono text-[10px] uppercase tracking-widest text-white/80">Tickets</p>
+                <p className="font-mono text-xs uppercase tracking-widest text-white">Tickets</p>
               </span>
               <a
                 href={HAGUE_TICKETS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('Speaking Sticky: Hague Tickets')}
-                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-3 py-2 font-mono text-[10px] uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-3 py-2 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
               >
                 The Hague
               </a>
@@ -2406,7 +2406,7 @@ const StickyTicketBar = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('Speaking Sticky: Amsterdam Tickets')}
-                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-3 py-2 font-mono text-[10px] uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-3 py-2 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
               >
                 Amsterdam
               </a>
@@ -2429,14 +2429,14 @@ const StickyTicketBar = () => {
             <div className="pointer-events-auto bg-lab-black text-white border border-lab-olive/30 rounded-full shadow-2xl flex items-center gap-2 px-3 py-2 max-w-full">
               <span className="flex items-center gap-2 pl-2 pr-1 shrink-0">
                 <span className="h-1.5 w-1.5 rounded-full bg-lab-olive animate-pulse" aria-hidden="true" />
-                <p className="font-mono text-[10px] uppercase tracking-widest text-white/80">Tickets</p>
+                <p className="font-mono text-xs uppercase tracking-widest text-white">Tickets</p>
               </span>
               <a
                 href={HAGUE_TICKETS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('Speaking Sticky: Hague Tickets')}
-                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-4 py-2 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
               >
                 The Hague · May 29
               </a>
@@ -2445,7 +2445,7 @@ const StickyTicketBar = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('Speaking Sticky: Amsterdam Tickets')}
-                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-4 py-2 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
               >
                 Amsterdam · May 30
               </a>
@@ -2504,7 +2504,7 @@ const AIAsDesignMaterialPage = () => {
         cta={<HeaderTicketCTA />}
         notice={
           <div className="md:text-right">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-gray-600 mb-1">
+            <p className="font-mono text-xs uppercase tracking-widest text-gray-600 mb-1">
               Open Windows in Europe
             </p>
             <div className="flex flex-wrap md:justify-end gap-x-4 gap-y-1">
@@ -2573,7 +2573,7 @@ const AIAsDesignMaterialPage = () => {
                       <Icon size={20} className="text-lab-olive mb-4" aria-hidden="true" strokeWidth={1.5} />
                       <h3 className="font-sans text-lg font-medium text-lab-black mb-2 leading-snug">{audience.title}</h3>
                       <p className="font-serif text-sm text-gray-600 leading-relaxed">{audience.description}</p>
-                      {audience.note ? <p className="mt-3 pt-3 border-t border-lab-black/10 font-mono text-[10px] uppercase tracking-widest text-gray-600 italic">{audience.note}</p> : null}
+                      {audience.note ? <p className="mt-3 pt-3 border-t border-lab-black/10 font-mono text-xs uppercase tracking-widest text-gray-600 italic">{audience.note}</p> : null}
                     </div>
                   </RevealText>
                 );
@@ -2639,10 +2639,10 @@ const AIAsDesignMaterialPage = () => {
 
         <RevealText delay={0.26}>
           <div className="mt-16 md:mt-20 bg-lab-concrete rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
-            <p className="font-mono text-xs uppercase tracking-widest text-gray-500 shrink-0">Built on</p>
+            <p className="font-mono text-xs uppercase tracking-widest text-gray-600 shrink-0">Built on</p>
             <p className="font-sans text-base text-lab-black leading-relaxed">
               The workshop runs on the{' '}
-              <a href="https://ai-interaction.com" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Speaking Detail: Atlas Link')} className="text-lab-olive underline decoration-lab-olive/40 hover:decoration-lab-olive transition">
+              <a href="https://ai-interaction.com" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Speaking Detail: Atlas Link')} className="underline decoration-lab-olive/60 hover:decoration-lab-olive transition">
                 AI Interaction Atlas
               </a>
               , an open-source framework for mapping AI capabilities across human interactions.
@@ -2679,7 +2679,7 @@ const AIAsDesignMaterialPage = () => {
                         <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-3">
                           Session {i + 1}
                         </p>
-                        <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight leading-tight text-lab-black mb-3 group-hover:text-lab-olive transition-colors">
+                        <h3 className="font-sans text-2xl md:text-3xl font-medium leading-tight text-lab-black mb-3 group-hover:text-lab-olive transition-colors">
                           {session.city}
                         </h3>
                         <p className="font-mono text-sm text-gray-600 leading-relaxed">{session.venue}</p>
@@ -2709,20 +2709,20 @@ const AIAsDesignMaterialPage = () => {
           <div className="col-span-1 md:col-span-5 md:col-start-8">
             <RevealText delay={0.15}>
               <div className="rounded-xl overflow-hidden border border-lab-black/10">
-                <div className="px-5 py-3 bg-lab-olive/10 border-b border-lab-black/10">
-                  <p className="font-mono text-[11px] uppercase tracking-widest text-[#3d4332]">Ticket pricing — per session</p>
+                <div className="px-5 py-3 border-b border-lab-black/10">
+                  <p className="font-mono text-xs uppercase tracking-widest text-lab-olive">Ticket pricing — per session</p>
                 </div>
                 {WORKSHOP_PRICING.map((row, i) => (
                   <div key={row.tier} className={`px-5 py-4 flex justify-between items-center gap-4 bg-lab-white ${i < WORKSHOP_PRICING.length - 1 ? 'border-b border-lab-black/10' : ''}`}>
                     <div>
                       <p className="font-sans text-sm text-lab-black">{row.tier}</p>
-                      <p className="mt-0.5 font-mono text-[11px] text-gray-500 leading-relaxed">{row.sub}</p>
+                      <p className="mt-0.5 font-mono text-sm text-gray-600 leading-relaxed">{row.sub}</p>
                     </div>
                     <p className="font-sans text-xl text-lab-black font-medium shrink-0">{row.amount}</p>
                   </div>
                 ))}
               </div>
-              <p className="mt-6 font-serif italic text-sm text-gray-500 leading-relaxed max-w-sm mx-auto">
+              <p className="mt-6 font-serif italic text-sm text-gray-600 leading-relaxed max-w-sm mx-auto">
                 Please don't take a €35 ticket if you can afford the Out-of-pocket ticket, and please don't take one and not show up. You're keeping someone else from getting it.
               </p>
             </RevealText>
@@ -2752,13 +2752,13 @@ const AIAsDesignMaterialPage = () => {
                 </div>
                 <h3 className="font-sans text-2xl font-medium text-lab-black">Brandon Harwood</h3>
                 <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Founder, quietloudlab</p>
-                <p className="mt-1 font-mono text-xs text-gray-500">Dallas · Amsterdam (late 2026)</p>
+                <p className="mt-1 font-mono text-sm text-gray-600">Dallas · Amsterdam (late 2026)</p>
                 <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
                   Brandon Harwood is an independent designer and researcher, founder at quietloudlab, and the creator of the AI Interaction Atlas. He has over a decade of experience at IBM Innovation Studio, designing human-centered AI systems for clients across industry sectors and advising IBM Research on human-AI co-creativity, with research published at CHI 2023 informing his approach to designing AI products that empowers human creativity rather than replace it. Through quietloudlab, he works with startups and innovation teams to design emerging technology experiences grounded in cognitive psychology, practical product strategy, and the everyday human experience.
                 </p>
                 <ul className="mt-6 space-y-2">
                   {['Decade at IBM Innovation Studio', 'CHI 2023 published research', 'Creator, AI Interaction Atlas', 'Speaker, UXLX 2026'].map((c) => (
-                    <li key={c} className="pl-3 border-l-2 border-lab-olive font-mono text-[11px] uppercase tracking-widest text-lab-black leading-relaxed">{c}</li>
+                    <li key={c} className="pl-3 border-l-2 border-lab-olive font-mono text-xs uppercase tracking-widest text-lab-black leading-relaxed">{c}</li>
                   ))}
                 </ul>
               </div>
@@ -2783,13 +2783,13 @@ const AIAsDesignMaterialPage = () => {
                 </div>
                 <h3 className="font-sans text-2xl font-medium text-lab-black">Matthijs Zwinderman</h3>
                 <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Strategic Product Designer</p>
-                <p className="mt-1 font-mono text-xs text-gray-500">The Hague · Netherlands dates only</p>
+                <p className="mt-1 font-mono text-sm text-gray-600">The Hague · Netherlands dates only</p>
                 <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
                   Matthijs Zwinderman's background covers AI research (Carnegie Mellon), enterprise service design, and product strategy with Dutch startups, scaleups, and enterprises. He's been building and running design communities in the Netherlands for years, including LeanUX The Hague, using his practical and pragmatic ground-level knowledge to shape every session.
                 </p>
                 <ul className="mt-6 space-y-2">
                   {['AI Research, Carnegie Mellon University', 'Enterprise service design & product strategy', 'Organizer, LeanUX The Hague'].map((c) => (
-                    <li key={c} className="pl-3 border-l-2 border-lab-olive font-mono text-[11px] uppercase tracking-widest text-lab-black leading-relaxed">{c}</li>
+                    <li key={c} className="pl-3 border-l-2 border-lab-olive font-mono text-xs uppercase tracking-widest text-lab-black leading-relaxed">{c}</li>
                   ))}
                 </ul>
               </div>
@@ -2829,7 +2829,7 @@ const AIAsDesignMaterialPage = () => {
             <LabGrid>
               <div className="col-span-1 md:col-span-7">
                 <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-4">Bring it in-house</p>
-                <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight text-lab-black mb-4">
+                <h3 className="font-sans text-2xl md:text-3xl font-medium text-lab-black mb-4">
                   Need a private session for your team?
                 </h3>
                 <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-xl">
@@ -2888,7 +2888,7 @@ const CityOptionPage = ({ config }: { config: CityOptionConfig }) => {
                 <div className="bg-lab-concrete rounded-2xl p-6 md:p-8 h-full flex flex-col">
                   <Icon size={22} className="text-lab-olive mb-4" aria-hidden="true" strokeWidth={1.5} />
                   <h3 className="font-sans text-xl md:text-2xl font-medium tracking-tight leading-tight text-lab-black mb-3">{option.title}</h3>
-                  <p className="font-mono text-[11px] uppercase tracking-widest text-lab-olive mb-3 leading-relaxed">
+                  <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-3 leading-relaxed">
                     {option.fitsWhen}
                   </p>
                   <p className="font-serif text-base text-gray-600 leading-relaxed">
