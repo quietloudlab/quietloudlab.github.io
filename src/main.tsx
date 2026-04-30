@@ -337,6 +337,67 @@ const Logo = ({ className, dark = false }: { className?: string, dark?: boolean 
   <LogoSvg className={`${className} ${dark ? 'text-lab-black' : 'text-lab-white'}`} />
 );
 
+// --- Shape System ---
+// Library of organic SVG clip-path shapes. Each shape is a normalized
+// objectBoundingBox path (coordinates 0-1) so the same definition scales
+// to any container size. Apply via the `shape` prop on ImagePlaceholder,
+// the <Shaped> wrapper, or directly: style={{ clipPath: 'url(#qll-shape-cookie)' }}.
+
+const polarShape = (
+  radiusFn: (theta: number) => number,
+  segments = 144,
+) => {
+  const points: string[] = [];
+  for (let i = 0; i < segments; i++) {
+    const t = (i / segments) * Math.PI * 2;
+    const r = radiusFn(t);
+    const x = (0.5 + r * Math.cos(t)).toFixed(4);
+    const y = (0.5 + r * Math.sin(t)).toFixed(4);
+    points.push(`${x},${y}`);
+  }
+  return `M ${points[0]} ${points.slice(1).map((p) => `L ${p}`).join(' ')} Z`;
+};
+
+const SHAPES = {
+  circle:  'M 0.5,0 A 0.5,0.5 0 1,1 0.5,1 A 0.5,0.5 0 1,1 0.5,0 Z',
+  soft:    'M 0.2,0 L 0.8,0 C 0.91,0 1,0.09 1,0.2 L 1,0.8 C 1,0.91 0.91,1 0.8,1 L 0.2,1 C 0.09,1 0,0.91 0,0.8 L 0,0.2 C 0,0.09 0.09,0 0.2,0 Z',
+  softer:  'M 0.4,0 L 0.6,0 C 0.82,0 1,0.18 1,0.4 L 1,0.6 C 1,0.82 0.82,1 0.6,1 L 0.4,1 C 0.18,1 0,0.82 0,0.6 L 0,0.4 C 0,0.18 0.18,0 0.4,0 Z',
+  pill:    'M 0.25,0 L 0.75,0 A 0.25,0.5 0 0,1 0.75,1 L 0.25,1 A 0.25,0.5 0 0,1 0.25,0 Z',
+  arch:    'M 0,1 L 0,0.5 C 0,0.22 0.22,0 0.5,0 C 0.78,0 1,0.22 1,0.5 L 1,1 Z',
+  diamond: 'M 0.5,0 L 1,0.5 L 0.5,1 L 0,0.5 Z',
+  cookie:  polarShape((t) => 0.45 + 0.05 * Math.cos(8 * t)),
+  flower:  polarShape((t) => 0.42 + 0.08 * Math.cos(6 * t)),
+  clover:  polarShape((t) => 0.4 + 0.1 * Math.cos(4 * t + Math.PI / 4)),
+  pebble:  polarShape((t) => 0.44 + 0.04 * Math.cos(3 * t + 0.5) + 0.02 * Math.sin(2 * t)),
+} as const;
+
+type ShapeName = keyof typeof SHAPES;
+
+const SHAPE_ID_PREFIX = 'qll-shape';
+const shapeUrl = (shape: ShapeName) => `url(#${SHAPE_ID_PREFIX}-${shape})`;
+
+const ShapeDefs = () => (
+  <svg
+    aria-hidden="true"
+    focusable="false"
+    width="0"
+    height="0"
+    style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}
+  >
+    <defs>
+      {Object.entries(SHAPES).map(([name, d]) => (
+        <clipPath
+          key={name}
+          id={`${SHAPE_ID_PREFIX}-${name}`}
+          clipPathUnits="objectBoundingBox"
+        >
+          <path d={d} />
+        </clipPath>
+      ))}
+    </defs>
+  </svg>
+);
+
 // --- Mouse Trail ---
 
 type TrailItem = {
@@ -353,6 +414,7 @@ const ImagePlaceholder = ({
   description,
   className = '',
   radius,
+  shape,
   index,
   media,
 }: {
@@ -360,12 +422,17 @@ const ImagePlaceholder = ({
   description: string;
   className?: string;
   radius?: string;
+  shape?: ShapeName;
   index?: number;
   media?: string;
 }) => (
   <div
     className={`relative overflow-hidden bg-lab-concrete ${className}`}
-    style={{ aspectRatio, borderRadius: radius ?? undefined }}
+    style={{
+      aspectRatio,
+      borderRadius: shape ? undefined : radius ?? undefined,
+      clipPath: shape ? shapeUrl(shape) : undefined,
+    }}
     aria-label={description}
     role="img"
   >
@@ -1385,8 +1452,8 @@ type StatusTone = 'confirmed' | 'pending';
 const SpeakingStatusBadge = ({ label, tone }: { label: string; tone: StatusTone }) => {
   const toneClass =
     tone === 'confirmed'
-      ? 'bg-lab-olive/15 text-lab-olive border-lab-olive/30'
-      : 'bg-lab-black/5 text-gray-500 border-lab-black/10';
+      ? 'bg-lab-olive/15 text-[#3d4332] border-lab-olive/30'
+      : 'bg-lab-black/5 text-gray-700 border-lab-black/10';
   const dotClass = tone === 'confirmed' ? 'bg-lab-olive' : 'bg-gray-400';
   return (
     <span className={`inline-flex items-center gap-2 border px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${toneClass}`}>
@@ -1405,13 +1472,15 @@ const SpeakingBackLink = () => (
   </PageLink>
 );
 
-const DetailSectionHeader = ({ id, number, title, kicker }: { id?: string; number: string; title: string; kicker?: string }) => (
+const DetailSectionHeader = ({ id, number, title, kicker }: { id?: string; number?: string; title: string; kicker?: string }) => (
   <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
-    <div className="mr-6 text-lab-olive mb-2 md:mb-0">
-      <span className="font-mono text-sm md:text-base">(</span>
-      <ScrambleText text={number} className="font-mono text-sm md:text-base" />
-      <span className="font-mono text-sm md:text-base">)</span>
-    </div>
+    {number ? (
+      <div className="mr-6 text-lab-olive mb-2 md:mb-0">
+        <span className="font-mono text-sm md:text-base">(</span>
+        <ScrambleText text={number} className="font-mono text-sm md:text-base" />
+        <span className="font-mono text-sm md:text-base">)</span>
+      </div>
+    ) : null}
     <h2 id={id} className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">{title}</h2>
     {kicker ? <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-500">{kicker}</p> : null}
   </div>
@@ -1732,7 +1801,7 @@ const SpeakingHireCTA = ({ number }: { number: string }) => (
           <div className="mt-10 flex flex-wrap gap-3">
             <Magnetic>
               <a
-                href="https://calendly.com/brandonaharwood/quietloud-collab-speaking"
+                href="https://cal.com/quietloudlab/speaking-event-collaborations"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('Speaking: Hub Calendly')}
@@ -1806,18 +1875,24 @@ const DetailHero = ({
   lead,
   meta,
   cta,
+  decoration,
+  notice,
 }: {
   eyebrow: string;
   title: string;
   lead: string;
   meta: Array<{ key: string; value: React.ReactNode }>;
   cta?: React.ReactNode;
+  decoration?: React.ReactNode;
+  notice?: React.ReactNode;
 }) => (
-  <div className="bg-[#F7F7F9]">
-    <section className="pt-24 md:pt-32 pb-16 md:pb-20 px-6 md:px-12 max-w-screen-xl mx-auto" aria-label="Event overview">
+  <div className="bg-[#F7F7F9] relative isolate">
+    <section className="pt-24 md:pt-32 pb-16 md:pb-20 px-6 md:px-12 max-w-screen-xl mx-auto relative" aria-label="Event overview">
+      {decoration}
       <RevealText>
-        <div className="mb-10">
+        <div className="mb-10 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <SpeakingBackLink />
+          {notice ? <div className="md:max-w-md">{notice}</div> : null}
         </div>
       </RevealText>
       <LabGrid>
@@ -1845,7 +1920,7 @@ const DetailHero = ({
         </div>
         <div className="col-span-1 md:col-span-4">
           <RevealText delay={0.2}>
-            <dl className="bg-lab-white rounded-2xl border border-lab-black/10 p-5 md:p-6">
+            <dl className="bg-lab-white rounded-2xl border border-lab-black/10 p-5 md:p-6 md:mt-8">
               {meta.map((row, i) => (
                 <div key={row.key} className={`flex justify-between items-baseline py-2.5 gap-6 ${i < meta.length - 1 ? 'border-b border-lab-black/10' : ''}`}>
                   <dt className="font-mono text-[11px] uppercase tracking-widest text-gray-500">
@@ -2128,7 +2203,6 @@ const WORKSHOP_AUDIENCES: WorkshopAudience[] = [
     icon: Code2,
     title: 'Developers',
     description: "Evaluating what's feasible.",
-    note: 'Not a coding or engineering workshop.',
   },
 ];
 
@@ -2147,6 +2221,7 @@ type WorkshopSession = {
   status: { label: string; tone: StatusTone };
   rsvpHref: string;
   event: string;
+  photo: { src: string; alt: string };
 };
 
 const WORKSHOP_SESSIONS: WorkshopSession[] = [
@@ -2157,6 +2232,7 @@ const WORKSHOP_SESSIONS: WorkshopSession[] = [
     status: { label: 'Tickets on sale', tone: 'confirmed' },
     rsvpHref: 'https://www.eventbrite.com/e/workshop-ai-as-a-design-material-the-hague-tickets-1988565280284?aff=oddtdtcreator',
     event: 'Speaking Detail: Hague Tickets',
+    photo: { src: '/images/workshop_photos/hague.jpg', alt: 'A scene from The Hague — quiet streets near the workshop venue' },
   },
   {
     city: 'Amsterdam',
@@ -2165,6 +2241,7 @@ const WORKSHOP_SESSIONS: WorkshopSession[] = [
     status: { label: 'Tickets on sale', tone: 'confirmed' },
     rsvpHref: 'https://www.eventbrite.com/e/workshop-ai-as-a-design-material-amsterdam-tickets-1988569576133?aff=oddtdtcreator',
     event: 'Speaking Detail: Amsterdam Tickets',
+    photo: { src: '/images/workshop_photos/amsterdam.jpg', alt: 'A scene from Amsterdam — canals and the working neighborhoods' },
   },
 ];
 
@@ -2246,25 +2323,38 @@ const HAGUE_TICKETS_URL = 'https://www.eventbrite.com/e/workshop-ai-as-a-design-
 const AMSTERDAM_TICKETS_URL = 'https://www.eventbrite.com/e/workshop-ai-as-a-design-material-amsterdam-tickets-1988569576133?aff=oddtdtcreator';
 
 const HeaderTicketCTA = () => (
-  <div className="flex flex-col sm:flex-row gap-3">
-    <a
-      href={HAGUE_TICKETS_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={() => trackEvent('Speaking Header: Hague Tickets')}
-      className="inline-flex items-center justify-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
-    >
-      Get tickets — The Hague <ArrowRight size={12} aria-hidden="true" />
-    </a>
-    <a
-      href={AMSTERDAM_TICKETS_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={() => trackEvent('Speaking Header: Amsterdam Tickets')}
-      className="inline-flex items-center justify-center gap-2 border border-lab-black/20 text-lab-black px-6 py-3 font-mono text-xs uppercase tracking-widest hover:border-lab-olive hover:text-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
-    >
-      Get tickets — Amsterdam <ArrowRight size={12} aria-hidden="true" />
-    </a>
+  <div>
+    <p className="font-mono text-xs uppercase tracking-widest text-gray-600 mb-3">Get tickets</p>
+    <div className="flex flex-col sm:flex-row gap-3">
+      <a
+        href={HAGUE_TICKETS_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackEvent('Speaking Header: Hague Tickets')}
+        className="inline-flex items-center justify-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+      >
+        The Hague · May 29 <ArrowRight size={12} aria-hidden="true" />
+      </a>
+      <a
+        href={AMSTERDAM_TICKETS_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackEvent('Speaking Header: Amsterdam Tickets')}
+        className="inline-flex items-center justify-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
+      >
+        Amsterdam · May 30 <ArrowRight size={12} aria-hidden="true" />
+      </a>
+    </div>
+    <p className="mt-8 font-mono text-xs uppercase tracking-widest text-gray-600">
+      €35 / €89 / €175 ·{' '}
+      <a
+        href="#sessions-heading"
+        onClick={() => trackEvent('Speaking Header: See Pricing')}
+        className="text-lab-olive underline decoration-lab-olive/40 hover:decoration-lab-olive transition"
+      >
+        See pricing details
+      </a>
+    </p>
   </div>
 );
 
@@ -2295,33 +2385,31 @@ const StickyTicketBar = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: mobileSlide, opacity: 0 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="md:hidden fixed bottom-[68px] left-0 right-0 z-30 bg-lab-black text-white border-t border-lab-olive/30 shadow-2xl"
+            className="md:hidden fixed bottom-[80px] left-0 right-0 z-30 px-4 flex justify-center pointer-events-none"
           >
-            <div className="px-4 py-3 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2 shrink-0">
+            <div className="pointer-events-auto bg-lab-black text-white border border-lab-olive/30 rounded-full shadow-2xl flex items-center gap-2 px-3 py-2 max-w-full">
+              <span className="flex items-center gap-2 pl-2 pr-1 shrink-0">
                 <span className="h-1.5 w-1.5 rounded-full bg-lab-olive animate-pulse" aria-hidden="true" />
                 <p className="font-mono text-[10px] uppercase tracking-widest text-white/80">Tickets</p>
-              </div>
-              <div className="flex gap-2">
-                <a
-                  href={HAGUE_TICKETS_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackEvent('Speaking Sticky: Hague Tickets')}
-                  className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black px-3 py-2 font-mono text-[10px] uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
-                >
-                  The Hague
-                </a>
-                <a
-                  href={AMSTERDAM_TICKETS_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackEvent('Speaking Sticky: Amsterdam Tickets')}
-                  className="inline-flex items-center justify-center gap-1.5 border border-white/30 text-white px-3 py-2 font-mono text-[10px] uppercase tracking-widest hover:bg-lab-olive hover:border-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
-                >
-                  Amsterdam
-                </a>
-              </div>
+              </span>
+              <a
+                href={HAGUE_TICKETS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent('Speaking Sticky: Hague Tickets')}
+                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-3 py-2 font-mono text-[10px] uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
+              >
+                The Hague
+              </a>
+              <a
+                href={AMSTERDAM_TICKETS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent('Speaking Sticky: Amsterdam Tickets')}
+                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-3 py-2 font-mono text-[10px] uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
+              >
+                Amsterdam
+              </a>
             </div>
           </motion.aside>
         ) : null}
@@ -2336,7 +2424,7 @@ const StickyTicketBar = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: desktopSlide, opacity: 0 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="hidden md:flex fixed top-16 left-0 right-0 z-30 px-4 justify-center pointer-events-none"
+            className="hidden md:flex fixed top-[72px] left-0 right-0 z-30 px-6 md:px-12 justify-end pointer-events-none"
           >
             <div className="pointer-events-auto bg-lab-black text-white border border-lab-olive/30 rounded-full shadow-2xl flex items-center gap-2 px-3 py-2 max-w-full">
               <span className="flex items-center gap-2 pl-2 pr-1 shrink-0">
@@ -2357,7 +2445,7 @@ const StickyTicketBar = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('Speaking Sticky: Amsterdam Tickets')}
-                className="inline-flex items-center justify-center gap-1.5 border border-white/30 text-white rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-widest hover:bg-lab-olive hover:border-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-1.5 bg-white text-lab-black rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 focus:ring-offset-lab-black whitespace-nowrap"
               >
                 Amsterdam · May 30
               </a>
@@ -2368,6 +2456,33 @@ const StickyTicketBar = () => {
     </>
   );
 };
+
+const FloatingPhoto = ({
+  src,
+  alt,
+  shape,
+  desktopClass,
+  mobileClass = 'mt-10 max-w-[220px] mx-auto',
+  hideOnMobile = false,
+}: {
+  src: string;
+  alt: string;
+  shape: ShapeName;
+  desktopClass: string;
+  mobileClass?: string;
+  hideOnMobile?: boolean;
+}) => (
+  <>
+    <div className={`hidden md:block absolute -z-10 pointer-events-none ${desktopClass}`}>
+      <ImagePlaceholder media={src} description={alt} shape={shape} />
+    </div>
+    {hideOnMobile ? null : (
+      <div className={`block md:hidden ${mobileClass}`}>
+        <ImagePlaceholder media={src} description={alt} shape={shape} />
+      </div>
+    )}
+  </>
+);
 
 const AIAsDesignMaterialPage = () => {
   useEffect(() => {
@@ -2384,24 +2499,72 @@ const AIAsDesignMaterialPage = () => {
         meta={[
           { key: 'Duration', value: '3 hours' },
           { key: 'Format', value: 'In-person' },
-          { key: 'Group size', value: 'Up to 50' },
           { key: 'Sessions', value: 'The Hague · Amsterdam' },
         ]}
         cta={<HeaderTicketCTA />}
+        notice={
+          <div className="md:text-right">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-gray-600 mb-1">
+              Open Windows in Europe
+            </p>
+            <div className="flex flex-wrap md:justify-end gap-x-4 gap-y-1">
+              <PageLink
+                to="/speaking/barcelona-2026"
+                onClick={() => trackEvent('Speaking Header: Barcelona Notice')}
+                className="font-sans text-sm text-gray-700 hover:text-lab-olive transition-colors inline-flex items-center gap-1.5"
+              >
+                Barcelona · May 17–22 <ArrowRight size={12} aria-hidden="true" />
+              </PageLink>
+              <PageLink
+                to="/speaking/berlin-2026"
+                onClick={() => trackEvent('Speaking Header: Berlin Notice')}
+                className="font-sans text-sm text-gray-700 hover:text-lab-olive transition-colors inline-flex items-center gap-1.5"
+              >
+                Berlin · May 22–27 <ArrowRight size={12} aria-hidden="true" />
+              </PageLink>
+            </div>
+          </div>
+        }
+        decoration={
+          <FloatingPhoto
+            src="/images/workshop_photos/workshop1.jpg"
+            alt="Workshop participants gathered around a table during a previous AI as a Design Material session"
+            shape="soft"
+            desktopClass="top-[320px] right-[-160px] w-[440px] aspect-square"
+            hideOnMobile
+          />
+        }
       />
 
-      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="audience-heading">
-        <DetailSectionHeader id="audience-heading" number="01" title="Who this is for" kicker="Design, product, and the people adjacent to them" />
+      <section className="pt-24 md:pt-36 pb-24 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-label="Workshop introduction">
+        <RevealText>
+          <p className="font-serif text-xl md:text-2xl text-lab-black leading-relaxed max-w-2xl">
+            Designed to help you think differently about how we make AI systems work well for actual humans, and build the foundational skills for identifying and communicating why &amp; how we might use AI within a larger solution.
+          </p>
+        </RevealText>
+      </section>
+
+      <section className="relative isolate pb-16 md:pb-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="audience-heading">
+        <DetailSectionHeader id="audience-heading" title="Who this is for" />
         <LabGrid>
-          <div className="col-span-1 md:col-span-4">
+          <div className="col-span-1 md:col-span-6">
             <RevealText>
-              <p className="font-serif text-lg text-gray-600 leading-relaxed max-w-md">
+              <p className="font-serif text-lg text-gray-600 leading-relaxed max-w-xl">
                 This workshop was built with designers in mind, and the lessons span across product teams. If you're a product manager trying to figure out what to build, a developer evaluating what's feasible, or a founder wondering where AI fits in your business, you'll leave with clarity you didn't walk in with.
               </p>
             </RevealText>
+            <RevealText delay={0.1}>
+              <div className="mt-20 md:mt-24 max-w-[420px]">
+                <ImagePlaceholder
+                  media="/images/workshop_photos/ai_actions.png"
+                  description="Diagram of AI interaction patterns from the AI Interaction Atlas"
+                  shape="soft"
+                />
+              </div>
+            </RevealText>
           </div>
-          <div className="col-span-1 md:col-span-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="col-span-1 md:col-span-5 md:col-start-8">
+            <div className="grid grid-cols-1 gap-4">
               {WORKSHOP_AUDIENCES.map((audience, i) => {
                 const Icon = audience.icon;
                 return (
@@ -2410,7 +2573,7 @@ const AIAsDesignMaterialPage = () => {
                       <Icon size={20} className="text-lab-olive mb-4" aria-hidden="true" strokeWidth={1.5} />
                       <h3 className="font-sans text-lg font-medium text-lab-black mb-2 leading-snug">{audience.title}</h3>
                       <p className="font-serif text-sm text-gray-600 leading-relaxed">{audience.description}</p>
-                      {audience.note ? <p className="mt-3 pt-3 border-t border-lab-black/10 font-mono text-[10px] uppercase tracking-widest text-gray-500 italic">{audience.note}</p> : null}
+                      {audience.note ? <p className="mt-3 pt-3 border-t border-lab-black/10 font-mono text-[10px] uppercase tracking-widest text-gray-600 italic">{audience.note}</p> : null}
                     </div>
                   </RevealText>
                 );
@@ -2420,61 +2583,62 @@ const AIAsDesignMaterialPage = () => {
         </LabGrid>
       </section>
 
-      <section className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="cover-heading">
-        <DetailSectionHeader id="cover-heading" number="02" title="What we cover" kicker="A working session, not a lecture" />
+      <section className="relative isolate pt-8 md:pt-12 pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="cover-heading">
+        <DetailSectionHeader id="cover-heading" title="What we cover" />
 
         <RevealText>
           <p className="mt-12 md:mt-16 font-serif text-xl md:text-2xl text-lab-black leading-relaxed max-w-3xl">
-            From the creator of the AI Interaction Atlas, this workshop is designed to help you think differently about how we make AI systems work well for actual humans, and build the foundational skills for identifying and communicating why &amp; how we might use AI within a larger solution.
+            You'll leave with a conceptual foundation and a working toolkit for designing innovative and useful AI solutions (beyond building chatbots). You'll pull from modular tools and activities based on the actual needs of your team and users. The workshop is not a fixed script, but adapts to your use case.
           </p>
         </RevealText>
 
-        <LabGrid className="mt-16 md:mt-24">
-          <div className="col-span-1 md:col-span-7 space-y-6 md:space-y-7">
+        <LabGrid className="mt-16 md:mt-24 items-start">
+          <div className="col-span-1 md:col-span-6 space-y-6 md:space-y-7">
             <RevealText>
-              <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-2xl">
+              <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-2">
+                The premise
+              </p>
+            </RevealText>
+            <RevealText delay={0.06}>
+              <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-xl">
                 AI is a powerful technology that seems to be the answer to every problem, but in reality only provides value when designed right. Wanting AI and knowing where it belongs are two very different things.
               </p>
             </RevealText>
-            <RevealText delay={0.08}>
-              <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-2xl">
+            <RevealText delay={0.12}>
+              <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-xl">
                 Too often, teams are compelled to implement AI (often by their stakeholders) without ever asking the important questions: does the problem truly call for AI? What's the ROI? Where specifically is AI needed? How might we best take advantage of the capabilities AI can perform? What happens to the people we design AI solutions for?
               </p>
             </RevealText>
           </div>
-          <div className="col-span-1 md:col-span-5 mt-10 md:mt-0">
-            <RevealText delay={0.12}>
-              <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-6">
-                In this three-hour workshop you'll learn how to
-              </p>
-              <ul className="space-y-5 md:space-y-6">
-                {WORKSHOP_OUTCOMES.map((outcome) => (
-                  <li key={outcome} className="flex gap-3.5 font-sans text-base text-lab-black leading-relaxed">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-lab-olive shrink-0" aria-hidden="true" />
-                    <span>{outcome}</span>
-                  </li>
-                ))}
-              </ul>
+          <div className="col-span-1 md:col-span-5 md:col-start-8 mt-10 md:mt-0">
+            <RevealText delay={0.14}>
+              <div className="bg-lab-concrete rounded-2xl p-6 md:p-8">
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-6">
+                  In this three-hour workshop you'll learn how to
+                </p>
+                <ul className="space-y-5 md:space-y-6">
+                  {WORKSHOP_OUTCOMES.map((outcome) => (
+                    <li key={outcome} className="flex gap-3.5 font-sans text-base text-lab-black leading-relaxed">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-lab-olive shrink-0" aria-hidden="true" />
+                      <span>{outcome}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </RevealText>
           </div>
         </LabGrid>
 
-        <RevealText delay={0.18}>
-          <figure className="mt-20 md:mt-28 max-w-3xl border-l-2 border-lab-olive pl-6 md:pl-8">
+        <RevealText delay={0.2}>
+          <figure className="mt-20 md:mt-28 max-w-2xl ml-auto">
             <blockquote className="font-serif italic text-xl md:text-2xl text-lab-black leading-relaxed">
               You can design AI systems that genuinely improve people's work and lives, but it requires a new framing that understands the materiality of AI within the contexts we build.
             </blockquote>
           </figure>
         </RevealText>
 
-        <RevealText delay={0.22}>
-          <p className="mt-20 md:mt-28 font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl">
-            This workshop gives you a conceptual foundation and a working toolkit for designing innovative and useful AI solutions (beyond building chatbots). You'll pull from modular tools and activities based on the actual needs of your team and users. The workshop is not a fixed script, but adapts to your use case.
-          </p>
-        </RevealText>
-
         <RevealText delay={0.26}>
-          <div className="mt-10 md:mt-12 bg-lab-concrete rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
+          <div className="mt-16 md:mt-20 bg-lab-concrete rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
             <p className="font-mono text-xs uppercase tracking-widest text-gray-500 shrink-0">Built on</p>
             <p className="font-sans text-base text-lab-black leading-relaxed">
               The workshop runs on the{' '}
@@ -2485,51 +2649,68 @@ const AIAsDesignMaterialPage = () => {
             </p>
           </div>
         </RevealText>
+
+        <FloatingPhoto
+          src="/images/workshop_photos/workshop2.jpeg"
+          alt="A small group working through workshop activities together"
+          shape="pebble"
+          desktopClass="left-[-30px] bottom-[120px] w-[460px] aspect-square"
+        />
       </section>
 
-      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="sessions-heading">
-        <DetailSectionHeader id="sessions-heading" number="03" title="Sessions" kicker="Two dates — two cities" />
+      <section className="relative isolate py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="sessions-heading">
+        <DetailSectionHeader id="sessions-heading" title="Sessions" />
         <LabGrid>
-          <div className="col-span-1 md:col-span-7">
+          <div className="col-span-1 md:col-span-6">
             <div className="border-t border-lab-black/15">
               {WORKSHOP_SESSIONS.map((session, i) => (
                 <RevealText key={session.city} delay={i * 0.08}>
-                  <div id={session.city === 'The Hague' ? 'hague' : 'amsterdam'} className="border-b border-lab-black/15 py-6 md:py-7 scroll-mt-20">
-                    <div className="flex flex-wrap justify-between items-start gap-3 mb-3">
-                      <p className="font-mono text-xs uppercase tracking-widest text-lab-olive">
-                        Session {i + 1}
-                      </p>
-                      <SpeakingStatusBadge label={session.status.label} tone={session.status.tone} />
+                  <a
+                    id={session.city === 'The Hague' ? 'hague' : 'amsterdam'}
+                    href={session.rsvpHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackEvent(session.event)}
+                    className="group block border-b border-lab-black/15 py-6 md:py-7 scroll-mt-20 focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4"
+                    aria-label={`${session.city} — get tickets on Eventbrite`}
+                  >
+                    <div className="flex gap-4 md:gap-6 items-start">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-3">
+                          Session {i + 1}
+                        </p>
+                        <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight leading-tight text-lab-black mb-3 group-hover:text-lab-olive transition-colors">
+                          {session.city}
+                        </h3>
+                        <p className="font-mono text-sm text-gray-600 leading-relaxed">{session.venue}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="h-1.5 w-1.5 rounded-full bg-lab-olive" aria-hidden="true" />
+                          <p className="font-mono text-sm text-gray-600 leading-relaxed">{session.date}</p>
+                        </div>
+                        <div className="mt-5">
+                          <span className="inline-flex items-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest group-hover:bg-lab-olive transition-colors">
+                            Get tickets on Eventbrite <ArrowRight size={12} aria-hidden="true" />
+                          </span>
+                        </div>
+                      </div>
+                      <div className="w-24 md:w-44 shrink-0">
+                        <ImagePlaceholder
+                          media={session.photo.src}
+                          description={session.photo.alt}
+                          shape="soft"
+                        />
+                      </div>
                     </div>
-                    <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight leading-tight text-lab-black mb-3">
-                      {session.city}
-                    </h3>
-                    <p className="font-mono text-sm text-gray-600 leading-relaxed">{session.venue}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-lab-olive" aria-hidden="true" />
-                      <p className="font-mono text-sm text-gray-600 leading-relaxed">{session.date}</p>
-                    </div>
-                    <div className="mt-5">
-                      <a
-                        href={session.rsvpHref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => trackEvent(session.event)}
-                        className="inline-flex items-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
-                      >
-                        Get tickets on Eventbrite <ArrowRight size={12} aria-hidden="true" />
-                      </a>
-                    </div>
-                  </div>
+                  </a>
                 </RevealText>
               ))}
             </div>
           </div>
-          <div className="col-span-1 md:col-span-5">
+          <div className="col-span-1 md:col-span-5 md:col-start-8">
             <RevealText delay={0.15}>
               <div className="rounded-xl overflow-hidden border border-lab-black/10">
                 <div className="px-5 py-3 bg-lab-olive/10 border-b border-lab-black/10">
-                  <p className="font-mono text-[11px] uppercase tracking-widest text-lab-olive">Ticket pricing — per session</p>
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-[#3d4332]">Ticket pricing — per session</p>
                 </div>
                 {WORKSHOP_PRICING.map((row, i) => (
                   <div key={row.tier} className={`px-5 py-4 flex justify-between items-center gap-4 bg-lab-white ${i < WORKSHOP_PRICING.length - 1 ? 'border-b border-lab-black/10' : ''}`}>
@@ -2541,7 +2722,7 @@ const AIAsDesignMaterialPage = () => {
                   </div>
                 ))}
               </div>
-              <p className="mt-4 font-serif italic text-sm text-gray-500 leading-relaxed">
+              <p className="mt-6 font-serif italic text-sm text-gray-500 leading-relaxed max-w-sm mx-auto">
                 Please don't take a €35 ticket if you can afford the Out-of-pocket ticket, and please don't take one and not show up. You're keeping someone else from getting it.
               </p>
             </RevealText>
@@ -2549,44 +2730,76 @@ const AIAsDesignMaterialPage = () => {
         </LabGrid>
       </section>
 
-      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="facilitators-heading">
-        <DetailSectionHeader id="facilitators-heading" number="04" title="Facilitators" kicker="Who's in the room" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <section className="relative isolate pt-16 md:pt-24 pb-16 md:pb-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="facilitators-heading">
+        <DetailSectionHeader id="facilitators-heading" title="Facilitators" />
+        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-4 md:pt-24">
           <RevealText>
-            <div className="bg-lab-concrete rounded-2xl p-6 md:p-8 h-full">
-              <h3 className="font-sans text-2xl font-medium text-lab-black">Brandon Harwood</h3>
-              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Founder, quietloudlab</p>
-              <p className="mt-1 font-mono text-xs text-gray-500">Dallas · Amsterdam (late 2026)</p>
-              <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
-                Brandon Harwood is an independent designer and researcher, founder at quietloudlab, and the creator of the AI Interaction Atlas. He has over a decade of experience at IBM Innovation Studio, designing human-centered AI systems for clients across industry sectors and advising IBM Research on human-AI co-creativity, with research published at CHI 2023 informing his approach to designing AI products that empowers human creativity rather than replace it. Through quietloudlab, he works with startups and innovation teams to design emerging technology experiences grounded in cognitive psychology, practical product strategy, and the everyday human experience.
-              </p>
-              <ul className="mt-6 space-y-2">
-                {['Decade at IBM Innovation Studio', 'CHI 2023 published research', 'Creator, AI Interaction Atlas', 'Speaker, UXLX 2026'].map((c) => (
-                  <li key={c} className="pl-3 border-l-2 border-lab-olive font-mono text-[11px] uppercase tracking-widest text-lab-black leading-relaxed">{c}</li>
-                ))}
-              </ul>
+            <div className="relative h-full">
+              <div className="hidden md:block absolute top-0 right-4 -translate-y-1/2 w-[180px] aspect-square z-10 pointer-events-none">
+                <ImagePlaceholder
+                  media="/images/workshop_photos/brandon.jpg"
+                  description="Portrait of Brandon Harwood, founder of quietloudlab"
+                  shape="pebble"
+                />
+              </div>
+              <div className="bg-lab-concrete rounded-2xl p-6 md:p-8 h-full">
+                <div className="block md:hidden mb-6 max-w-[180px]">
+                  <ImagePlaceholder
+                    media="/images/workshop_photos/brandon.jpg"
+                    description="Portrait of Brandon Harwood, founder of quietloudlab"
+                    shape="pebble"
+                  />
+                </div>
+                <h3 className="font-sans text-2xl font-medium text-lab-black">Brandon Harwood</h3>
+                <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Founder, quietloudlab</p>
+                <p className="mt-1 font-mono text-xs text-gray-500">Dallas · Amsterdam (late 2026)</p>
+                <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
+                  Brandon Harwood is an independent designer and researcher, founder at quietloudlab, and the creator of the AI Interaction Atlas. He has over a decade of experience at IBM Innovation Studio, designing human-centered AI systems for clients across industry sectors and advising IBM Research on human-AI co-creativity, with research published at CHI 2023 informing his approach to designing AI products that empowers human creativity rather than replace it. Through quietloudlab, he works with startups and innovation teams to design emerging technology experiences grounded in cognitive psychology, practical product strategy, and the everyday human experience.
+                </p>
+                <ul className="mt-6 space-y-2">
+                  {['Decade at IBM Innovation Studio', 'CHI 2023 published research', 'Creator, AI Interaction Atlas', 'Speaker, UXLX 2026'].map((c) => (
+                    <li key={c} className="pl-3 border-l-2 border-lab-olive font-mono text-[11px] uppercase tracking-widest text-lab-black leading-relaxed">{c}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </RevealText>
           <RevealText delay={0.08}>
-            <div className="bg-lab-concrete rounded-2xl p-6 md:p-8 h-full">
-              <h3 className="font-sans text-2xl font-medium text-lab-black">Matthijs Zwinderman</h3>
-              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Strategic Product Designer</p>
-              <p className="mt-1 font-mono text-xs text-gray-500">The Hague · Netherlands dates only</p>
-              <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
-                Matthijs Zwinderman's background covers AI research (Carnegie Mellon), enterprise service design, and product strategy with Dutch startups, scaleups, and enterprises. He's been building and running design communities in the Netherlands for years, including LeanUX The Hague, using his practical and pragmatic ground-level knowledge to shape every session.
-              </p>
-              <ul className="mt-6 space-y-2">
-                {['AI Research, Carnegie Mellon University', 'Enterprise service design & product strategy', 'Organizer, LeanUX The Hague'].map((c) => (
-                  <li key={c} className="pl-3 border-l-2 border-lab-olive font-mono text-[11px] uppercase tracking-widest text-lab-black leading-relaxed">{c}</li>
-                ))}
-              </ul>
+            <div className="relative h-full">
+              <div className="hidden md:block absolute top-0 right-4 -translate-y-1/2 w-[180px] aspect-square z-10 pointer-events-none">
+                <ImagePlaceholder
+                  media="/images/workshop_photos/matthijs.jpg"
+                  description="Portrait of Matthijs Zwinderman, strategic product designer"
+                  shape="pebble"
+                />
+              </div>
+              <div className="bg-lab-concrete rounded-2xl p-6 md:p-8 h-full">
+                <div className="block md:hidden mb-6 max-w-[180px]">
+                  <ImagePlaceholder
+                    media="/images/workshop_photos/matthijs.jpg"
+                    description="Portrait of Matthijs Zwinderman, strategic product designer"
+                    shape="pebble"
+                  />
+                </div>
+                <h3 className="font-sans text-2xl font-medium text-lab-black">Matthijs Zwinderman</h3>
+                <p className="mt-1 font-mono text-xs uppercase tracking-widest text-lab-olive">Strategic Product Designer</p>
+                <p className="mt-1 font-mono text-xs text-gray-500">The Hague · Netherlands dates only</p>
+                <p className="mt-5 font-serif text-base text-gray-600 leading-relaxed">
+                  Matthijs Zwinderman's background covers AI research (Carnegie Mellon), enterprise service design, and product strategy with Dutch startups, scaleups, and enterprises. He's been building and running design communities in the Netherlands for years, including LeanUX The Hague, using his practical and pragmatic ground-level knowledge to shape every session.
+                </p>
+                <ul className="mt-6 space-y-2">
+                  {['AI Research, Carnegie Mellon University', 'Enterprise service design & product strategy', 'Organizer, LeanUX The Hague'].map((c) => (
+                    <li key={c} className="pl-3 border-l-2 border-lab-olive font-mono text-[11px] uppercase tracking-widest text-lab-black leading-relaxed">{c}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </RevealText>
         </div>
       </section>
 
-      <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="faq-heading">
-        <DetailSectionHeader id="faq-heading" number="05" title="FAQ" kicker="Logistics and common questions" />
+      <section className="relative isolate py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="faq-heading">
+        <DetailSectionHeader id="faq-heading" title="FAQ" />
         <LabGrid>
           <div className="col-span-1 md:col-span-4">
             <RevealText>
@@ -2601,9 +2814,16 @@ const AIAsDesignMaterialPage = () => {
             </RevealText>
           </div>
         </LabGrid>
+
+        <FloatingPhoto
+          src="/images/workshop_photos/workshop3.jpeg"
+          alt="Workshop participants reviewing canvases together"
+          shape="soft"
+          desktopClass="left-[-40px] bottom-[-40px] w-[320px] aspect-square"
+        />
       </section>
 
-      <section className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto">
+      <section className="relative isolate pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto">
         <RevealText>
           <div className="bg-lab-concrete rounded-2xl p-6 md:p-10">
             <LabGrid>
@@ -2618,20 +2838,13 @@ const AIAsDesignMaterialPage = () => {
               </div>
               <div className="col-span-1 md:col-span-5 flex flex-col md:items-end justify-end gap-3 mt-6 md:mt-0">
                 <a
-                  href="https://calendly.com/brandonaharwood/quietloud-collab-speaking"
+                  href="https://cal.com/quietloudlab/speaking-event-collaborations"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackEvent('Speaking Detail: Workshop Calendly')}
                   className="inline-flex items-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
                 >
                   Book a 30-min call <ArrowRight size={14} aria-hidden="true" />
-                </a>
-                <a
-                  href="mailto:brandon@quietloudlab.com?subject=Private%20Workshop%20Inquiry"
-                  onClick={() => trackEvent('Speaking Detail: Workshop Email')}
-                  className="inline-flex items-center gap-2 border border-lab-black/20 text-lab-black px-6 py-3 font-mono text-xs uppercase tracking-widest hover:border-lab-olive hover:text-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
-                >
-                  Send an email
                 </a>
               </div>
             </LabGrid>
@@ -2710,7 +2923,7 @@ const CityOptionPage = ({ config }: { config: CityOptionConfig }) => {
                   Share an expression of interest <ArrowRight size={14} aria-hidden="true" />
                 </a>
                 <a
-                  href="https://calendly.com/brandonaharwood/quietloud-collab-speaking"
+                  href="https://cal.com/quietloudlab/speaking-event-collaborations"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackEvent(`Speaking ${config.city}: Calendly`)}
@@ -2840,9 +3053,18 @@ const App = () => {
   }, [path]);
 
   const SpeakingRoute = resolveSpeakingRoute(path);
-  if (SpeakingRoute) return <SpeakingRoute />;
-  if (path.startsWith('/speaking')) return <SpeakingNotFound />;
-  return <HomePage />;
+  const page = SpeakingRoute
+    ? <SpeakingRoute />
+    : path.startsWith('/speaking')
+      ? <SpeakingNotFound />
+      : <HomePage />;
+
+  return (
+    <>
+      <ShapeDefs />
+      {page}
+    </>
+  );
 };
 
 const root = createRoot(document.getElementById('root')!);
