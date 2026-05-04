@@ -9,6 +9,7 @@ declare global {
   interface Window {
     fathom?: {
       trackEvent: (name: string, opts?: { _value?: number }) => void;
+      trackPageview: (opts?: { url?: string; referrer?: string }) => void;
     };
   }
 }
@@ -16,6 +17,12 @@ declare global {
 const trackEvent = (name: string) => {
   if (window.fathom) {
     window.fathom.trackEvent(name);
+  }
+};
+
+const trackPageview = () => {
+  if (window.fathom) {
+    window.fathom.trackPageview();
   }
 };
 
@@ -3040,6 +3047,7 @@ const HomePage = () => {
 
 const App = () => {
   const path = usePath();
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
     // Scroll to hash target when hash is present on any route change
@@ -3050,6 +3058,15 @@ const App = () => {
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
       });
     }
+
+    // Track SPA pageviews on route change. Fathom auto-tracks the first
+    // load via its script tag, so skip the initial mount to avoid a
+    // double-count for the page the user landed on.
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    trackPageview();
   }, [path]);
 
   const SpeakingRoute = resolveSpeakingRoute(path);
