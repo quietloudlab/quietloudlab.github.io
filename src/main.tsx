@@ -26,6 +26,77 @@ const trackPageview = () => {
   }
 };
 
+// Fire scroll-depth milestones (25/50/75/100%) once per page load.
+// Resets on path change so SPA navigation gets a fresh set of milestones.
+const useScrollDepth = (path: string) => {
+  useEffect(() => {
+    const milestones = [25, 50, 75, 100];
+    const reached = new Set<number>();
+    let ticking = false;
+    const measure = () => {
+      ticking = false;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) {
+        // Page is too short to scroll meaningfully; record 100% once.
+        if (!reached.has(100)) {
+          reached.add(100);
+          trackEvent('Engagement: Scroll 100%');
+        }
+        return;
+      }
+      const pct = Math.round((window.scrollY / docHeight) * 100);
+      milestones.forEach((m) => {
+        if (pct >= m && !reached.has(m)) {
+          reached.add(m);
+          trackEvent(`Engagement: Scroll ${m}%`);
+        }
+      });
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(measure);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    measure();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [path]);
+};
+
+// Fire a one-time event when a section first scrolls into view.
+// Wrap any section in <TrackedSection eventName="..."> to opt in.
+const TrackedSection = ({
+  eventName,
+  threshold = 0.3,
+  children,
+  ...rest
+}: {
+  eventName: string;
+  threshold?: number;
+  children?: React.ReactNode;
+} & Omit<React.HTMLAttributes<HTMLElement>, 'ref'>) => {
+  const ref = useRef<HTMLElement | null>(null);
+  const fired = useRef(false);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || fired.current) return;
+    if (typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !fired.current) {
+          fired.current = true;
+          trackEvent(eventName);
+          observer.disconnect();
+        }
+      },
+      { threshold },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [eventName, threshold]);
+  return <section ref={ref as React.RefObject<HTMLElement>} {...rest}>{children}</section>;
+};
+
 // --- Routing (minimal, dependency-free) ---
 
 const usePath = () => {
@@ -2299,7 +2370,10 @@ const WorkshopFAQ = () => {
           <div key={item.q} className="border-b border-lab-black/15">
             <button
               type="button"
-              onClick={() => setOpenIndex(isOpen ? null : i)}
+              onClick={() => {
+                setOpenIndex(isOpen ? null : i);
+                if (!isOpen) trackEvent(`FAQ Open: ${item.q}`);
+              }}
               className="w-full flex justify-between items-center gap-6 py-5 text-left font-sans text-base md:text-lg text-lab-black hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive"
               aria-expanded={isOpen}
             >
@@ -2368,10 +2442,16 @@ const HeaderTicketCTA = () => (
 const StickyTicketBar = () => {
   const reduceMotion = useReducedMotion();
   const [visible, setVisible] = useState(false);
+  const trackedShownRef = useRef(false);
 
   useEffect(() => {
     const onScroll = () => {
-      setVisible(window.scrollY > 500);
+      const next = window.scrollY > 500;
+      setVisible(next);
+      if (next && !trackedShownRef.current) {
+        trackedShownRef.current = true;
+        trackEvent('Sticky: Shown');
+      }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -2665,7 +2745,7 @@ const AIAsDesignMaterialPage = () => {
         />
       </section>
 
-      <section className="relative isolate py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="sessions-heading">
+      <TrackedSection eventName="Section: Viewed Sessions" className="relative isolate py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="sessions-heading">
         <DetailSectionHeader id="sessions-heading" title="Sessions" />
         <LabGrid>
           <div className="col-span-1 md:col-span-6">
@@ -2735,9 +2815,9 @@ const AIAsDesignMaterialPage = () => {
             </RevealText>
           </div>
         </LabGrid>
-      </section>
+      </TrackedSection>
 
-      <section className="relative isolate pt-16 md:pt-24 pb-16 md:pb-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="facilitators-heading">
+      <TrackedSection eventName="Section: Viewed Facilitators" className="relative isolate pt-16 md:pt-24 pb-16 md:pb-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="facilitators-heading">
         <DetailSectionHeader id="facilitators-heading" title="Facilitators" />
         <div className="relative grid grid-cols-1 md:grid-cols-2 gap-4 md:pt-24">
           <RevealText>
@@ -2803,9 +2883,9 @@ const AIAsDesignMaterialPage = () => {
             </div>
           </RevealText>
         </div>
-      </section>
+      </TrackedSection>
 
-      <section className="relative isolate py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="faq-heading">
+      <TrackedSection eventName="Section: Viewed FAQ" className="relative isolate py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="faq-heading">
         <DetailSectionHeader id="faq-heading" title="FAQ" />
         <LabGrid>
           <div className="col-span-1 md:col-span-4">
@@ -2828,7 +2908,7 @@ const AIAsDesignMaterialPage = () => {
           shape="soft"
           desktopClass="left-[-40px] bottom-[-40px] w-[320px] aspect-square"
         />
-      </section>
+      </TrackedSection>
 
       <section className="relative isolate pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto">
         <RevealText>
@@ -3048,6 +3128,8 @@ const HomePage = () => {
 const App = () => {
   const path = usePath();
   const isInitialMount = useRef(true);
+
+  useScrollDepth(path);
 
   useEffect(() => {
     // Scroll to hash target when hash is present on any route change
