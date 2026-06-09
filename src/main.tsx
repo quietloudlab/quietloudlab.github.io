@@ -308,48 +308,6 @@ const Magnetic = ({ children }: { children?: React.ReactNode }) => {
   );
 };
 
-const ScrambleText = ({ text, className = "", hover = false }: { text: string, className?: string, hover?: boolean }) => {
-  const [displayText, setDisplayText] = useState(text);
-  const [isHovered, setIsHovered] = useState(false);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-  useEffect(() => {
-    if (!isInView && !hover) return;
-    if (hover && !isHovered) {
-        setDisplayText(text);
-        return;
-    }
-
-    let iteration = 0;
-    const interval = setInterval(() => {
-      setDisplayText(text.split("").map((letter, index) => {
-        if (index < iteration) return text[index];
-        if (letter === ' ') return ' ';
-        return chars[Math.floor(Math.random() * chars.length)];
-      }).join(""));
-
-      if (iteration >= text.length) clearInterval(interval);
-      iteration += 1 / 3;
-    }, 30);
-
-    return () => clearInterval(interval);
-  }, [isInView, isHovered, hover, text]);
-
-  return (
-    <span
-        ref={ref}
-        className={className}
-        onMouseEnter={() => hover && setIsHovered(true)}
-        onMouseLeave={() => hover && setIsHovered(false)}
-    >
-        {displayText}
-    </span>
-  );
-};
-
 const RevealText = ({ children, delay = 0, className = "" }: { children?: React.ReactNode, delay?: number, className?: string }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
@@ -1563,15 +1521,8 @@ const SpeakingBackLink = () => (
   </PageLink>
 );
 
-const DetailSectionHeader = ({ id, number, title, kicker }: { id?: string; number?: string; title: string; kicker?: string }) => (
+const DetailSectionHeader = ({ id, title, kicker }: { id?: string; title: string; kicker?: string }) => (
   <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
-    {number ? (
-      <div className="mr-6 text-lab-olive mb-2 md:mb-0">
-        <span className="font-mono text-sm md:text-base">(</span>
-        <ScrambleText text={number} className="font-mono text-sm md:text-base" />
-        <span className="font-mono text-sm md:text-base">)</span>
-      </div>
-    ) : null}
     <h2 id={id} className="text-2xl md:text-4xl font-sans font-medium text-lab-black">{title}</h2>
     {kicker ? <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-600">{kicker}</p> : null}
   </div>
@@ -1793,11 +1744,6 @@ const SpeakingHubCard = ({ card, variant = 'upcoming' }: { card: SpeakingCard; v
 const SpeakingUpcoming = ({ cards }: { cards: Array<{ card: SpeakingCard; variant: HubCardVariant }> }) => (
   <section id="upcoming" className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="upcoming-heading">
     <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
-      <div className="mr-6 text-lab-olive mb-2 md:mb-0">
-        <span className="font-mono text-sm md:text-base">(</span>
-        <ScrambleText text="01" className="font-mono text-sm md:text-base" />
-        <span className="font-mono text-sm md:text-base">)</span>
-      </div>
       <h2 id="upcoming-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
         Upcoming
       </h2>
@@ -1823,11 +1769,6 @@ const SpeakingUpcoming = ({ cards }: { cards: Array<{ card: SpeakingCard; varian
 const SpeakingPast = ({ events }: { events: SpeakingCard[] }) => (
   <section id="past" className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="past-heading">
     <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
-      <div className="mr-6 text-lab-olive mb-2 md:mb-0">
-        <span className="font-mono text-sm md:text-base">(</span>
-        <ScrambleText text="02" className="font-mono text-sm md:text-base" />
-        <span className="font-mono text-sm md:text-base">)</span>
-      </div>
       <h2 id="past-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
         Past
       </h2>
@@ -1861,14 +1802,9 @@ const SpeakingPast = ({ events }: { events: SpeakingCard[] }) => (
   </section>
 );
 
-const SpeakingHireCTA = ({ number }: { number: string }) => (
+const SpeakingHireCTA = () => (
   <section id="hire" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="hire-heading">
     <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
-      <div className="mr-6 text-lab-olive mb-2 md:mb-0">
-        <span className="font-mono text-sm md:text-base">(</span>
-        <ScrambleText text={number} className="font-mono text-sm md:text-base" />
-        <span className="font-mono text-sm md:text-base">)</span>
-      </div>
       <h2 id="hire-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
         Bring quietloudlab to your team
       </h2>
@@ -1949,13 +1885,12 @@ const SpeakingPage = () => {
     .filter((c) => isPastCard(c, today))
     .sort((a, b) => b.sortDate.localeCompare(a.sortDate));
   const showPast = pastEvents.length > 0;
-  const hireNumber = showPast ? '03' : '02';
   return (
     <PageShell>
       <SpeakingHubHero />
       <SpeakingUpcoming cards={upcomingCards} />
       {showPast ? <SpeakingPast events={pastEvents} /> : null}
-      <SpeakingHireCTA number={hireNumber} />
+      <SpeakingHireCTA />
     </PageShell>
   );
 };
@@ -2080,7 +2015,7 @@ const IdeaLabMastermindPage = () => {
       />
 
       <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="idea-lab-cover-heading">
-        <DetailSectionHeader id="idea-lab-cover-heading" number="01" title="What we'll cover" kicker="Three parts in three hours" />
+        <DetailSectionHeader id="idea-lab-cover-heading" title="What we'll cover" kicker="Three parts in three hours" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
           {IDEA_LAB_TOPICS.map((topic, i) => (
             <RevealText key={topic.title} delay={i * 0.08}>
@@ -2192,7 +2127,7 @@ const UXLXDetailPage = () => {
       />
 
       <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="uxlx-sessions-heading">
-        <DetailSectionHeader id="uxlx-sessions-heading" number="01" title="On the program" kicker="Two sessions at UXLX" />
+        <DetailSectionHeader id="uxlx-sessions-heading" title="On the program" kicker="Two sessions at UXLX" />
         <div className="space-y-6">
           {sessions.map((session, i) => (
             <RevealText key={session.title} delay={i * 0.08}>
@@ -2981,7 +2916,7 @@ const CityOptionPage = ({ config }: { config: CityOptionConfig }) => {
       />
 
       <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="ways-heading">
-        <DetailSectionHeader id="ways-heading" number="01" title="Ways we could work together" kicker="A few examples, not a menu" />
+        <DetailSectionHeader id="ways-heading" title="Ways we could work together" kicker="A few examples, not a menu" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {config.engagements.map((option, i) => {
             const Icon = option.icon;
