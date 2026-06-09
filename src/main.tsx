@@ -1650,16 +1650,10 @@ const OPEN_WINDOWS_CARDS: SpeakingCard[] = [
   },
 ];
 
-type PastEvent = {
-  id: string;
-  date: string;
-  title: string;
-  location: string;
-  format: string;
-  link?: { label: string; href: string };
-};
-
-const PAST_EVENTS: PastEvent[] = [];
+// Events move from "Upcoming" to "Past" automatically once their date has passed.
+// Day-granularity: an event counts as past when its start date is before today.
+const todayISO = () => new Date().toISOString().slice(0, 10);
+const isPastCard = (card: SpeakingCard, today: string) => card.sortDate < today;
 
 // --- Speaking: city option (Barcelona / Berlin) data ---
 
@@ -1796,26 +1790,19 @@ const SpeakingHubCard = ({ card, variant = 'upcoming' }: { card: SpeakingCard; v
   );
 };
 
-const SpeakingUpcoming = () => {
-  const cards: Array<{ card: SpeakingCard; variant: HubCardVariant }> = [
-    ...UPCOMING_CARDS.map((card) => ({ card, variant: 'upcoming' as const })),
-    ...OPEN_WINDOWS_CARDS.map((card) => ({ card, variant: 'open-window' as const })),
-  ].sort((a, b) => a.card.sortDate.localeCompare(b.card.sortDate));
-  return (
-    <section id="upcoming" className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="upcoming-heading">
-      <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
-        <div className="mr-6 text-lab-olive mb-2 md:mb-0">
-          <span className="font-mono text-sm md:text-base">(</span>
-          <ScrambleText text="01" className="font-mono text-sm md:text-base" />
-          <span className="font-mono text-sm md:text-base">)</span>
-        </div>
-        <h2 id="upcoming-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
-          Upcoming
-        </h2>
-        <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-600">
-          Europe · May 2026
-        </p>
+const SpeakingUpcoming = ({ cards }: { cards: Array<{ card: SpeakingCard; variant: HubCardVariant }> }) => (
+  <section id="upcoming" className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="upcoming-heading">
+    <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
+      <div className="mr-6 text-lab-olive mb-2 md:mb-0">
+        <span className="font-mono text-sm md:text-base">(</span>
+        <ScrambleText text="01" className="font-mono text-sm md:text-base" />
+        <span className="font-mono text-sm md:text-base">)</span>
       </div>
+      <h2 id="upcoming-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
+        Upcoming
+      </h2>
+    </div>
+    {cards.length > 0 ? (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {cards.map(({ card, variant }, i) => (
           <RevealText key={card.id} delay={i * 0.08}>
@@ -1823,11 +1810,17 @@ const SpeakingUpcoming = () => {
           </RevealText>
         ))}
       </div>
-    </section>
-  );
-};
+    ) : (
+      <RevealText>
+        <p className="font-serif text-lg md:text-xl text-gray-600 max-w-2xl leading-relaxed">
+          Nothing on the public calendar right now. If you&apos;d like us in a room of your own — a talk, a workshop, or a private session — there&apos;s a way to set that up below.
+        </p>
+      </RevealText>
+    )}
+  </section>
+);
 
-const SpeakingPast = () => (
+const SpeakingPast = ({ events }: { events: SpeakingCard[] }) => (
   <section id="past" className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="past-heading">
     <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
       <div className="mr-6 text-lab-olive mb-2 md:mb-0">
@@ -1841,26 +1834,25 @@ const SpeakingPast = () => (
     </div>
     <RevealText>
       <div className="border-t border-lab-black/15">
-        {PAST_EVENTS.map((event) => (
+        {events.map((event) => (
           <div key={event.id} className="border-b border-lab-black/15 py-5 md:py-6 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6">
             <p className="md:col-span-2 font-mono text-sm text-gray-600">{event.date}</p>
             <div className="md:col-span-6">
-              <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-1">{event.format}</p>
+              <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-1">{event.formatTag}</p>
               <h3 className="font-sans text-lg md:text-xl font-medium tracking-tight text-lab-black">{event.title}</h3>
             </div>
-            <p className="md:col-span-2 font-mono text-sm text-gray-600">{event.location}</p>
+            <p className="md:col-span-2 font-mono text-sm text-gray-600">
+              {event.location}
+              {event.venue ? ` · ${event.venue}` : ''}
+            </p>
             <div className="md:col-span-2 md:text-right">
-              {event.link ? (
-                <a
-                  href={event.link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackEvent(`Speaking Past: ${event.id}`)}
-                  className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-lab-black hover:text-lab-olive transition-colors"
-                >
-                  {event.link.label} <ArrowRight size={12} aria-hidden="true" />
-                </a>
-              ) : null}
+              <PageLink
+                to={event.href}
+                onClick={() => trackEvent(`Speaking Past: ${event.id}`)}
+                className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-lab-black hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive"
+              >
+                Details <ArrowRight size={12} aria-hidden="true" />
+              </PageLink>
             </div>
           </div>
         ))}
@@ -1946,13 +1938,23 @@ const SpeakingPage = () => {
   useEffect(() => {
     document.title = 'Speaking · quietloudlab';
   }, []);
-  const showPast = PAST_EVENTS.length > 0;
+  const today = todayISO();
+  // Upcoming = talks + open windows that haven't passed yet, soonest first.
+  const upcomingCards: Array<{ card: SpeakingCard; variant: HubCardVariant }> = [
+    ...UPCOMING_CARDS.filter((c) => !isPastCard(c, today)).map((card) => ({ card, variant: 'upcoming' as const })),
+    ...OPEN_WINDOWS_CARDS.filter((c) => !isPastCard(c, today)).map((card) => ({ card, variant: 'open-window' as const })),
+  ].sort((a, b) => a.card.sortDate.localeCompare(b.card.sortDate));
+  // Past = delivered talks only (expired open windows are dropped), most recent first.
+  const pastEvents = UPCOMING_CARDS
+    .filter((c) => isPastCard(c, today))
+    .sort((a, b) => b.sortDate.localeCompare(a.sortDate));
+  const showPast = pastEvents.length > 0;
   const hireNumber = showPast ? '03' : '02';
   return (
     <PageShell>
       <SpeakingHubHero />
-      <SpeakingUpcoming />
-      {showPast ? <SpeakingPast /> : null}
+      <SpeakingUpcoming cards={upcomingCards} />
+      {showPast ? <SpeakingPast events={pastEvents} /> : null}
       <SpeakingHireCTA number={hireNumber} />
     </PageShell>
   );
