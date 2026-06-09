@@ -2036,9 +2036,7 @@ const DetailHero = ({
 
 // --- Speaking detail: Build Your AI Plan (Greater East Dallas Chamber) ---
 
-// TODO: confirm — this still points at the old May "Idea Lab Mastermind" chamber listing.
-// Replace with the Aug 20 "Build Your AI Plan" registration URL once available.
-const IDEA_LAB_REGISTER_URL = 'https://business.eastdallaschamber.com/gedcc-calendar/Details/idea-lab-mastermind-1712133?sourceTypeId=Hub';
+const IDEA_LAB_REGISTER_URL = 'https://business.eastdallaschamber.com/gedcc-calendar/Details/build-your-ai-plan-a-hands-on-workshop-for-business-leaders-1727532?sourceTypeId=Hub';
 
 type IdeaLabTopic = {
   tag: string;
