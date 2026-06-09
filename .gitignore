@@ -4,6 +4,16 @@ node_modules
 # Build output
 dist
 
+# Vite dependency cache
+.vite
+
+# Claude Code session data
+.claude
+
+# Retired / scratch material (not part of the live site)
+old-site-base
+new-site-material
+
 # Local env files
 .env
 .env.local

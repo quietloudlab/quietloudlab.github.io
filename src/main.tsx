@@ -368,13 +368,8 @@ const RevealText = ({ children, delay = 0, className = "" }: { children?: React.
   );
 };
 
-const SectionHeader = ({ number, title }: { number: string, title: string }) => (
+const SectionHeader = ({ title }: { title: string }) => (
   <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-12 mb-8">
-    <div className="mr-6 text-lab-olive mb-2 md:mb-0">
-        <span className="font-mono text-sm md:text-base">(</span>
-        <ScrambleText text={number} className="font-mono text-sm md:text-base" />
-        <span className="font-mono text-sm md:text-base">)</span>
-    </div>
     <h2 className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">{title}</h2>
   </div>
 );
@@ -1289,23 +1284,10 @@ const Hero = () => {
     {/* Intro */}
     <section className="pt-40 md:pt-52 pb-40 md:pb-52 px-6 md:px-12">
       <div className="max-w-screen-2xl mx-auto">
-        <RevealText>
-          <p className="font-mono text-sm text-gray-600 uppercase tracking-widest mb-6">[ EST. 2024 ] Exploring spaces between people, systems, technology, and futures.</p>
-        </RevealText>
         <RevealText delay={0.1}>
           <p className="text-3xl md:text-5xl lg:text-6xl font-sans text-gray-700" style={{ lineHeight: 1.6 }}>
             quietloudlab is a partner for building with emerging technologies in complex environments. We help future-facing clients and partners see the current state for what it is, decide what needs to be made, and make it land with the people we build for. We perform strategy, design systems, facilitate teams in exploration, and prototype new concepts.
           </p>
-        </RevealText>
-        <RevealText delay={0.2}>
-          <div className="mt-12">
-            <a href="https://calendly.com/brandonaharwood/ai-interaction-review" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Book AI Interaction Review')} className="inline-flex items-center gap-2 bg-lab-black text-white px-8 py-4 font-mono text-sm uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-black">
-              Book an AI Interaction Review <ArrowRight size={14} />
-            </a>
-            <p className="mt-4 max-w-2xl font-sans text-base text-gray-600 leading-relaxed">
-              A free 30-minute session where we look at your AI product or concept through the lens of the Atlas and identify the biggest gaps in how your system works for your users. You&apos;ll leave with 2–3 specific things to fix or explore.
-            </p>
-          </div>
         </RevealText>
       </div>
     </section>
@@ -1316,7 +1298,7 @@ const Hero = () => {
 const Practice = () => {
   return (
     <section className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" id="practice" aria-labelledby="practice-heading">
-      <SectionHeader number="01" title="Areas of Practice" />
+      <SectionHeader title="Areas of Practice" />
 
       <LabGrid>
         <div className="col-span-1 md:col-span-7">
@@ -1358,7 +1340,7 @@ const Practice = () => {
 const HouseBuiltTools = () => {
   return (
     <section className="py-20 md:py-32 px-6 md:px-12 max-w-[1800px] mx-auto" id="atlas" aria-label="House-built Tools">
-      <SectionHeader number="02" title="Tools" />
+      <SectionHeader title="Tools" />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 auto-rows-fr">
         {/* AI Interaction Atlas */}
@@ -1449,10 +1431,41 @@ const HouseBuiltTools = () => {
 };
 
 
+const AIReview = () => {
+  return (
+    <section id="ai-review" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="ai-review-heading">
+      <SectionHeader title="AI Interaction Review" />
+
+      <RevealText>
+        <div className="bg-lab-black text-lab-white rounded-[20px] overflow-hidden p-8 md:p-12 lg:p-16">
+          <LabGrid>
+            <div className="col-span-1 md:col-span-7">
+              <h3 id="ai-review-heading" className="font-sans text-3xl md:text-4xl lg:text-5xl tracking-tight leading-[1.1] font-medium mb-6">
+                Put your AI product under the lens of the Atlas.
+              </h3>
+              <p className="font-serif text-lg md:text-xl text-gray-300 leading-relaxed max-w-2xl">
+                A free 30-minute session where we look at your AI product or concept through the lens of the Atlas and identify the biggest gaps in how your system works for your users. You&apos;ll leave with 2–3 specific things to fix or explore.
+              </p>
+            </div>
+
+            <div className="col-span-1 md:col-span-5 flex md:items-end md:justify-end">
+              <Magnetic>
+                <a href="https://calendly.com/brandonaharwood/ai-interaction-review" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Book AI Interaction Review')} className="inline-flex items-center gap-2 bg-lab-white text-lab-black px-8 py-4 font-mono text-sm uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-lab-black focus:ring-lab-olive group/btn">
+                  Book a Review <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                </a>
+              </Magnetic>
+            </div>
+          </LabGrid>
+        </div>
+      </RevealText>
+    </section>
+  );
+};
+
 const Contact = ({ contactIntent }: { contactIntent: ContactIntent | null }) => {
   return (
     <section id="contact" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="contact-heading">
-      <SectionHeader number="03" title="Start a Conversation" />
+      <SectionHeader title="Start a Conversation" />
 
       <LabGrid>
         <div className="col-span-1 md:col-span-7">
@@ -3120,6 +3133,7 @@ const HomePage = () => {
       </div>
       <Practice />
       <HouseBuiltTools />
+      <AIReview />
       <Contact contactIntent={null} />
     </PageShell>
   );
