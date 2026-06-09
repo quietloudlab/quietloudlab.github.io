@@ -1595,13 +1595,13 @@ type SpeakingCard = {
 const UPCOMING_CARDS: SpeakingCard[] = [
   {
     id: 'idea-lab-mastermind-2026',
-    sortDate: '2026-05-05',
-    formatTag: 'Lunch Talk · Chamber Members Only',
-    title: 'Idea Lab Mastermind',
-    date: 'Tue, May 5, 2026 · 11:30–1:00',
+    sortDate: '2026-08-20',
+    formatTag: 'Hands-On Workshop · Business Leaders',
+    title: 'Build Your AI Plan',
+    date: 'Thu, Aug 20, 2026 · 10:00 AM – 1:00 PM',
     location: 'Dallas, TX',
-    venue: "McRae's American Bistro",
-    summary: 'A 60-minute lunch session for East Dallas chamber members on practical AI for small business — what it actually solves, and how to set up Claude Cowork on a real problem.',
+    venue: 'Location TBD',
+    summary: 'A three-hour, hands-on workshop for small and medium business leaders. Pick one real problem, find the AI approach that fits, and leave with a one-page plan you can start executing Monday morning.',
     href: '/speaking/idea-lab-mastermind',
   },
   {
@@ -2034,8 +2034,10 @@ const DetailHero = ({
 
 // --- Speaking detail: UXLX 2026 ---
 
-// --- Speaking detail: Idea Lab Mastermind (Greater East Dallas Chamber) ---
+// --- Speaking detail: Build Your AI Plan (Greater East Dallas Chamber) ---
 
+// TODO: confirm — this still points at the old May "Idea Lab Mastermind" chamber listing.
+// Replace with the Aug 20 "Build Your AI Plan" registration URL once available.
 const IDEA_LAB_REGISTER_URL = 'https://business.eastdallaschamber.com/gedcc-calendar/Details/idea-lab-mastermind-1712133?sourceTypeId=Hub';
 
 type IdeaLabTopic = {
@@ -2047,40 +2049,40 @@ type IdeaLabTopic = {
 const IDEA_LAB_TOPICS: IdeaLabTopic[] = [
   {
     tag: 'Part one',
-    title: 'Why organizations actually use AI',
-    body: 'Not "AI for everything" and not "AI is overhyped." We work through the handful of reasons organizations adopt AI — and the traps they tend to fall into along the way.',
+    title: 'Start with a real problem',
+    body: 'We begin with one real problem from your business — not a hypothetical. The whole session is built around the work you actually do day to day.',
   },
   {
     tag: 'Part two',
-    title: 'The five kinds of problems AI solves',
-    body: "A practical framework for recognizing which problems in your operations are AI-shaped, and which aren't. If you can name the problem, you can usually see the solution.",
+    title: 'Find the AI that fits',
+    body: 'Using the same process Brandon runs with enterprise clients, we work out which kind of AI solution actually fits your problem — and which approaches to leave alone.',
   },
   {
     tag: 'Part three',
-    title: 'Claude Cowork, set up live',
-    body: "We take one problem from the room and configure Claude Cowork to work on it in real time. Bring a laptop if you want to follow along — optional, not required.",
+    title: 'Leave with a plan',
+    body: 'You map exactly what the solution should do and walk out with a one-page plan, plus a clear answer on whether you can build it yourself in Claude or need a hand.',
   },
 ];
 
 const IdeaLabMastermindPage = () => {
-  useEffect(() => { document.title = 'Idea Lab Mastermind · Speaking · quietloudlab'; }, []);
+  useEffect(() => { document.title = 'Build Your AI Plan · Speaking · quietloudlab'; }, []);
 
   return (
     <PageShell>
       <DetailHero
-        eyebrow="Lunch Talk · Greater East Dallas Chamber"
-        title="Idea Lab Mastermind"
-        lead="A 60-minute lunch session for East Dallas chamber members on practical AI for small business — what it actually solves, where it fits in your operations, and how to set up Claude Cowork on a real problem from the room."
+        eyebrow="Hands-On Workshop · Greater East Dallas Chamber"
+        title="Build Your AI Plan"
+        lead="A three-hour, hands-on workshop for small and medium business leaders. Brandon walks you through the same process he uses with enterprise clients: pick one real problem, figure out which kind of AI solution fits it, map exactly what it should do, and leave with a working plan you can start executing Monday morning."
         meta={[
-          { key: 'Date', value: 'Tue, May 5, 2026' },
-          { key: 'Time', value: '11:30 AM – 1:00 PM' },
-          { key: 'Venue', value: "McRae's American Bistro" },
-          { key: 'Access', value: 'Members · Free' },
+          { key: 'Date', value: 'Thu, Aug 20, 2026' },
+          { key: 'Time', value: '10:00 AM – 1:00 PM CDT' },
+          { key: 'Location', value: 'Dallas, TX · TBD' },
+          { key: 'Price', value: '$99 members · $149 non-members' },
         ]}
       />
 
       <section className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="idea-lab-cover-heading">
-        <DetailSectionHeader id="idea-lab-cover-heading" number="01" title="What we'll cover" kicker="Three parts in sixty minutes" />
+        <DetailSectionHeader id="idea-lab-cover-heading" number="01" title="What we'll cover" kicker="Three parts in three hours" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
           {IDEA_LAB_TOPICS.map((topic, i) => (
             <RevealText key={topic.title} delay={i * 0.08}>
@@ -2096,10 +2098,10 @@ const IdeaLabMastermindPage = () => {
         <RevealText delay={0.2}>
           <div className="mt-8 bg-lab-olive/10 rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-baseline">
             <p className="font-mono text-xs uppercase tracking-widest text-lab-olive shrink-0">
-              Bring if you want
+              Bring with you
             </p>
             <p className="font-sans text-sm md:text-base text-gray-700 leading-relaxed">
-              A laptop, a problem from your own work, and an open mind. Lunch is available for purchase from the venue directly.
+              A laptop and one real problem from your business — that problem becomes the thing we build your plan around.
             </p>
           </div>
         </RevealText>
@@ -2110,12 +2112,12 @@ const IdeaLabMastermindPage = () => {
           <div className="bg-lab-concrete rounded-2xl p-6 md:p-10">
             <LabGrid>
               <div className="col-span-1 md:col-span-7">
-                <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-4">Members only · Space limited</p>
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-4">$99 members · $149 non-members · Space limited</p>
                 <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight text-lab-black mb-4">
                   Register through the chamber.
                 </h3>
                 <p className="font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-xl">
-                  Registration happens through the Greater East Dallas Chamber of Commerce portal. You'll need to sign in with your active membership email. If you're not a chamber member but the topic sounds useful, reach out directly and we can talk about whether a private version makes sense.
+                  Registration runs through the Greater East Dallas Chamber of Commerce — open to members and non-members alike. Most attendees ship their first working AI workflow within 30 days of the workshop. If you'd rather run a private version for your own team, reach out directly.
                 </p>
               </div>
               <div className="col-span-1 md:col-span-5 flex flex-col md:items-end justify-end gap-3 mt-6 md:mt-0">
@@ -2129,7 +2131,7 @@ const IdeaLabMastermindPage = () => {
                   Register via chamber <ArrowRight size={14} aria-hidden="true" />
                 </a>
                 <a
-                  href="mailto:brandon@quietloudlab.com?subject=Idea%20Lab%20Mastermind%20%E2%80%94%20May%205"
+                  href="mailto:brandon@quietloudlab.com?subject=Build%20Your%20AI%20Plan%20%E2%80%94%20Aug%2020"
                   onClick={() => trackEvent('Speaking Detail: Idea Lab Email')}
                   className="inline-flex items-center gap-2 border border-lab-black/20 text-lab-black px-6 py-3 font-mono text-xs uppercase tracking-widest hover:border-lab-olive hover:text-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive"
                 >
