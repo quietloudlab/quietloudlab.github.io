@@ -202,10 +202,9 @@ const HERO_TRAIL_IMAGES: TrailImageItem[] = [
 
 type PhaseShowcaseItem = {
   title: string;
-  bringWhen: string;
-  together: string;
-  leaveWith: string;
-  engagements: string[][];
+  summary: string;
+  detail: string;
+  engagements: string[];
   cta: string;
   image: string;
   secondaryImage?: string;
@@ -214,17 +213,15 @@ type PhaseShowcaseItem = {
 const METHODOLOGY_PHASES: PhaseShowcaseItem[] = [
   {
     title: 'Product Invention & R&D',
-    bringWhen:
-      'You have a promising technology, research capability, or emerging opportunity — but its most meaningful product application is not yet clear.',
-    together:
-      'We investigate the technology alongside the people and systems around it, identify valuable applications, develop new product propositions and interaction models, and make the strongest directions tangible through prototypes.',
-    leaveWith:
-      'A clearer understanding of what the technology could become, supported by product concepts, prototypes, and evidence that can guide future investment and development.',
+    summary:
+      'Strategic research and prototyping for emerging technologies, research capabilities, and early product opportunities.',
+    detail:
+      'We work with teams to understand what a new technology can meaningfully become: where it creates value, what people need from it, how it should behave, and what product forms are worth pursuing. Through research, systems thinking, interaction design, and prototyping, we turn unresolved possibilities into product visions, demonstrators, and directions teams can evaluate and build from.',
     engagements: [
-      ['Product Opportunity Exploration', 'Identify meaningful applications for an emerging technology or research capability.'],
-      ['Interaction Model Invention', 'Define new ways for people, technology, and systems to work together.'],
-      ['Strategic Prototypes', 'Build tangible or functional demonstrations that make a future product direction easier to evaluate.'],
-      ['Product Vision and Direction', 'Establish the proposition, principles, priorities, and recommended path forward.'],
+      'Product Opportunity Exploration',
+      'Interaction Model Invention',
+      'Strategic Prototypes',
+      'Product Vision and Direction',
     ],
     cta: 'Discuss an R&D project',
     image: '/images/hwh/explore.jpg',
@@ -232,17 +229,15 @@ const METHODOLOGY_PHASES: PhaseShowcaseItem[] = [
   },
   {
     title: 'Zero-to-One Product Design',
-    bringWhen:
-      'You have a strong product idea, but the proposition, workflows, and experience are not yet clear enough to build, fund, or introduce to users.',
-    together:
-      'We research the people and context around the idea, define the product proposition and experience architecture, design the key interactions, and create a high-fidelity prototype that can be tested and refined.',
-    leaveWith:
-      'A coherent, validated product direction that your team can use to secure approval, raise funding, or begin development with greater confidence.',
+    summary:
+      'Product strategy, experience design, and prototyping for new products that need to become clear enough to build.',
+    detail:
+      'Starting from a strong idea, research insight, or early opportunity, we help define the product proposition, map the experience, design the core interactions, and create prototypes that can be tested with users, stakeholders, or investors. The work can support anything from founder-led products and internal ventures to new tools, services, and AI-native experiences.',
     engagements: [
-      ['Product Definition', 'Clarify the audience, value proposition, scope, and product model.'],
-      ['Experience Architecture', 'Define the journeys, workflows, information, and interactions that make the product work.'],
-      ['Prototype Development', 'Create a tangible product experience that stakeholders and users can understand and evaluate.'],
-      ['Testing and Build Direction', 'Validate the concept and translate what we learn into priorities, requirements, and recommendations for development.'],
+      'Product Definition',
+      'Experience Architecture',
+      'Prototype Development',
+      'Testing and Build Direction',
     ],
     cta: 'Discuss a product',
     image: '/images/hwh/validate.png',
@@ -250,17 +245,15 @@ const METHODOLOGY_PHASES: PhaseShowcaseItem[] = [
   },
   {
     title: 'Experiments & Tools',
-    bringWhen:
-      'You have a promising technical capability, unresolved question, or unconventional idea that needs to be explored through making before it can become a product, platform, or strategic direction.',
-    together:
-      'We design focused experiments, demonstrators, and custom tools that reveal how a technology behaves in use, what kinds of value it can create, and which directions are worth pursuing. This is the same experimental practice that drives our independent studio research: building to understand, uncover possibilities, and develop new methods and intellectual property.',
-    leaveWith:
-      'A tangible piece of evidence — a working experiment, prototype, tool, framework, or interaction model — that clarifies the opportunity, creates reusable knowledge or IP, and gives your team something concrete to test, share, or build on.',
+    summary:
+      'Commissioned and independent R&D through experiments, demonstrators, frameworks, and custom tools.',
+    detail:
+      'Sometimes the only way to understand a possibility is to build it. We create focused experiments that reveal how a technology behaves in use, what kinds of value it can create, and which directions are worth taking seriously. This is also how we develop our own studio research: building to learn, to test ideas, to create reusable methods, and to open up new directions for future work.',
     engagements: [
-      ['Commissioned R&D', 'Investigate an emerging capability or open question through focused research and making.'],
-      ['Experimental Prototyping', 'Build functional demonstrations that uncover what a technology could enable.'],
-      ['Custom Tools and Frameworks', 'Create reusable tools that help teams understand, design, or evaluate complex systems.'],
-      ['Interaction Experiments', 'Explore new ways for people, technologies, and environments to relate and work together.'],
+      'Commissioned R&D',
+      'Experimental Prototyping',
+      'Custom Tools and Frameworks',
+      'Interaction Experiments',
     ],
     cta: 'Discuss an experiment',
     image: '/images/hwh/design.webp',
@@ -795,7 +788,8 @@ const Preloader = ({ onDone }: { onDone: () => void }) => {
 
 const SectionHeader = ({ title, dark = false, id, rule = true, scatter = false }: { title: string; dark?: boolean; id?: string; rule?: boolean; scatter?: boolean }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
+  // Scatter titles re-observe so they re-scatter/resolve on every scroll in/out.
+  const isInView = useInView(ref, { once: !scatter, margin: '-10% 0px' });
   const shouldReduceMotion = useReducedMotion();
   const [hovered, setHovered] = useState(false);
   const [revealed, setRevealed] = useState(false);
@@ -803,9 +797,11 @@ const SectionHeader = ({ title, dark = false, id, rule = true, scatter = false }
   // hovered, so the scroll-in reveal ripples left-to-right instead.
   const [origin, setOrigin] = useState(-1);
   const letterRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  // After the title scrolls in, wait a beat, then let RAND resolve 1000 → 0.
+  // In view: wait a beat, then resolve RAND 1000 → 0. Out of view: re-scatter
+  // (max RAND) and reset the origin so the next entry replays the reveal.
   useEffect(() => {
-    if (!scatter || !isInView) return;
+    if (!scatter) return;
+    if (!isInView) { setRevealed(false); setOrigin(-1); return; }
     const timer = setTimeout(() => setRevealed(true), 450);
     return () => clearTimeout(timer);
   }, [scatter, isInView]);
@@ -1227,22 +1223,21 @@ const OfferingEntry = ({ phase }: { phase: PhaseShowcaseItem }) => (
           <span className="tint absolute inset-0 bg-lab-olive mix-blend-color pointer-events-none" aria-hidden="true" />
         </div>
 
-        {/* Supporting copy distributed across the full width */}
-        <p className="col-span-12 md:col-span-4 max-w-[600px] font-sans text-gray-700 leading-relaxed lg:text-lg">
-          {phase.together}
-        </p>
-        <p className="col-span-12 md:col-span-4 max-w-[600px] font-sans text-gray-700 leading-relaxed lg:text-lg">
-          {phase.leaveWith}
-        </p>
-        <div className="col-span-12 md:col-span-4">
-          <ul className="divide-y divide-lab-black/10 border-y border-lab-black/10">
-            {phase.engagements.map(([title, body]) => (
-              <li key={title} className="py-3.5">
-                <p className="font-sans text-sm font-medium text-lab-black">{title}</p>
-                <p className="mt-1 font-sans text-sm text-gray-600 leading-relaxed">{body}</p>
-              </li>
-            ))}
-          </ul>
+        {/* Summary, detail, and includes — stacked under xl, three columns at xl */}
+        <div className="col-span-12 grid grid-cols-1 gap-y-10 xl:grid-cols-3 xl:gap-x-12">
+          <p className="font-sans text-[1.5rem] leading-snug text-lab-black xl:max-w-[680px]">{phase.summary}</p>
+          <p className="font-sans text-[1.5rem] leading-snug text-gray-600 xl:max-w-[680px]">{phase.detail}</p>
+          <div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-gray-500 mb-5">Includes</p>
+            <ul className="border-t border-lab-black/15">
+              {phase.engagements.map((name, i) => (
+                <li key={name} className="group/inc flex items-baseline gap-4 border-b border-lab-black/15 py-3">
+                  <span className="font-mono text-[11px] tabular-nums text-lab-olive" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="font-sans text-base leading-snug text-lab-black transition-transform duration-300 ease-out group-hover/inc:translate-x-1">{name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <div className="col-span-12">
@@ -1273,7 +1268,7 @@ const WhatWeDo = ({ phases }: { phases: PhaseShowcaseItem[] }) => (
         </p>
       </div>
       {/* The text: below on small (order-2), to the left on large (order-1) */}
-      <div className="order-2 flex items-center px-6 py-16 md:px-10 md:py-24 lg:order-1 lg:w-7/12 lg:px-16 xl:px-24">
+      <div className="order-2 flex items-center justify-center px-6 py-16 md:px-10 md:py-24 lg:order-1 lg:w-7/12 lg:px-16 xl:px-24">
         <RevealText className="block max-w-4xl">
           <p className="font-sans text-2xl md:text-4xl lg:text-5xl text-lab-black tracking-tight leading-[1.25]">
             {HWH_INTRO}
