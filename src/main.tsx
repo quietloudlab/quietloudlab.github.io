@@ -1277,7 +1277,7 @@ const WhatWeDo = ({ phases }: { phases: PhaseShowcaseItem[] }) => (
       </div>
     </div>
 
-    <div className="px-6 md:px-10 lg:px-16 xl:px-24 py-20 md:py-32">
+    <div className="px-6 md:px-10 lg:px-16 xl:px-24 pb-20 md:pb-32">
       {phases.map((phase) => (
         <OfferingEntry key={phase.title} phase={phase} />
       ))}
@@ -1702,9 +1702,47 @@ const DispatchCard = () => (
 
 const Practice = () => {
   const [active, setActive] = useState(0);
+  const pinnedRef = useRef(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const titleRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const shouldReduceMotion = useReducedMotion();
+
+  // Scroll position drives which area is expanded: the last title to pass a
+  // trigger line ~40% down the viewport. This rule is stable as descriptions
+  // expand/collapse (the layout shift reinforces the selection, no flicker).
+  useEffect(() => {
+    let ticking = false;
+    const measure = () => {
+      ticking = false;
+      if (pinnedRef.current) return;
+      const triggerY = window.innerHeight * 0.4;
+      let next = 0;
+      titleRefs.current.forEach((el, i) => {
+        if (el && el.getBoundingClientRect().top <= triggerY) next = i;
+      });
+      setActive((prev) => (prev === next ? prev : next));
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(measure); } };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    measure();
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); };
+  }, []);
+
+  // A click pins the selection (overriding scroll); leaving the section
+  // restores scroll control on the next visit.
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([entry]) => { if (!entry.isIntersecting) pinnedRef.current = false; });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const pin = (i: number) => { pinnedRef.current = true; setActive(i); };
+
   return (
-    <section id="practice" aria-labelledby="practice-heading" className="relative overflow-hidden bg-[#F7F7F9] border-y border-lab-black/10">
+    <section ref={sectionRef} id="practice" aria-labelledby="practice-heading" className="relative overflow-hidden bg-[#F7F7F9] border-y border-lab-black/10">
       <SpecimenField mode={SPECIMEN_MODES[active]} />
 
       <div className="relative z-10 px-6 md:px-12 pt-16 md:pt-24 pb-20 md:pb-32">
@@ -1725,15 +1763,15 @@ const Practice = () => {
                 <div className="group">
                   <button
                     type="button"
-                    onClick={() => setActive(i)}
-                    onMouseEnter={() => setActive(i)}
-                    onFocus={() => setActive(i)}
+                    ref={(el) => { titleRefs.current[i] = el; }}
+                    onClick={() => pin(i)}
+                    onFocus={() => pin(i)}
                     aria-expanded={isActive}
                     aria-controls={`practice-panel-${i}`}
-                    className="block w-full text-left py-[clamp(0.5rem,1.4vh,1.25rem)] focus:outline-none"
+                    className="block w-full text-left py-[clamp(1.75rem,5.5vh,4.5rem)] focus:outline-none"
                   >
                     <span
-                      className={`font-sans font-medium transition-colors duration-300 ${isActive ? 'text-lab-black' : 'text-lab-black/20 group-hover:text-lab-black/45'}`}
+                      className={`font-sans font-medium transition-colors duration-500 ${isActive ? 'text-lab-black' : 'text-lab-black/20 group-hover:text-lab-black/40'}`}
                       style={{ fontSize: 'clamp(2.5rem, 6.5vw, 7rem)', lineHeight: 0.95, letterSpacing: '-0.04em', display: 'inline-block' }}
                     >
                       {area.title}
