@@ -39,7 +39,8 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.typekit.net/dkm3aaj.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -48,7 +49,7 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+              sans: ['helvetica-lt-pro', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
               serif: ['Newsreader', 'serif'],
               mono: ['JetBrains Mono', 'monospace'],
             },
@@ -69,7 +70,6 @@
       body {
         background-color: #FDFDFD;
         color: #050505;
-        font-feature-settings: "ss01", "ss02";
         -webkit-font-smoothing: antialiased;
         overflow-x: hidden;
       }
@@ -102,6 +102,51 @@
       @keyframes ambient-float {
         0%, 100% { transform: translate3d(0, 0, 0); }
         50% { transform: translate3d(0, -10px, 0); }
+      }
+
+      /* Marquee strip */
+      .marquee-track {
+        display: flex;
+        width: max-content;
+        animation: marquee-scroll 56s linear infinite;
+      }
+      @keyframes marquee-scroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .marquee-track { animation: none; }
+      }
+
+      /* What-we-do figures: olive duotone that blooms to colour + crosses
+         to the second photo when its offering is hovered. Touch devices
+         (no hover) simply show the full-colour primary image. */
+      .hwh-figure .base,
+      .hwh-figure .reveal { transition: opacity 0.7s ease, transform 0.9s ease; }
+      .hwh-figure .reveal { opacity: 0; }
+      .hwh-figure .tint { transition: opacity 0.7s ease; opacity: 0; }
+      @media (hover: hover) and (pointer: fine) {
+        .hwh-figure .tint { opacity: 0.5; }
+        .group:hover .hwh-figure .base { opacity: 0; transform: scale(1.04); }
+        .group:hover .hwh-figure .reveal { opacity: 1; transform: scale(1.04); }
+        .group:hover .hwh-figure .tint { opacity: 0; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .hwh-figure .base,
+        .hwh-figure .reveal { transition: opacity 0.2s ease; }
+        .group:hover .hwh-figure .base,
+        .group:hover .hwh-figure .reveal { transform: none; }
+      }
+
+      /* Open work entries: hovering cascades the lines gently to the right */
+      .open-entry > * { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+      .open-entry:hover > * { transform: translateX(5px); }
+      .open-entry:hover > *:nth-child(2) { transition-delay: 0.04s; }
+      .open-entry:hover > *:nth-child(3) { transition-delay: 0.08s; }
+      .open-entry:hover > *:nth-child(4) { transition-delay: 0.12s; }
+      .open-entry:hover > *:nth-child(5) { transition-delay: 0.16s; }
+      @media (prefers-reduced-motion: reduce) {
+        .open-entry:hover > * { transform: none; }
       }
 
       /* Noise Texture */

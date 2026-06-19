@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
-import { motion, useScroll, useInView, AnimatePresence, useSpring, useTransform, useReducedMotion, useMotionValueEvent } from 'framer-motion';
-import { ArrowRight, ArrowDown, Menu, X, Check, Loader2, BrainCircuit, User, Settings, Database, SlidersHorizontal, Smartphone, Users, Compass, Code2, Building2, Video, Mic, Plus, type LucideIcon } from 'lucide-react';
+import { motion, useScroll, useInView, AnimatePresence, useSpring, useTransform, useReducedMotion, useMotionValueEvent, type MotionValue } from 'framer-motion';
+import { ArrowRight, ArrowDown, Menu, X, Check, Loader2, Users, Compass, Code2, Building2, Video, Mic, Plus, type LucideIcon } from 'lucide-react';
 import LogoSvg from './img/quietloudlab_logo_white.svg?react';
 
 // Fathom Analytics
@@ -202,68 +202,74 @@ const HERO_TRAIL_IMAGES: TrailImageItem[] = [
 
 type PhaseShowcaseItem = {
   title: string;
-  timeline: string;
-  problem: string;
-  action: string;
-  outcome: string;
+  bringWhen: string;
+  together: string;
+  leaveWith: string;
   engagements: string[][];
+  cta: string;
   image: string;
   secondaryImage?: string;
 };
 
 const METHODOLOGY_PHASES: PhaseShowcaseItem[] = [
   {
-    title: 'Explore',
-    timeline: 'Timeline: 3 - 10 days',
-    problem:
-      'Are your experiments fit for scale? Is a chatbot really the right move? AI provides countless opportunities for innovation, but do you know if the one you chose is right for your users?',
-    action:
-      "Together, we'll dive into the context you're experimenting within to quickly and thoroughly map and plan the AI system you should build.",
-    outcome:
-      'A legible, prioritized vision for AI systems that solve real problems for real people, and a strategy your team can reason from.',
+    title: 'Product Invention & R&D',
+    bringWhen:
+      'You have a promising technology, research capability, or emerging opportunity — but its most meaningful product application is not yet clear.',
+    together:
+      'We investigate the technology alongside the people and systems around it, identify valuable applications, develop new product propositions and interaction models, and make the strongest directions tangible through prototypes.',
+    leaveWith:
+      'A clearer understanding of what the technology could become, supported by product concepts, prototypes, and evidence that can guide future investment and development.',
     engagements: [
-      ['AI Opportunity Discovery', 'Identify which problems AI is particularly well-suited to solve, and which are not.'],
-      ['AI Interaction Exploration', 'Define the core purpose, functionality, and interaction model of your AI solution.'],
-      ['Innovation Workshops', 'Quickly align the team on what needs to be built, why, and how.'],
+      ['Product Opportunity Exploration', 'Identify meaningful applications for an emerging technology or research capability.'],
+      ['Interaction Model Invention', 'Define new ways for people, technology, and systems to work together.'],
+      ['Strategic Prototypes', 'Build tangible or functional demonstrations that make a future product direction easier to evaluate.'],
+      ['Product Vision and Direction', 'Establish the proposition, principles, priorities, and recommended path forward.'],
     ],
+    cta: 'Discuss an R&D project',
     image: '/images/hwh/explore.jpg',
     secondaryImage: '/images/hwh/explore2.webp',
   },
   {
-    title: 'Validate',
-    timeline: 'Timeline: 2 - 4 weeks',
-    problem:
-      'Do your users truly understand the new AI tool you\'re building? Do your stakeholders see the value? How might we prove the concept before securing budget or spending months building?',
-    action:
-      "We'll build tangible, interactive prototypes of your AI system that work on real data, capture insight with real users and stakeholders, and validate the behavior of the product.",
-    outcome:
-      'Validated product direction and the insights needed to secure buy-in, surfaced through a high-fidelity experiential prototype we test and iterate on directly with real users.',
+    title: 'Zero-to-One Product Design',
+    bringWhen:
+      'You have a strong product idea, but the proposition, workflows, and experience are not yet clear enough to build, fund, or introduce to users.',
+    together:
+      'We research the people and context around the idea, define the product proposition and experience architecture, design the key interactions, and create a high-fidelity prototype that can be tested and refined.',
+    leaveWith:
+      'A coherent, validated product direction that your team can use to secure approval, raise funding, or begin development with greater confidence.',
     engagements: [
-      ['Experiential Prototyping', 'Build interactive, testable interfaces that simulate the AI experience.'],
-      ['Behavioral Testing', 'Put the prototype in front of humans to validate the interaction and uncover friction points early.'],
-      ['Executive Show-and-Tell', 'Create high-impact visual artifacts designed specifically to secure internal alignment and funding.'],
+      ['Product Definition', 'Clarify the audience, value proposition, scope, and product model.'],
+      ['Experience Architecture', 'Define the journeys, workflows, information, and interactions that make the product work.'],
+      ['Prototype Development', 'Create a tangible product experience that stakeholders and users can understand and evaluate.'],
+      ['Testing and Build Direction', 'Validate the concept and translate what we learn into priorities, requirements, and recommendations for development.'],
     ],
+    cta: 'Discuss a product',
     image: '/images/hwh/validate.png',
     secondaryImage: '/images/hwh/validate2.webp',
   },
   {
-    title: 'Design',
-    timeline: 'Timeline: 4 - 6 weeks',
-    problem:
-      'What does an AI system look like with a person in the middle of it? Is the shape of the system right for your users? Moving from a promising concept to a buildable product is notoriously messy.',
-    action:
-      "Together, we'll translate your AI concepts into a buildable architecture and interaction design that maps what the system needs to know, do, and what that means for the person using it.",
-    outcome:
-      'Actionable system blueprints and interaction models that your team can reason from. We frame the key system experience, design, and technical constraints so your team builds exactly what needs to be built.',
+    title: 'Experiments & Tools',
+    bringWhen:
+      'You have a promising technical capability, unresolved question, or unconventional idea that needs to be explored through making before it can become a product, platform, or strategic direction.',
+    together:
+      'We design focused experiments, demonstrators, and custom tools that reveal how a technology behaves in use, what kinds of value it can create, and which directions are worth pursuing. This is the same experimental practice that drives our independent studio research: building to understand, uncover possibilities, and develop new methods and intellectual property.',
+    leaveWith:
+      'A tangible piece of evidence — a working experiment, prototype, tool, framework, or interaction model — that clarifies the opportunity, creates reusable knowledge or IP, and gives your team something concrete to test, share, or build on.',
     engagements: [
-      ['System & Architecture Mapping', 'Define the layer beneath the interaction: data flows, model constraints, and system logic.'],
-      ['Human-AI Workflow Design', 'Map exactly how the human and the intelligent system will collaborate step-by-step.'],
-      ['Structural Concept Design', 'Build the structural and interaction models that prove the logic of the system holds up against human context and complexity.'],
+      ['Commissioned R&D', 'Investigate an emerging capability or open question through focused research and making.'],
+      ['Experimental Prototyping', 'Build functional demonstrations that uncover what a technology could enable.'],
+      ['Custom Tools and Frameworks', 'Create reusable tools that help teams understand, design, or evaluate complex systems.'],
+      ['Interaction Experiments', 'Explore new ways for people, technologies, and environments to relate and work together.'],
     ],
+    cta: 'Discuss an experiment',
     image: '/images/hwh/design.webp',
     secondaryImage: '/images/hwh/design2.webp',
   },
 ];
+
+const HWH_INTRO =
+  'We work where new technologies, research, and ambitious ideas have not yet found the right product form. We help teams discover meaningful opportunities, define and prototype new products, and explore the ideas that may shape what comes next.';
 
 const INTEREST_OPTIONS = [
   "Exploring how quietloudlab can support my team",
@@ -326,11 +332,548 @@ const RevealText = ({ children, delay = 0, className = "" }: { children?: React.
   );
 };
 
-const SectionHeader = ({ title }: { title: string }) => (
-  <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-12 mb-8">
-    <h2 className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">{title}</h2>
+// --- Immersive layer ---
+
+// Read once at load: has this browser session already seen the boot intro?
+const INTRO_SEEN = (() => {
+  try { return sessionStorage.getItem('qll-intro') === '1'; } catch { return true; }
+})();
+const INTRO_DELAY = INTRO_SEEN ? 0 : 1.5;
+
+const markIntroSeen = () => {
+  try { sessionStorage.setItem('qll-intro', '1'); } catch { /* private mode: replay is fine */ }
+};
+
+// Headline words rise out of a clipping mask, one by one.
+const MaskedWords = ({ text, delay = 0, stagger = 0.05, active = true }: { text: string; delay?: number; stagger?: number; active?: boolean }) => {
+  const shouldReduceMotion = useReducedMotion();
+  const words = text.split(' ');
+  return (
+    <>
+      {words.map((word, i) => (
+        <React.Fragment key={`${word}-${i}`}>
+          <span className="inline-block overflow-hidden align-bottom pb-[0.12em] -mb-[0.12em]">
+            <motion.span
+              className="inline-block"
+              initial={{ y: shouldReduceMotion ? 0 : '115%' }}
+              animate={active ? { y: 0 } : {}}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.75, ease: [0.16, 1, 0.3, 1], delay: delay + i * stagger }}
+            >
+              {word}
+            </motion.span>
+          </span>{' '}
+        </React.Fragment>
+      ))}
+    </>
+  );
+};
+
+// One word of a scroll-linked paragraph; opacity tracks scroll progress.
+const ScrollWord = ({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) => {
+  const opacity = useTransform(progress, range, [0.14, 1]);
+  return (
+    <>
+      <motion.span style={{ opacity }} className="inline">{children}</motion.span>{' '}
+    </>
+  );
+};
+
+// Paragraph that "inks in" word by word as the reader scrolls through it.
+const ScrollWords = ({ text, className = '', style }: { text: string; className?: string; style?: React.CSSProperties }) => {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: ref as React.RefObject<HTMLElement>,
+    offset: ['start 0.85', 'end 0.45'],
+  });
+  const words = text.split(' ');
+  if (shouldReduceMotion) {
+    return <p ref={ref} className={`relative ${className}`} style={style}>{text}</p>;
+  }
+  return (
+    <p ref={ref} className={`relative ${className}`} style={style}>
+      {words.map((word, i) => (
+        <ScrollWord
+          key={`${word}-${i}`}
+          progress={scrollYProgress}
+          range={[i / words.length, Math.min((i + 1) / words.length + 0.04, 1)]}
+        >
+          {word}
+        </ScrollWord>
+      ))}
+    </p>
+  );
+};
+
+const MARQUEE_PHRASES = [
+  'Friction is often a feature',
+  'A system cannot be governed if it cannot be seen',
+  'Human-in-the-loop by default',
+  'Tools for thoughtful work',
+  'The human layer of intelligent systems',
+];
+
+// Slow ticker of lab taglines. Decorative; the ideas live in the body copy.
+const Marquee = ({ dark = false }: { dark?: boolean }) => {
+  const run = MARQUEE_PHRASES.map((phrase, i) => (
+    <span key={i} className="flex items-center shrink-0">
+      <span className="font-mono text-xs md:text-sm uppercase tracking-widest text-gray-500">{phrase}</span>
+      <span className="mx-6 md:mx-10 h-1.5 w-1.5 rounded-[1px] bg-lab-olive" />
+    </span>
+  ));
+  return (
+    <div className={`overflow-hidden py-5 border-y ${dark ? 'border-white/10' : 'border-lab-black/10'}`} aria-hidden="true">
+      <div className="marquee-track">
+        <div className="flex items-center shrink-0">{run}</div>
+        <div className="flex items-center shrink-0">{run}</div>
+      </div>
+    </div>
+  );
+};
+
+// --- ASCII instruments ---
+// The lab's thesis is legibility, so the decorative layer renders in the most
+// legible medium there is: text. Every canvas pauses off-screen and renders a
+// single static frame under reduced motion.
+
+const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+type AsciiDraw = (ctx: CanvasRenderingContext2D, w: number, h: number, t: number) => void;
+
+// Shared rAF / resize / visibility loop for ASCII canvases. `redrawKey`
+// forces a fresh static frame under reduced motion when the content changes.
+const useAsciiLoop = (draw: AsciiDraw, fps = 24, redrawKey?: unknown) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const drawRef = useRef(draw);
+  drawRef.current = draw;
+  const redrawRef = useRef<() => void>(() => {});
+  const shouldReduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (shouldReduceMotion) redrawRef.current();
+  }, [redrawKey, shouldReduceMotion]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let raf = 0;
+    let running = false;
+    let last = 0;
+    let width = 0;
+    let height = 0;
+    const start = performance.now();
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = rect.width;
+      height = rect.height;
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawRef.current(ctx, width, height, shouldReduceMotion ? 0 : (performance.now() - start) / 1000);
+    };
+
+    const loop = (now: number) => {
+      if (!running) return;
+      raf = requestAnimationFrame(loop);
+      if (now - last < 1000 / fps) return;
+      last = now;
+      if (width && height) drawRef.current(ctx, width, height, (now - start) / 1000);
+    };
+
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+    redrawRef.current = resize;
+    resize();
+
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !shouldReduceMotion) {
+        if (!running) {
+          running = true;
+          raf = requestAnimationFrame(loop);
+        }
+      } else {
+        running = false;
+        cancelAnimationFrame(raf);
+      }
+    });
+    io.observe(canvas);
+
+    return () => {
+      running = false;
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      io.disconnect();
+    };
+  }, [fps, shouldReduceMotion]);
+
+  return canvasRef;
+};
+
+// The lab's theses, hidden in a field of noise. Legible only where the
+// reader points — the mission statement enacted as an interaction.
+const BAND_LINES = [
+  'A SYSTEM CANNOT BE GOVERNED IF IT CANNOT BE SEEN',
+  'FRICTION IS OFTEN A FEATURE',
+  'HUMAN-IN-THE-LOOP BY DEFAULT',
+  'TOOLS FOR THOUGHTFUL WORK',
+];
+const BAND_NOISE_CHARS = ' ····::··  ·:· ';
+
+const AsciiRevealBand = () => {
+  const pointer = useRef({ x: -9999, y: -9999, last: 0, has: false });
+  const noise = useRef<Record<number, string>>({});
+  const shouldReduceMotion = useReducedMotion();
+
+  const draw: AsciiDraw = (ctx, w, h, t) => {
+    const cw = 11;
+    const chh = 20;
+    const cols = Math.ceil(w / cw);
+    const rows = Math.ceil(h / chh);
+    ctx.clearRect(0, 0, w, h);
+    ctx.font = '500 13px "JetBrains Mono", monospace';
+    ctx.textBaseline = 'middle';
+
+    let sx = pointer.current.x;
+    let sy = pointer.current.y;
+    const idle = !pointer.current.has || performance.now() - pointer.current.last > 2600;
+    if (idle && !shouldReduceMotion) {
+      // No pointer (or it left): a slow roaming spotlight reads the field.
+      sx = w * (0.5 + 0.42 * Math.sin(t * 0.33));
+      sy = h * (0.5 + 0.3 * Math.sin(t * 0.71 + 1.7));
+    }
+    const radius = 150;
+
+    for (let r = 0; r < rows; r++) {
+      const line = BAND_LINES[r % BAND_LINES.length] + '   ·   ';
+      const offset = r * 9;
+      const py = r * chh + chh / 2;
+      for (let c = 0; c < cols; c++) {
+        const px = c * cw;
+        const hidden = line[(c + offset) % line.length];
+        if (shouldReduceMotion) {
+          if (hidden !== ' ') {
+            ctx.fillStyle = 'rgba(5,5,5,0.45)';
+            ctx.fillText(hidden, px, py);
+          }
+          continue;
+        }
+        const d = Math.hypot(px + cw / 2 - sx, py - sy);
+        if (d < radius && hidden !== ' ') {
+          const k = 1 - d / radius;
+          ctx.fillStyle = k > 0.62 ? '#050505' : `rgba(107,116,86,${0.22 + k})`;
+          ctx.fillText(hidden, px, py);
+        } else {
+          const idx = r * 512 + c;
+          let ch = noise.current[idx];
+          if (!ch || Math.random() < 0.012) {
+            ch = BAND_NOISE_CHARS[(Math.random() * BAND_NOISE_CHARS.length) | 0];
+            noise.current[idx] = ch;
+          }
+          if (ch !== ' ') {
+            ctx.fillStyle = 'rgba(5,5,5,0.13)';
+            ctx.fillText(ch, px, py);
+          }
+        }
+      }
+    }
+  };
+
+  const canvasRef = useAsciiLoop(draw, 24);
+
+  return (
+    <div
+      className="relative h-full w-full cursor-crosshair"
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        pointer.current = { x: e.clientX - rect.left, y: e.clientY - rect.top, last: performance.now(), has: true };
+      }}
+      onMouseLeave={() => {
+        pointer.current.has = false;
+      }}
+    >
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" aria-hidden="true" />
+    </div>
+  );
+};
+
+// Generative ASCII pattern per practice area, shown in the specimen viewer.
+type SpecimenMode = 'lattice' | 'loop' | 'bounds' | 'drift';
+
+const SPECIMEN_RAMP = ' ·:-=+*#%@';
+
+const specimenField = (mode: SpecimenMode, nx: number, ny: number, t: number): number => {
+  switch (mode) {
+    case 'lattice': {
+      // Legible Systems: a grid with a slow diagonal pulse traveling its lines.
+      const gx = Math.abs(((nx * 8) % 1) - 0.5) < 0.07 ? 1 : 0;
+      const gy = Math.abs(((ny * 6) % 1) - 0.5) < 0.09 ? 1 : 0;
+      const grid = Math.max(gx, gy);
+      const sweep = Math.max(0, 1 - Math.abs(((nx + ny + t * 0.12) % 1.4) - 0.7) * 5);
+      return grid * (0.22 + sweep * 0.8) + 0.03;
+    }
+    case 'loop': {
+      // Human–AI Co-Creativity: two bodies orbiting a shared ring.
+      const a = t * 0.7;
+      const d1 = Math.hypot(nx - (0.5 + 0.27 * Math.cos(a)), ny - (0.5 + 0.27 * Math.sin(a)));
+      const d2 = Math.hypot(nx - (0.5 - 0.27 * Math.cos(a)), ny - (0.5 - 0.27 * Math.sin(a)));
+      const ring = Math.exp(-((Math.hypot(nx - 0.5, ny - 0.5) - 0.27) ** 2) * 300) * 0.18;
+      return Math.exp(-(d1 ** 2) * 60) + Math.exp(-(d2 ** 2) * 60) + ring;
+    }
+    case 'bounds': {
+      // Constraints as Design Material: a particle alive inside a hard edge.
+      const e = Math.min(nx, ny, 1 - nx, 1 - ny);
+      const edge = Math.exp(-(e ** 2) * 2500) * 0.85;
+      const tri = (v: number) => 2 * Math.abs((v % 2) - 1) - 1;
+      const bx = 0.5 + 0.36 * tri(t * 0.23 + 0.3);
+      const by = 0.5 + 0.32 * tri(t * 0.31);
+      return edge + Math.exp(-((nx - bx) ** 2 + (ny - by) ** 2) * 90) + 0.02;
+    }
+    case 'drift': {
+      // Tools for Thoughtful Work: slow columns settling at their own pace.
+      const col = Math.floor(nx * 24);
+      const speed = 0.05 + (((col * 7919) % 13) / 13) * 0.12;
+      const phase = ((col * 104729) % 17) / 17;
+      const yy = (ny + t * speed + phase) % 1;
+      const fall = yy < 0.07 ? 1 - yy / 0.07 : 0;
+      const sparse = (col * 31) % 5 < 2 ? 1 : 0.25;
+      return fall * sparse + 0.025;
+    }
+  }
+};
+
+// Each practice area renders in its own hue: a bright accent for the
+// pattern's peaks and a dark ink for the body, both cross-faded on switch.
+const SPECIMEN_COLORS: Record<SpecimenMode, { accent: [number, number, number]; ink: [number, number, number] }> = {
+  lattice: { accent: [107, 116, 86], ink: [54, 60, 44] },
+  loop: { accent: [94, 126, 155], ink: [42, 57, 71] },
+  bounds: { accent: [166, 106, 76], ink: [74, 49, 37] },
+  drift: { accent: [138, 111, 158], ink: [61, 49, 70] },
+};
+
+const lerp3 = (a: [number, number, number], b: [number, number, number], k: number): [number, number, number] => [
+  Math.round(a[0] + (b[0] - a[0]) * k),
+  Math.round(a[1] + (b[1] - a[1]) * k),
+  Math.round(a[2] + (b[2] - a[2]) * k),
+];
+
+// The active practice area's pattern, filling the whole section. The field
+// stays quiet on the left where the text lives and grows louder to the
+// right; the pointer brightens it locally; mode changes cross-fade.
+const SpecimenField = ({ mode }: { mode: SpecimenMode }) => {
+  const pointer = useRef({ x: -9999, y: -9999 });
+  const blend = useRef({ from: mode, to: mode, at: 0 });
+  if (blend.current.to !== mode) {
+    blend.current = { from: blend.current.to, to: mode, at: performance.now() };
+  }
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      pointer.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', onMove, { passive: true });
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
+
+  const draw: AsciiDraw = (ctx, w, h, t) => {
+    const cw = 13;
+    const chh = 18;
+    const cols = Math.ceil(w / cw);
+    const rows = Math.ceil(h / chh);
+    ctx.clearRect(0, 0, w, h);
+    ctx.font = '12px "JetBrains Mono", monospace';
+    ctx.textBaseline = 'middle';
+    const { from, to, at } = blend.current;
+    let k = clamp01((performance.now() - at) / 650);
+    k = k * k * (3 - 2 * k);
+    const rect = ctx.canvas.getBoundingClientRect();
+    const px = pointer.current.x - rect.left;
+    const py = pointer.current.y - rect.top;
+    // Narrow screens have no quiet column — the text overlaps the field
+    // everywhere — so the whole field steps back.
+    const damp = w < 640 ? 0.5 : w < 1024 ? 0.7 : 1;
+    const accent = k >= 1 ? SPECIMEN_COLORS[to].accent : lerp3(SPECIMEN_COLORS[from].accent, SPECIMEN_COLORS[to].accent, k);
+    const ink = k >= 1 ? SPECIMEN_COLORS[to].ink : lerp3(SPECIMEN_COLORS[from].ink, SPECIMEN_COLORS[to].ink, k);
+    const accentStyle = `rgb(${accent[0]},${accent[1]},${accent[2]})`;
+    for (let r = 0; r < rows; r++) {
+      const cy = r * chh + chh / 2;
+      const ny = (r + 0.5) / rows;
+      for (let c = 0; c < cols; c++) {
+        const nx = (c + 0.5) / cols;
+        let intensity =
+          k >= 1
+            ? specimenField(to, nx, ny, t)
+            : (1 - k) * specimenField(from, nx, ny, t) + k * specimenField(to, nx, ny, t);
+        intensity *= (0.35 + 0.65 * nx) * damp;
+        const cx = c * cw + cw / 2;
+        const d2 = (cx - px) ** 2 + (cy - py) ** 2;
+        intensity *= 1 + 1.4 * Math.exp(-d2 / 22000);
+        intensity = clamp01(intensity);
+        const ch = SPECIMEN_RAMP[Math.min(SPECIMEN_RAMP.length - 1, Math.floor(intensity * SPECIMEN_RAMP.length))];
+        if (ch === ' ') continue;
+        ctx.fillStyle = intensity > 0.78 * damp
+          ? accentStyle
+          : `rgba(${ink[0]},${ink[1]},${ink[2]},${0.08 + intensity * 0.55})`;
+        ctx.fillText(ch, c * cw, cy);
+      }
+    }
+  };
+  const canvasRef = useAsciiLoop(draw, 20, mode);
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" />;
+};
+
+// Print-registration "+" marks on panel corners.
+const CornerMarks = () => (
+  <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+    {(['top-0 left-0', 'top-0 right-0', 'bottom-0 left-0', 'bottom-0 right-0'] as const).map((pos) => (
+      <span
+        key={pos}
+        className={`absolute ${pos} font-mono text-[10px] leading-none text-gray-400 ${pos.includes('right') ? 'translate-x-1/2' : '-translate-x-1/2'} ${pos.includes('bottom') ? 'translate-y-1/2' : '-translate-y-1/2'}`}
+      >
+        +
+      </span>
+    ))}
   </div>
 );
+
+// Fixed schematic chrome: a quiet tick rail on the page edge.
+const SchematicFrame = () => (
+  <div className="hidden xl:block pointer-events-none fixed inset-0 z-30" aria-hidden="true">
+    <div
+      className="absolute left-4 top-24 bottom-24 w-2"
+      style={{ backgroundImage: 'repeating-linear-gradient(to bottom, rgba(128,128,128,0.4) 0 1px, transparent 1px 56px)' }}
+    />
+  </div>
+);
+
+// Once-per-session boot screen. Reduced motion skips it entirely.
+const Preloader = ({ onDone }: { onDone: () => void }) => {
+  const shouldReduceMotion = useReducedMotion();
+  const [exiting, setExiting] = useState(false);
+
+  useEffect(() => {
+    if (shouldReduceMotion) { onDone(); return; }
+    document.body.style.overflow = 'hidden';
+    const exitTimer = window.setTimeout(() => setExiting(true), 1150);
+    const doneTimer = window.setTimeout(() => {
+      document.body.style.overflow = '';
+      onDone();
+    }, 1800);
+    return () => {
+      window.clearTimeout(exitTimer);
+      window.clearTimeout(doneTimer);
+      document.body.style.overflow = '';
+    };
+  }, [shouldReduceMotion, onDone]);
+
+  if (shouldReduceMotion) return null;
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-[90] bg-lab-black flex flex-col items-center justify-center"
+      animate={exiting ? { y: '-100%' } : { y: 0 }}
+      transition={{ duration: 0.65, ease: [0.76, 0, 0.24, 1] }}
+      aria-hidden="true"
+    >
+      <Logo className="h-5 md:h-6 w-auto" />
+      <div className="mt-10 h-px w-44 md:w-64 bg-white/15 overflow-hidden">
+        <motion.div
+          className="h-full bg-lab-olive origin-left"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1.05, ease: [0.16, 1, 0.3, 1] }}
+        />
+      </div>
+    </motion.div>
+  );
+};
+
+const SectionHeader = ({ title, dark = false, id, rule = true, scatter = false }: { title: string; dark?: boolean; id?: string; rule?: boolean; scatter?: boolean }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
+  const shouldReduceMotion = useReducedMotion();
+  const [hovered, setHovered] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  // The letter the cursor entered over — the ripple's origin. -1 = not yet
+  // hovered, so the scroll-in reveal ripples left-to-right instead.
+  const [origin, setOrigin] = useState(-1);
+  const letterRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  // After the title scrolls in, wait a beat, then let RAND resolve 1000 → 0.
+  useEffect(() => {
+    if (!scatter || !isInView) return;
+    const timer = setTimeout(() => setRevealed(true), 450);
+    return () => clearTimeout(timer);
+  }, [scatter, isInView]);
+
+  const handleEnter = (e: React.MouseEvent) => {
+    let idx = 0;
+    let best = Infinity;
+    letterRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const d = Math.abs(e.clientX - (r.left + r.right) / 2);
+      if (d < best) { best = d; idx = i; }
+    });
+    setOrigin(idx);
+    setHovered(true);
+  };
+
+  // Scatterplot's RAND axis: scattered at 1000, resolved at 0. Each letter
+  // shares the target but is delayed by its distance from the origin, so the
+  // change ripples outward from where the cursor entered.
+  const scattered = !shouldReduceMotion && (hovered || !revealed);
+  const chars = scatter ? title.split('') : [];
+
+  return (
+    <div ref={ref} className={`relative pb-12 mb-8 ${rule ? 'pt-6' : ''}`}>
+      {rule ? (
+        <motion.div
+          className={`absolute top-0 left-0 right-0 h-px origin-left ${dark ? 'bg-white/25' : 'bg-lab-black/20'}`}
+          initial={{ scaleX: shouldReduceMotion ? 1 : 0 }}
+          animate={isInView ? { scaleX: 1 } : {}}
+          transition={{ duration: shouldReduceMotion ? 0 : 1.1, ease: [0.16, 1, 0.3, 1] }}
+          aria-hidden="true"
+        />
+      ) : null}
+      {scatter ? (
+        <h2 id={id} className={`text-3xl md:text-5xl tracking-tight font-medium ${dark ? 'text-lab-white' : 'text-lab-black'}`}>
+          <span
+            onMouseEnter={handleEnter}
+            onMouseLeave={() => setHovered(false)}
+            className="inline-block"
+            style={{ fontFamily: '"scatterplot-vf", sans-serif' }}
+          >
+            {chars.map((ch, i) => {
+              if (ch === ' ') return <span key={i}> </span>;
+              const delay = origin < 0 ? i * 0.025 : Math.abs(i - origin) * 0.03;
+              return (
+                <span
+                  key={i}
+                  ref={(el) => { letterRefs.current[i] = el; }}
+                  style={{
+                    fontVariationSettings: `"RAND" ${scattered ? 1000 : 0}`,
+                    transition: shouldReduceMotion ? 'none' : `font-variation-settings 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
+                  }}
+                >
+                  {ch}
+                </span>
+              );
+            })}
+          </span>
+        </h2>
+      ) : (
+        <h2 id={id} className={`text-2xl md:text-4xl font-sans tracking-tight font-medium ${dark ? 'text-lab-white' : 'text-lab-black'}`}>
+          <MaskedWords text={title} active={isInView} />
+        </h2>
+      )}
+    </div>
+  );
+};
 
 const LabGrid = ({ children, className = "" }: { children?: React.ReactNode, className?: string }) => (
   <div className={`grid grid-cols-1 md:grid-cols-12 gap-y-8 md:gap-x-8 ${className}`}>
@@ -641,234 +1184,111 @@ const OliveTag = ({ children }: { children?: React.ReactNode }) => (
   </span>
 );
 
-const StickyPhaseShowcase = ({ phases }: { phases: PhaseShowcaseItem[] }) => {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const markerRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const [active, setActive] = useState(0);
-  const { scrollYProgress } = useScroll({
-    target: ref as React.RefObject<HTMLDivElement>,
-    offset: ['start start', 'end end'],
-  });
+// --- What we do: editorial index ---
 
-  useMotionValueEvent(scrollYProgress, 'change', (value) => {
-    const segment = 1 / phases.length;
-    const next = Math.min(Math.floor(value / segment), phases.length - 1);
-    setActive(next);
-  });
-
-  const scrollToPhase = (index: number) => {
-    const marker = markerRefs.current[index];
-    if (marker) marker.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
-  const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.32, ease: 'easeOut' as const } } };
-  const fadeUpSlow = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut' as const } } };
-
+// Hairline that breaks out of the section gutters to the viewport edges,
+// drawing in from the left on scroll — the section's full-bleed signature.
+const BleedRule = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
+  const shouldReduceMotion = useReducedMotion();
   return (
-    <>
-      {/* Desktop */}
-      <div ref={ref} className="relative hidden xl:block" style={{ height: `${phases.length * 100}svh` }}>
-        {/* Scroll markers for click-to-navigate */}
-        {phases.map((phase, i) => (
-          <div key={phase.title} ref={(node) => { markerRefs.current[i] = node; }} className="absolute" style={{ top: `${(i / phases.length) * 100}%` }} />
-        ))}
-
-        <div className="sticky top-0 relative flex h-screen flex-col pt-[max(3svh,1.5rem)] pb-[max(4svh,2rem)]">
-          <div className="w-full px-6 md:px-12 flex-1 min-h-0 overflow-hidden">
-            <div className="grid h-full gap-[clamp(24px,2.5vw,88px)] grid-cols-[0.94fr_1.16fr_1fr]">
-              {/* Left: Phase titles */}
-              <div className="flex min-w-0 flex-col justify-start pt-[min(5.5svh,4.25rem)]">
-                <p className="font-mono text-sm uppercase tracking-widest text-lab-olive mb-6">How we help</p>
-                <div className="relative flex-1">
-                  {phases.map((phase, index) => (
-                    <div key={phase.title} className="relative leading-none py-[clamp(0.9rem,1.9svh,1.6rem)] pl-[clamp(1.2rem,1.5vw,1.8rem)]">
-                      {index === active && (
-                        <motion.span
-                          layoutId="phase-dot"
-                          className="absolute left-0 top-1/2 -translate-y-1/2 h-[8px] w-[8px] rounded-[1px] bg-lab-olive"
-                          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                        />
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => scrollToPhase(index)}
-                        className={`font-sans font-medium transition-colors duration-200 cursor-pointer hover:text-lab-olive ${index === active ? 'text-lab-black' : 'text-gray-400'}`}
-                        style={{
-                          fontSize: 'clamp(3.5rem, min(7.4vw, 8svh), 9rem)',
-                          lineHeight: 0.86,
-                          letterSpacing: '-0.07em',
-                          display: 'inline-block',
-                          background: 'none',
-                          border: 'none',
-                          padding: 0,
-                        }}
-                      >
-                        {phase.title}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Middle: Problem / Action / Outcome + secondary image */}
-              <div className="flex flex-col min-w-0 pt-[min(10svh,9rem)]">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={phases[active].title}
-                    initial="hidden"
-                    animate="visible"
-                    exit="hidden"
-                    variants={{ visible: { transition: { staggerChildren: 0.1 } }, hidden: {} }}
-                    className="flex flex-col flex-1"
-                  >
-                    <div className="space-y-[clamp(1.2rem,3svh,3.6rem)]">
-                      <motion.div variants={fadeUp}>
-                        <OliveTag>Problem</OliveTag>
-                        <p className="mt-3 max-w-[44ch] font-sans text-gray-600 leading-[1.7]" style={{ fontSize: 'clamp(0.875rem, min(1.8vw, 2.2svh), 1.7rem)' }}>
-                          {phases[active].problem}
-                        </p>
-                      </motion.div>
-                      <motion.div variants={fadeUp}>
-                        <OliveTag>What we&apos;ll do</OliveTag>
-                        <p className="mt-3 max-w-[44ch] font-sans text-gray-600 leading-[1.7]" style={{ fontSize: 'clamp(0.875rem, min(1.8vw, 2.2svh), 1.7rem)' }}>
-                          {phases[active].action}
-                        </p>
-                      </motion.div>
-                      <motion.div variants={fadeUp}>
-                        <OliveTag>Outcome</OliveTag>
-                        <p className="mt-3 max-w-[44ch] font-sans text-gray-600 leading-[1.7]" style={{ fontSize: 'clamp(0.875rem, min(1.8vw, 2.2svh), 1.7rem)' }}>
-                          {phases[active].outcome}
-                        </p>
-                      </motion.div>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {/* Right: Timeline, Engagements */}
-              <div className="flex flex-col min-w-0 pt-[min(10svh,9rem)]">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`${phases[active].title}-meta`}
-                    initial="hidden"
-                    animate="visible"
-                    exit="hidden"
-                    variants={{ visible: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } }, hidden: {} }}
-                    className="flex flex-col"
-                  >
-                    <motion.div className="max-w-[22rem] ml-auto" variants={fadeUp}>
-                      <p className="font-sans font-medium text-lab-black" style={{ fontSize: 'clamp(0.8rem, 1.8svh, 1rem)' }}>Typical Engagements</p>
-                      <div className="space-y-[clamp(0.5rem,1.5svh,1rem)]" style={{ marginTop: 'clamp(0.5rem,1.5svh,1rem)' }}>
-                        {phases[active].engagements.map(([title, body]) => (
-                          <div key={title}>
-                            <p className="font-sans font-medium text-lab-black" style={{ fontSize: 'clamp(0.75rem, 1.6svh, 0.875rem)' }}>{title}</p>
-                            <p className="mt-0.5" style={{ fontSize: 'clamp(0.75rem, 1.6svh, 0.875rem)' }}>{body}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
-          </div>
-          {/* Secondary image — under middle column */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`img2-${phases[active].title}`}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.55, ease: 'easeOut', delay: 0.45 }}
-              className="absolute bottom-[max(4svh,2rem)] right-[34%] w-[clamp(6rem,calc(6vw+5svh),16rem)] aspect-square overflow-hidden hidden [@media(min-height:800px)]:block"
-            >
-              <ImagePlaceholder
-                description={phases[active].title}
-                media={phases[active].secondaryImage}
-                className="w-full h-full"
-                radius="20px"
-              />
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Primary image — bottom right */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`img-${phases[active].title}`}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.55, ease: 'easeOut', delay: 0.2 }}
-              className="absolute bottom-[max(4svh,2rem)] right-6 md:right-12"
-            >
-              {/* Primary image */}
-              <motion.div
-                className="w-[clamp(10rem,calc(14vw+14svh),42rem)] aspect-square overflow-hidden"
-                variants={fadeUpSlow}
-              >
-                <ImagePlaceholder
-                  description={phases[active].title}
-                  media={phases[active].image}
-                  className="w-full h-full"
-                  radius="28px"
-                />
-              </motion.div>
-            </motion.div>
-          </AnimatePresence>
-          <div className="px-6 md:px-12 mt-[clamp(0.5rem,1.5svh,1rem)]">
-            <Magnetic>
-              <a href="#contact" onClick={() => trackEvent('HWH CTA: Start a Conversation')} className="inline-flex items-center gap-2 bg-lab-black text-white px-8 py-3 font-mono text-sm uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive">
-                Start a Conversation <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-              </a>
-            </Magnetic>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile & Tablet */}
-      <div className="space-y-12 px-6 md:px-12 pt-12 md:pt-16 xl:hidden">
-        {phases.map((phase) => (
-          <div key={phase.title} className="border-b border-lab-black/10 pb-12">
-            <div className="font-sans font-medium text-lab-black" style={{ fontSize: 'clamp(3rem, 13vw, 4.5rem)', lineHeight: 0.92, letterSpacing: '-0.06em' }}>
-              {phase.title}
-            </div>
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                <div>
-                  <OliveTag>Problem</OliveTag>
-                  <p className="mt-3 font-serif text-lg text-gray-600 leading-relaxed">{phase.problem}</p>
-                </div>
-                <div>
-                  <OliveTag>What we&apos;ll do</OliveTag>
-                  <p className="mt-3 font-serif text-lg text-gray-600 leading-relaxed">{phase.action}</p>
-                </div>
-                <div>
-                  <OliveTag>Outcome</OliveTag>
-                  <p className="mt-3 font-serif text-lg text-gray-600 leading-relaxed">{phase.outcome}</p>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <div>
-                  <p className="font-sans text-base font-medium text-lab-black">Typical Engagements</p>
-                  <div className="mt-3 space-y-4 font-serif text-base text-gray-600 leading-relaxed">
-                    {phase.engagements.map(([title, body]) => (
-                      <div key={title}>
-                        <p className="font-sans font-medium text-lab-black">{title}</p>
-                        <p>{body}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <ImagePlaceholder description={phase.title} media={phase.image} aspectRatio="4 / 5" radius="22px" />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </>
+    <motion.div
+      ref={ref}
+      aria-hidden="true"
+      className="h-px bg-lab-black/25 origin-left -mx-6 md:-mx-10 lg:-mx-16 xl:-mx-24 transition-colors duration-500 group-hover:bg-lab-olive"
+      initial={{ scaleX: shouldReduceMotion ? 1 : 0 }}
+      animate={isInView ? { scaleX: 1 } : {}}
+      transition={{ duration: shouldReduceMotion ? 0 : 1.1, ease: [0.16, 1, 0.3, 1] }}
+    />
   );
 };
+
+// One offering as a full-width editorial spread: fluid display title, then
+// the supporting copy distributed across the grid beneath — no labels.
+const OfferingEntry = ({ phase }: { phase: PhaseShowcaseItem }) => (
+  <article className="group pb-24 md:pb-40">
+    <BleedRule />
+    {/* One calm entrance for the whole entry */}
+    <RevealText className="block pt-12 md:pt-20">
+      <div className="grid grid-cols-12 gap-x-6 md:gap-x-10 lg:gap-x-12 gap-y-14 md:gap-y-24">
+        {/* Display title */}
+        <h3
+          className="col-span-12 md:col-span-7 self-center font-sans font-medium tracking-tight text-lab-black"
+          style={{ fontSize: 'clamp(2.5rem, 6.2vw, 8rem)', lineHeight: 0.95, letterSpacing: '-0.035em' }}
+        >
+          {phase.title}
+        </h3>
+
+        {/* Figure — olive duotone that blooms to colour on hover */}
+        <div className="hwh-figure relative isolate col-span-12 md:col-span-4 md:col-start-9 self-center overflow-hidden rounded-[14px] aspect-[4/3]">
+          <img className="base absolute inset-0 w-full h-full object-cover" src={phase.image} alt="" aria-hidden="true" />
+          <img className="reveal absolute inset-0 w-full h-full object-cover" src={phase.secondaryImage ?? phase.image} alt="" aria-hidden="true" />
+          <span className="tint absolute inset-0 bg-lab-olive mix-blend-color pointer-events-none" aria-hidden="true" />
+        </div>
+
+        {/* Supporting copy distributed across the full width */}
+        <p className="col-span-12 md:col-span-4 max-w-[600px] font-sans text-gray-700 leading-relaxed lg:text-lg">
+          {phase.together}
+        </p>
+        <p className="col-span-12 md:col-span-4 max-w-[600px] font-sans text-gray-700 leading-relaxed lg:text-lg">
+          {phase.leaveWith}
+        </p>
+        <div className="col-span-12 md:col-span-4">
+          <ul className="divide-y divide-lab-black/10 border-y border-lab-black/10">
+            {phase.engagements.map(([title, body]) => (
+              <li key={title} className="py-3.5">
+                <p className="font-sans text-sm font-medium text-lab-black">{title}</p>
+                <p className="mt-1 font-sans text-sm text-gray-600 leading-relaxed">{body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="col-span-12">
+          <a
+            href="#contact"
+            onClick={() => trackEvent(`WhatWeDo CTA: ${phase.cta}`)}
+            className="group/cta inline-flex items-center gap-3 font-mono text-sm uppercase tracking-widest text-lab-black border-b border-lab-black/30 pb-1 hover:text-lab-olive hover:border-lab-olive transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4"
+          >
+            {phase.cta}
+            <ArrowRight size={15} className="transition-transform group-hover/cta:translate-x-1" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </RevealText>
+  </article>
+);
+
+const WhatWeDo = ({ phases }: { phases: PhaseShowcaseItem[] }) => (
+  <section id="approach" aria-label="What we do" className="bg-lab-white">
+    {/* Intro + interactive field — side by side on large screens (the field
+        fills the text's height), stacked & flush on smaller ones. */}
+    <div className="flex flex-col border-y border-lab-black/10 lg:flex-row">
+      {/* The field: on top on small (order-1), to the right on large (order-2) */}
+      <div className="relative order-1 h-[220px] bg-[#F7F7F9] border-b border-lab-black/10 md:h-[260px] lg:order-2 lg:h-auto lg:w-5/12 lg:border-b-0 lg:border-l">
+        <AsciiRevealBand />
+        <p className="sr-only">
+          A system cannot be governed if it cannot be seen. Friction is often a feature. Human-in-the-loop by default. Tools for thoughtful work.
+        </p>
+      </div>
+      {/* The text: below on small (order-2), to the left on large (order-1) */}
+      <div className="order-2 flex items-center px-6 py-16 md:px-10 md:py-24 lg:order-1 lg:w-7/12 lg:px-16 xl:px-24">
+        <RevealText className="block max-w-4xl">
+          <p className="font-sans text-2xl md:text-4xl lg:text-5xl text-lab-black tracking-tight leading-[1.25]">
+            {HWH_INTRO}
+          </p>
+        </RevealText>
+      </div>
+    </div>
+
+    <div className="px-6 md:px-10 lg:px-16 xl:px-24 py-20 md:py-32">
+      {phases.map((phase) => (
+        <OfferingEntry key={phase.title} phase={phase} />
+      ))}
+    </div>
+  </section>
+);
 
 // --- Forms ---
 
@@ -1123,22 +1543,38 @@ const NewsletterForm = () => {
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { scrollYProgress } = useScroll();
+  const [hidden, setHidden] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
+  const { scrollYProgress, scrollY } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001
   });
 
+  // Slip out of the way while reading down; return on any scroll up.
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    if (shouldReduceMotion) return;
+    const previous = scrollY.getPrevious() ?? 0;
+    setHidden(latest > previous && latest > 180 && !isOpen);
+  });
+
   const navItems = [
       { name: "Practice", href: "/#practice" },
-      { name: "Tools", href: "/#atlas" },
+      { name: "Open work", href: "/#atlas" },
       { name: "Speaking", href: "/speaking" },
       { name: "Contact", href: "/#contact" },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-40 bg-lab-white/90 backdrop-blur-md border-b border-lab-black/10" role="navigation" aria-label="Main">
+    <motion.nav
+      className="fixed top-0 left-0 w-full z-40 bg-lab-white/90 backdrop-blur-md border-b border-lab-black/10"
+      role="navigation"
+      aria-label="Main"
+      animate={{ y: hidden ? '-100%' : '0%' }}
+      transition={{ duration: 0.35, ease: 'easeInOut' }}
+      onFocusCapture={() => setHidden(false)}
+    >
       <div className="max-w-screen-2xl mx-auto px-6 md:px-12 h-12 md:h-14 flex justify-between items-center relative">
         <PageLink to="/" className="z-10 focus:outline-none focus:ring-2 focus:ring-lab-olive focus:ring-offset-2 rounded-sm block" aria-label="quietloudlab home">
           <Logo className="h-3 md:h-3.5 w-auto hover:opacity-80 transition-opacity" dark />
@@ -1193,7 +1629,7 @@ const Navigation = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 };
 
@@ -1215,11 +1651,9 @@ const Hero = () => {
       <MouseTrailLayer state={trailState} />
       <div className="max-w-screen-xl mx-auto w-full px-6 md:px-12 pt-32 md:pt-[14vh] relative z-10 flex flex-col flex-1">
         <motion.div style={{ y: headlineY }} className="relative" onMouseMove={e => e.stopPropagation()}>
-          <RevealText className="mb-8">
-            <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-sans tracking-tight leading-tight font-medium text-lab-black selection:bg-lab-olive selection:text-white">
-              Innovation strategy & design for the human layer of intelligent systems
-            </h1>
-          </RevealText>
+          <h1 className="mb-8 text-5xl md:text-7xl lg:text-[5.5rem] font-sans tracking-tight leading-tight font-medium text-lab-black selection:bg-lab-olive selection:text-white">
+            <MaskedWords text="quietloudlab is a design invention studio, shaping emerging technologies to become useful, meaningful products." delay={INTRO_DELAY + 0.1} />
+          </h1>
         </motion.div>
       </div>
 
@@ -1241,229 +1675,414 @@ const Hero = () => {
 
     {/* Intro */}
     <section className="pt-40 md:pt-52 pb-40 md:pb-52 px-6 md:px-12">
-      <div className="max-w-screen-2xl mx-auto">
-        <RevealText delay={0.1}>
-          <p className="text-3xl md:text-5xl lg:text-6xl font-sans text-gray-700" style={{ lineHeight: 1.6 }}>
-            quietloudlab is a partner for building with emerging technologies in complex environments. We help future-facing clients and partners see the current state for what it is, decide what needs to be made, and make it land with the people we build for. We perform strategy, design systems, facilitate teams in exploration, and prototype new concepts.
-          </p>
-        </RevealText>
+      <div className="max-w-screen-2xl mx-auto space-y-10 md:space-y-14">
+        <ScrollWords
+          text="We work collaboratively with companies to turn new technologies and complex ideas into clear product propositions, interaction models, and working prototypes."
+          className="text-3xl md:text-5xl lg:text-6xl font-sans text-gray-700"
+          style={{ lineHeight: 1.6 }}
+        />
+        <ScrollWords
+          text="Our work moves from early research and product R&D through experience definition, prototyping, and validation, with particular depth in AI systems designed to expand human agency, creativity, and judgment."
+          className="text-3xl md:text-5xl lg:text-6xl font-sans text-gray-700"
+          style={{ lineHeight: 1.6 }}
+        />
       </div>
     </section>
     </>
   );
 };
 
-const Practice = () => {
-  return (
-    <section className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" id="practice" aria-labelledby="practice-heading">
-      <SectionHeader title="Areas of Practice" />
+const SPECIMEN_MODES: SpecimenMode[] = ['lattice', 'loop', 'bounds', 'drift'];
 
-      <LabGrid>
-        <div className="col-span-1 md:col-span-7">
-          <div className="grid grid-cols-1 gap-12">
-            {PRACTICE_AREAS.map((area, i) => (
-              <RevealText key={i} delay={i * 0.1}>
-                <div className="group border-l-2 border-transparent hover:border-lab-olive pl-6 -ml-6 transition-all">
-                  <h3 className="font-sans text-xl md:text-2xl font-medium mb-3 group-hover:text-lab-olive transition-colors text-lab-black">
-                    {area.title}
-                  </h3>
-                  <p className="font-serif text-lg text-gray-600 leading-relaxed">
-                    {area.desc}
-                  </p>
+const DispatchCard = () => (
+  <div className="relative border border-lab-black/15 bg-lab-white p-6">
+    <CornerMarks />
+    <h3 className="font-sans text-lg font-medium text-lab-black mb-3">The Dispatch</h3>
+    <p className="font-serif text-gray-600 mb-6">
+      Occasional notes on systems, futures, and the lab's work. No spam, just signal.
+    </p>
+    <NewsletterForm />
+  </div>
+);
+
+const Practice = () => {
+  const [active, setActive] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
+  return (
+    <section id="practice" aria-labelledby="practice-heading" className="relative overflow-hidden bg-[#F7F7F9] border-y border-lab-black/10">
+      <SpecimenField mode={SPECIMEN_MODES[active]} />
+
+      <div className="relative z-10 px-6 md:px-12 pt-16 md:pt-24 pb-20 md:pb-32">
+        <SectionHeader title="Areas of Practice" id="practice-heading" rule={false} scatter />
+
+        <RevealText>
+          <div className="max-w-3xl space-y-5 font-serif text-lg md:text-xl text-gray-700 leading-relaxed mb-12 md:mb-20">
+            <p>We reserve time for independent research and experimentation around questions we believe will shape future products and interactions.</p>
+            <p>Through prototypes, tools, frameworks, and open research, we develop new ways of thinking and making that inform both our commissioned work and the studio&apos;s own inventions.</p>
+          </div>
+        </RevealText>
+
+        <div className="mt-2 md:mt-6">
+          {PRACTICE_AREAS.map((area, i) => {
+            const isActive = i === active;
+            return (
+              <RevealText key={area.title} delay={i * 0.05}>
+                <div className="group">
+                  <button
+                    type="button"
+                    onClick={() => setActive(i)}
+                    onMouseEnter={() => setActive(i)}
+                    onFocus={() => setActive(i)}
+                    aria-expanded={isActive}
+                    aria-controls={`practice-panel-${i}`}
+                    className="block w-full text-left py-[clamp(0.5rem,1.4vh,1.25rem)] focus:outline-none"
+                  >
+                    <span
+                      className={`font-sans font-medium transition-colors duration-300 ${isActive ? 'text-lab-black' : 'text-lab-black/20 group-hover:text-lab-black/45'}`}
+                      style={{ fontSize: 'clamp(2.5rem, 6.5vw, 7rem)', lineHeight: 0.95, letterSpacing: '-0.04em', display: 'inline-block' }}
+                    >
+                      {area.title}
+                    </span>
+                  </button>
+                  <motion.div
+                    id={`practice-panel-${i}`}
+                    initial={false}
+                    animate={{ height: isActive ? 'auto' : 0, opacity: isActive ? 1 : 0 }}
+                    transition={{ duration: shouldReduceMotion ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
+                    className="overflow-hidden"
+                  >
+                    <p className="max-w-3xl pt-3 pb-8 font-serif text-xl md:text-2xl text-gray-700 leading-relaxed">
+                      {area.desc}
+                    </p>
+                  </motion.div>
                 </div>
               </RevealText>
-            ))}
-          </div>
+            );
+          })}
         </div>
-
-        {/* The Dispatch (Sticky) */}
-        <div className="col-span-1 md:col-span-5 relative" aria-labelledby="dispatch-heading">
-           <div className="md:sticky md:top-32">
-             <RevealText delay={0.2}>
-                <div className="bg-lab-concrete p-6 md:p-8 border border-lab-black/5 rounded-lg">
-                  <h2 id="dispatch-heading" className="font-sans text-lg font-medium text-lab-black mb-4">The Dispatch</h2>
-                  <p className="font-serif text-gray-600 mb-6">
-                    Occasional notes on systems, futures, and the lab's work. No spam, just signal.
-                  </p>
-                  <NewsletterForm />
-                </div>
-             </RevealText>
-           </div>
-        </div>
-      </LabGrid>
-    </section>
-  );
-};
-
-const HouseBuiltTools = () => {
-  return (
-    <section className="py-20 md:py-32 px-6 md:px-12 max-w-[1800px] mx-auto" id="atlas" aria-label="House-built Tools">
-      <SectionHeader title="Tools" />
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 auto-rows-fr">
-        {/* AI Interaction Atlas */}
-        <RevealText className="h-full">
-          <div className="bg-lab-black text-lab-white rounded-[20px] flex flex-col relative overflow-hidden h-full">
-            {/* Content */}
-            <div className="relative z-10 p-6 md:p-8 lg:p-10 pb-0 md:pb-0 lg:pb-0">
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-3xl md:text-4xl font-sans tracking-tight leading-[1.1]">AI Interaction<br/>Atlas</h3>
-                <span className="font-mono text-xs uppercase tracking-[0.2em] text-white shrink-0 mt-1 hidden sm:block">Open Source • Apache 2.0</span>
-              </div>
-              <p className="font-sans text-[15px] text-gray-400 leading-relaxed max-w-lg mb-2">
-                A shared vocabulary for designing and governing AI systems, explicitly defining capabilities, constraints, interactions and responsibility.
-              </p>
-            </div>
-
-            {/* Six Dimensions Grid */}
-            <div className="relative z-10 px-6 md:px-8 lg:px-10 my-4">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-px bg-white/10 rounded-xl overflow-hidden">
-                {[
-                  { icon: BrainCircuit, color: 'text-purple-400', name: 'AI Patterns', desc: 'Probabilistic capabilities: detect, classify, transform, generate.' },
-                  { icon: User, color: 'text-blue-400', name: 'Human Actions', desc: 'Where agency lives: review, decide, configure, approve.' },
-                  { icon: Settings, color: 'text-gray-400', name: 'System Ops', desc: 'Deterministic operations: routing, caching, logging.' },
-                  { icon: Database, color: 'text-amber-400', name: 'Data', desc: 'What flows through: inputs, outputs, context.' },
-                  { icon: SlidersHorizontal, color: 'text-red-400', name: 'Constraints', desc: 'What cannot be violated: latency, privacy, accuracy.' },
-                  { icon: Smartphone, color: 'text-cyan-400', name: 'Touchpoints', desc: 'Where systems surface: screens, voice, notifications.' },
-                ].map((dim) => (
-                  <div key={dim.name} className="bg-lab-black p-3 lg:p-4">
-                    <dim.icon size={18} className={`${dim.color} mb-2`} />
-                    <p className="font-sans text-[13px] font-medium text-white mb-1">{dim.name}</p>
-                    <p className="font-mono text-xs text-gray-600 leading-relaxed">{dim.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex-1" />
-
-            {/* Buttons pinned to bottom-left */}
-            <div className="relative z-10 px-6 md:px-8 lg:px-10 py-5 flex flex-wrap gap-3">
-              <a href="https://ai-interaction.com" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Atlas Link Clicked')} className="inline-flex items-center gap-2 bg-lab-white text-lab-black px-5 py-2.5 rounded-full font-mono text-xs uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white group/btn">
-                Explore <ArrowRight size={12} className="group-hover/btn:translate-x-1 transition-transform" />
-              </a>
-              <a href="https://github.com/quietloudlab/ai-interaction-atlas" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('GitHub Link Clicked')} className="inline-flex items-center gap-2 border border-white/15 text-gray-400 px-5 py-2.5 rounded-full font-mono text-xs uppercase tracking-widest hover:bg-white/10 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white">
-                GitHub
-              </a>
-            </div>
-          </div>
-        </RevealText>
-
-        {/* AI Interaction Studio */}
-        <RevealText delay={0.1} className="h-full">
-          <div className="bg-lab-black text-lab-white rounded-[20px] flex flex-col relative overflow-hidden h-full min-h-[420px]">
-            {/* Background image — 50% card height, right-aligned, overflows right on small screens */}
-            <img
-              src="/images/atlas/edge-routing.png"
-              alt=""
-              aria-hidden="true"
-              className="absolute right-0 rounded-tl-xl pointer-events-none object-cover object-left-top"
-              style={{ bottom: '10%', height: '50%', width: 'auto', minWidth: '600px' }}
-            />
-
-            {/* Content with gradient overlay */}
-            <div className="relative z-10 p-6 md:p-8 lg:p-10 pb-0 bg-gradient-to-b from-lab-black via-lab-black/90 to-transparent">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-3xl md:text-4xl font-sans tracking-tight leading-[1.1]">AI Interaction<br/>Studio</h3>
-                <span className="font-mono text-xs uppercase tracking-[0.2em] text-white shrink-0 mt-1 hidden sm:block">Visual Mapping Tool</span>
-              </div>
-              <p className="font-sans text-[15px] text-gray-400 leading-relaxed max-w-lg mb-4">
-                Ideate and visualize any human-AI experience, documenting how the system lives in the world, built on the Atlas taxonomy.
-              </p>
-            </div>
-
-            {/* Spacer */}
-            <div className="flex-1" />
-
-            {/* Button pinned to bottom-left */}
-            <div className="relative z-10 px-6 md:px-8 lg:px-10 py-5">
-              <a href="https://studio.ai-interaction.com" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Studio Link Clicked')} className="inline-flex items-center gap-2 bg-lab-white text-lab-black px-5 py-2.5 rounded-full font-mono text-xs uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white group/btn">
-                Map your AI System <ArrowRight size={12} className="group-hover/btn:translate-x-1 transition-transform" />
-              </a>
-            </div>
-          </div>
-        </RevealText>
       </div>
     </section>
   );
 };
 
+const ATLAS_DIMENSIONS = ['AI Patterns', 'Human Actions', 'System Ops', 'Data', 'Constraints', 'Touchpoints'];
 
-const AIReview = () => {
+// Dark-card CTA shared by the Open work section.
+const DarkCTA = ({ href, label, onClick, variant = 'solid' }: { href: string; label: string; onClick?: () => void; variant?: 'solid' | 'ghost' }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    onClick={onClick}
+    className={`group/btn inline-flex items-center gap-2 px-6 py-3 font-mono text-xs uppercase tracking-widest transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-lab-black focus:ring-lab-olive ${
+      variant === 'solid'
+        ? 'bg-lab-white text-lab-black hover:bg-lab-olive hover:text-white'
+        : 'border border-white/20 text-gray-300 hover:border-lab-olive hover:text-white'
+    }`}
+  >
+    {label}
+    <ArrowRight size={13} className="transition-transform group-hover/btn:translate-x-1" aria-hidden="true" />
+  </a>
+);
+
+// A faint ASCII field that slowly breathes, with a soft glow of light
+// drifting through it and a vignette that fades it into the dark. Ambient
+// background texture, not a diagram. Static (very faint) under reduced motion.
+const AMBIENT_RAMP = ' ·:-=+';
+
+// On hover the glow drifts to the hovered card's vertical slot (reaching
+// toward it across the gap), and each entry nudges the field its own way:
+//   0 Atlas  → a faint lattice surfaces (the framework's structure)
+//   1 Studio → the field quickens and flows (the interactive tool)
+//   2 Review → the glow tightens to a brighter point (the lens / diagnostic)
+const AmbientField = ({ hoveredRef }: { hoveredRef: React.MutableRefObject<number | null> }) => {
+  const pointer = useRef({ x: -9999, y: -9999 });
+  const anim = useRef({ grid: 0, flow: 0, focus: 0, glow: 0, gx: 0, gy: 0 });
+  const shouldReduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => { pointer.current = { x: e.clientX, y: e.clientY }; };
+    window.addEventListener('mousemove', onMove, { passive: true });
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
+
+  const draw: AsciiDraw = (ctx, w, h, t) => {
+    ctx.clearRect(0, 0, w, h);
+    const cw = 13, chh = 17;
+    const cols = Math.ceil(w / cw), rows = Math.ceil(h / chh);
+    const still = shouldReduceMotion;
+
+    // ease the per-card reactivity toward its target each frame
+    const tgt = hoveredRef.current;
+    const a = anim.current;
+    const ease = (cur: number, target: number) => cur + (target - cur) * 0.07;
+    a.grid = ease(a.grid, !still && tgt === 0 ? 1 : 0);
+    a.flow = ease(a.flow, !still && tgt === 1 ? 1 : 0);
+    a.focus = ease(a.focus, !still && tgt === 2 ? 1 : 0);
+    a.glow = ease(a.glow, !still && tgt !== null ? 1 : 0);
+
+    ctx.font = '11px "JetBrains Mono", monospace';
+    ctx.textBaseline = 'middle';
+    const rect = ctx.canvas.getBoundingClientRect();
+    const px = pointer.current.x - rect.left;
+    const py = pointer.current.y - rect.top;
+    const hasPointer = !still && px > -9000;
+
+    // a soft glow of light drifting through the field. Studio speeds it up;
+    // on hover it eases toward the hovered card's vertical slot (right edge);
+    // Review tightens it to a brighter point.
+    const ft = t * (1 + a.flow * 1.4);
+    const freeX = w * (0.5 + 0.32 * Math.sin(ft * 0.05));
+    const freeY = h * (0.5 + 0.28 * Math.cos(ft * 0.041));
+    if (a.gx === 0 && a.gy === 0) { a.gx = freeX; a.gy = freeY; }
+    let targetX = freeX, targetY = freeY;
+    if (!still && tgt !== null) { targetX = w * 0.78; targetY = h * (0.22 + tgt * 0.28); }
+    a.gx += (targetX - a.gx) * 0.08;
+    a.gy += (targetY - a.gy) * 0.08;
+    const fx = a.gx, fy = a.gy;
+    const fr2 = (w * 0.26 * (1 - a.focus * 0.5)) ** 2;
+    const glowStrength = 0.95 + a.glow * 0.45 + a.focus * 0.4;
+    const flowShift = a.flow * t * 0.25;
+
+    for (let r = 0; r < rows; r++) {
+      const cy = r * chh + chh / 2;
+      const ny = (r + 0.5) / rows;
+      for (let c = 0; c < cols; c++) {
+        const cx = c * cw + cw / 2;
+        const nx = (c + 0.5) / cols;
+        // slow breathing waves over a soft, ever-present floor
+        const v = 0.5 + 0.5 * Math.sin(nx * 4 + t * 0.12 + flowShift) * Math.cos(ny * 3 - t * 0.1);
+        // drifting glow lifts the field locally
+        const glow = still ? 0 : Math.exp(-(((cx - fx) ** 2 + (cy - fy) ** 2)) / (2 * fr2)) * glowStrength;
+        // Atlas: a faint lattice surfaces
+        const lattice = a.grid > 0.01
+          ? (Math.abs(((nx * 7) % 1) - 0.5) < 0.055 || Math.abs(((ny * 5) % 1) - 0.5) < 0.07 ? 1 : 0) * a.grid * 0.2
+          : 0;
+        // radial vignette so the base field fades into the dark at the edges
+        const vig = Math.max(0, 1 - Math.hypot(nx - 0.5, ny - 0.5) / 0.62);
+        // the glow keeps most of its strength as it travels, so it can reach a card
+        const glowVig = 0.45 + 0.55 * vig;
+        // gentle ambient response to the cursor
+        const cb = hasPointer ? Math.max(0, 1 - Math.hypot(cx - px, cy - py) / 260) * 0.5 : 0;
+        let intensity = ((0.16 + v * 0.24 + lattice) * vig + glow * glowVig) * (1 + cb + a.glow * 0.15);
+        intensity = clamp01(intensity);
+        if (intensity < 0.05) continue;
+        const ch = AMBIENT_RAMP[Math.min(AMBIENT_RAMP.length - 1, Math.floor(intensity * AMBIENT_RAMP.length))];
+        if (ch === ' ') continue;
+        ctx.fillStyle = `rgba(107,116,86,${0.05 + intensity * 0.19})`;
+        ctx.fillText(ch, c * cw, cy);
+      }
+    }
+  };
+
+  const canvasRef = useAsciiLoop(draw, 18);
+  return <canvas ref={canvasRef} className="block w-full h-full" aria-hidden="true" />;
+};
+
+// Eyebrow + body shared by the open-work entries (no card boxes). Hovering an
+// entry warms its rule, eases its title over, and signals the field (onHover).
+const OpenEntry = ({ index, onHover, eyebrow, meta, title, titleClass = 'text-3xl md:text-4xl', children }: { index: number; onHover: (i: number | null) => void; eyebrow: string; meta?: string; title: string; titleClass?: string; children?: React.ReactNode }) => (
+  <article
+    className="open-entry border-t border-white/10 pt-8 md:pt-10 pb-10 md:pb-12 last:pb-0 transition-colors duration-500 hover:border-lab-olive/50"
+    onMouseEnter={() => onHover(index)}
+    onMouseLeave={() => onHover(null)}
+    onFocus={() => onHover(index)}
+    onBlur={() => onHover(null)}
+  >
+    <div className="flex items-baseline justify-between gap-4">
+      <p className="font-mono text-xs uppercase tracking-widest text-lab-olive">{eyebrow}</p>
+      {meta ? <p className="font-mono text-xs uppercase tracking-widest text-gray-500">{meta}</p> : null}
+    </div>
+    <h3 className={`mt-5 font-sans tracking-tight leading-[1.05] font-medium text-lab-white ${titleClass}`}>{title}</h3>
+    {children}
+  </article>
+);
+
+const OpenWork = () => {
+  const hoveredRef = useRef<number | null>(null);
+  const onHover = (i: number | null) => { hoveredRef.current = i; };
   return (
-    <section id="ai-review" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="ai-review-heading">
-      <SectionHeader title="AI Interaction Review" />
+    <section className="bg-lab-black text-lab-white px-6 md:px-10 lg:px-16 xl:px-24 py-20 md:py-32" id="atlas" aria-label="Open work">
+      <SectionHeader title="Open work" dark rule={false} scatter />
 
-      <RevealText>
-        <div className="bg-lab-black text-lab-white rounded-[20px] overflow-hidden p-8 md:p-12 lg:p-16">
-          <LabGrid>
-            <div className="col-span-1 md:col-span-7">
-              <h3 id="ai-review-heading" className="font-sans text-3xl md:text-4xl lg:text-5xl tracking-tight leading-[1.1] font-medium mb-6">
-                Put your AI product under the lens of the Atlas.
-              </h3>
-              <p className="font-serif text-lg md:text-xl text-gray-300 leading-relaxed max-w-2xl">
-                A free 30-minute session where we look at your AI product or concept through the lens of the Atlas and identify the biggest gaps in how your system works for your users. You&apos;ll leave with 2–3 specific things to fix or explore.
-              </p>
-            </div>
-
-            <div className="col-span-1 md:col-span-5 flex md:items-end md:justify-end">
-              <Magnetic>
-                <a href="https://calendly.com/brandonaharwood/ai-interaction-review" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Book AI Interaction Review')} className="inline-flex items-center gap-2 bg-lab-white text-lab-black px-8 py-4 font-mono text-sm uppercase tracking-widest hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-lab-black focus:ring-lab-olive group/btn">
-                  Book a Review <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-                </a>
-              </Magnetic>
-            </div>
-          </LabGrid>
+      <div className="min-[1800px]:grid min-[1800px]:grid-cols-2 min-[1800px]:gap-x-20 min-[1800px]:items-stretch">
+        {/* Left: framing + living visual (visual only on very wide screens) */}
+        <div className="flex flex-col">
+          <RevealText>
+            <p className="max-w-3xl font-sans text-2xl md:text-3xl lg:text-4xl text-gray-300 tracking-tight leading-[1.25]">
+              We build and open-source the thinking behind our work — a shared language for AI systems, and a tool that puts it to use.
+            </p>
+          </RevealText>
+          <div className="hidden min-[1800px]:block flex-1 min-h-[460px] mt-16" aria-hidden="true">
+            <AmbientField hoveredRef={hoveredRef} />
+          </div>
         </div>
-      </RevealText>
+
+        {/* Right: the open work, stacked editorially (no cards) */}
+        <div className="mt-16 min-[1800px]:mt-0">
+          <RevealText>
+            <OpenEntry index={0} onHover={onHover} eyebrow="Framework · Open source" meta="Apache-2.0" title="AI Interaction Atlas">
+              <p className="mt-4 max-w-xl font-sans text-gray-400 leading-relaxed">
+                A shared vocabulary for designing and governing AI systems — naming the capabilities, constraints, interactions, and responsibility a system holds.
+              </p>
+              <ul className="mt-7 flex flex-wrap gap-x-7 gap-y-3">
+                {ATLAS_DIMENSIONS.map((d) => (
+                  <li key={d} className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-gray-400">
+                    <span className="h-1 w-1 rounded-[1px] bg-lab-olive" aria-hidden="true" />
+                    {d}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <DarkCTA href="https://ai-interaction.com" label="Explore the Atlas" onClick={() => trackEvent('Atlas Link Clicked')} />
+                <DarkCTA href="https://github.com/quietloudlab/ai-interaction-atlas" label="GitHub" onClick={() => trackEvent('GitHub Link Clicked')} variant="ghost" />
+              </div>
+            </OpenEntry>
+          </RevealText>
+
+          <RevealText delay={0.06}>
+            <OpenEntry index={1} onHover={onHover} eyebrow="Tool · Free" meta="Built on the Atlas" title="AI Interaction Studio">
+              <p className="mt-4 max-w-xl font-sans text-gray-400 leading-relaxed">
+                The Atlas, made interactive — map any human–AI experience and document how the system lives in the world.
+              </p>
+              <div className="mt-8">
+                <DarkCTA href="https://studio.ai-interaction.com" label="Open the Studio" onClick={() => trackEvent('Studio Link Clicked')} />
+              </div>
+            </OpenEntry>
+          </RevealText>
+
+          <RevealText delay={0.12}>
+            <OpenEntry index={2} onHover={onHover} eyebrow="Diagnostic · Free" title="Want us to run the Atlas over your product?" titleClass="text-2xl md:text-3xl">
+              <p className="mt-4 max-w-xl font-sans text-gray-400 leading-relaxed">
+                A free session where we put your AI product under the lens of the Atlas and find the biggest gaps — you&apos;ll leave with 2–3 specific things to fix.
+              </p>
+              <div className="mt-8">
+                <DarkCTA href="https://cal.com/quietloudlab/chat" label="Book a review" onClick={() => trackEvent('Book AI Interaction Review')} />
+              </div>
+            </OpenEntry>
+          </RevealText>
+        </div>
+      </div>
     </section>
   );
 };
 
+// cal.com inline booking. Adjust CAL_LINK to the event you want embedded.
+const CAL_LINK = 'quietloudlab/chat';
+const CAL_NS = 'contact';
+
+// Bootstrap the official cal.com embed loader exactly once.
+const ensureCalLoaded = () => {
+  const w = window as unknown as { Cal?: ReturnType<typeof Object> & { ns?: Record<string, (...a: unknown[]) => void> } } & Record<string, unknown>;
+  if (w.Cal) return w.Cal as unknown as { (...a: unknown[]): void; ns: Record<string, (...a: unknown[]) => void> };
+  /* eslint-disable */
+  (function (C: any, A: string, L: string) {
+    let p = function (a: any, ar: any) { a.q.push(ar); };
+    let d = C.document;
+    C.Cal = C.Cal || function () {
+      let cal = C.Cal; let ar = arguments;
+      if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
+      if (ar[0] === L) {
+        const api: any = function () { p(api, arguments); };
+        const namespace = ar[1];
+        api.q = api.q || [];
+        if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); }
+        else p(cal, ar);
+        return;
+      }
+      p(cal, ar);
+    };
+  })(window, 'https://app.cal.com/embed/embed.js', 'init');
+  /* eslint-enable */
+  return (window as any).Cal as { (...a: unknown[]): void; ns: Record<string, (...a: unknown[]) => void> };
+};
+
+const CalBooking = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    const Cal = ensureCalLoaded();
+    Cal('init', CAL_NS, { origin: 'https://cal.com' });
+    Cal.ns[CAL_NS]('inline', {
+      elementOrSelector: ref.current,
+      calLink: CAL_LINK,
+      layout: 'month_view',
+      config: { layout: 'month_view' },
+    });
+    Cal.ns[CAL_NS]('ui', {
+      theme: 'dark',
+      hideEventTypeDetails: false,
+      layout: 'month_view',
+      cssVarsPerTheme: { light: { 'cal-brand': '#6B7456' }, dark: { 'cal-brand': '#6B7456' } },
+    });
+  }, []);
+  // Cal's month_view renders very tall (calendar + time list stacked); cap it
+  // to a fixed window and scroll inside so it doesn't balloon the section.
+  return (
+    <div className="w-full overflow-y-auto rounded-lg bg-transparent">
+      <div ref={ref} className="w-full" />
+    </div>
+  );
+};
+
+const ContactChannel = ({ label, children }: { label: string; children?: React.ReactNode }) => (
+  <div>
+    <p className="font-mono text-xs uppercase tracking-widest mb-2 text-lab-olive">{label}</p>
+    <div className="font-mono text-sm text-gray-600">{children}</div>
+  </div>
+);
+
 const Contact = ({ contactIntent }: { contactIntent: ContactIntent | null }) => {
   return (
-    <section id="contact" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="contact-heading">
-      <SectionHeader title="Start a Conversation" />
+    <section id="contact" aria-labelledby="contact-heading" className="bg-lab-white">
+      <div className="px-6 md:px-10 lg:px-16 xl:px-24 py-20 md:py-32">
+        <SectionHeader title="Start a Conversation" id="contact-heading" rule={false} scatter />
 
-      <LabGrid>
-        <div className="col-span-1 md:col-span-7">
-          <RevealText>
-            <p className="font-serif text-gray-600 mb-8 text-lg md:text-xl max-w-2xl">
-              If you are designing or deploying a system where clarity matters, we'd love to hear from you. Use the form below to inquire about engagements or workshops.
-            </p>
+        {/* Two paths, side by side across the full width */}
+        <div className="mt-12 md:mt-16 flex flex-col gap-10 lg:flex-row-reverse lg:items-center lg:gap-12">
+          {/* Primary — book a chat */}
+          <RevealText className="lg:w-7/12">
+            <CalBooking />
           </RevealText>
-          <RevealText delay={0.1}>
-            <ContactForm contactIntent={contactIntent} />
-          </RevealText>
-        </div>
 
-        <div className="col-span-1 md:col-span-5 hidden md:block">
-          <RevealText delay={0.2}>
-            <div className="md:sticky md:top-32 font-mono text-sm text-gray-600 space-y-8 pl-8 border-l border-lab-black/10">
-              <div>
-                <p className="uppercase tracking-widest mb-2 text-lab-olive">Location</p>
-                <p>Dallas, TX / Remote</p>
-              </div>
-              <div>
-                <p className="uppercase tracking-widest mb-2 text-lab-olive">Email</p>
-                <a href="mailto:brandon@quietloudlab.com" onClick={() => trackEvent('Email Link Clicked')} className="hover:text-lab-olive transition-colors">brandon@quietloudlab.com</a>
-              </div>
-              <div>
-                <p className="uppercase tracking-widest mb-2 text-lab-olive">Connect</p>
-                <a href="https://www.linkedin.com/company/quietloudlab" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('LinkedIn Link Clicked')} className="hover:text-lab-olive transition-colors">LinkedIn</a>
+          {/* Secondary — write a message */}
+          <RevealText delay={0.1} className="lg:w-5/12">
+            <div className="relative border border-lab-black/15 bg-lab-white">
+              <CornerMarks />
+              <div className="p-6 md:p-8">
+                <ContactForm contactIntent={contactIntent} />
               </div>
             </div>
           </RevealText>
         </div>
-      </LabGrid>
+
+        {/* Other channels + dispatch — slim strip */}
+        <div className="mt-16 md:mt-20 border-t border-lab-black/15 pt-10 grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 lg:gap-x-12 items-start">
+          <RevealText className="lg:col-span-7">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+              <ContactChannel label="Email">
+                <a href="mailto:brandon@quietloudlab.com" onClick={() => trackEvent('Email Link Clicked')} className="hover:text-lab-olive transition-colors break-all">brandon@quietloudlab.com</a>
+              </ContactChannel>
+              <ContactChannel label="Connect">
+                <a href="https://www.linkedin.com/company/quietloudlab" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('LinkedIn Link Clicked')} className="hover:text-lab-olive transition-colors">LinkedIn</a>
+              </ContactChannel>
+              <ContactChannel label="Location">Dallas, TX / Remote</ContactChannel>
+            </div>
+          </RevealText>
+          <RevealText delay={0.1} className="lg:col-span-5">
+            <DispatchCard />
+          </RevealText>
+        </div>
+      </div>
     </section>
   );
 };
 
 const Footer = () => {
   return (
-    <footer className="bg-lab-black text-lab-white py-16 px-6 md:px-12 border-t border-white/10" role="contentinfo">
-      <div className="max-w-screen-xl mx-auto">
+    <footer className="bg-lab-black text-lab-white" role="contentinfo">
+      <Marquee dark />
+      <div className="max-w-screen-xl mx-auto py-16 px-6 md:px-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-12">
           <div>
             <Logo className="h-5 w-auto mb-6" />
@@ -1481,7 +2100,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-t border-white/20 pt-8 font-mono text-xs text-gray-600">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-t border-white/20 pt-8 font-mono text-xs text-gray-600 gap-2">
           <div className="mb-4 md:mb-0">
             <span>&copy; 2026 quietloudlab. All rights reserved.</span>
           </div>
@@ -1489,6 +2108,13 @@ const Footer = () => {
             <span>Dallas, TX / Remote</span>
           </div>
         </div>
+
+        {/* Oversized wordmark as the site's closing image */}
+        <RevealText className="mt-16">
+          <div aria-hidden="true">
+            <LogoSvg className="w-full h-auto text-lab-white opacity-90" />
+          </div>
+        </RevealText>
       </div>
     </footer>
   );
@@ -1678,11 +2304,6 @@ const CITY_OPTIONS: Record<string, CityOptionConfig> = {
 const SpeakingHubHero = () => (
   <div className="bg-[#F7F7F9]">
     <section className="pt-28 md:pt-36 pb-16 md:pb-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-label="Speaking introduction">
-      <RevealText>
-        <p className="font-mono text-sm text-gray-600 uppercase tracking-widest mb-6">
-          [ NOW SPEAKING ] Talks · Workshops · Appearances
-        </p>
-      </RevealText>
       <RevealText delay={0.1}>
         <h1 className="text-4xl md:text-6xl lg:text-[4.5rem] font-sans tracking-tight leading-[1.05] font-medium text-lab-black max-w-5xl mb-8">
           Rooms we're showing up in.
@@ -1743,11 +2364,7 @@ const SpeakingHubCard = ({ card, variant = 'upcoming' }: { card: SpeakingCard; v
 
 const SpeakingUpcoming = ({ cards }: { cards: Array<{ card: SpeakingCard; variant: HubCardVariant }> }) => (
   <section id="upcoming" className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="upcoming-heading">
-    <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
-      <h2 id="upcoming-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
-        Upcoming
-      </h2>
-    </div>
+    <SectionHeader title="Upcoming" id="upcoming-heading" />
     {cards.length > 0 ? (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {cards.map(({ card, variant }, i) => (
@@ -1768,11 +2385,7 @@ const SpeakingUpcoming = ({ cards }: { cards: Array<{ card: SpeakingCard; varian
 
 const SpeakingPast = ({ events }: { events: SpeakingCard[] }) => (
   <section id="past" className="py-16 md:py-24 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="past-heading">
-    <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
-      <h2 id="past-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
-        Past
-      </h2>
-    </div>
+    <SectionHeader title="Past" id="past-heading" />
     <RevealText>
       <div className="border-t border-lab-black/15">
         {events.map((event) => (
@@ -1804,11 +2417,7 @@ const SpeakingPast = ({ events }: { events: SpeakingCard[] }) => (
 
 const SpeakingHireCTA = () => (
   <section id="hire" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="hire-heading">
-    <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
-      <h2 id="hire-heading" className="text-2xl md:text-4xl font-sans tracking-tight font-medium text-lab-black">
-        Bring quietloudlab to your team
-      </h2>
-    </div>
+    <SectionHeader title="Bring quietloudlab to your team" id="hire-heading" />
     <LabGrid>
       <div className="col-span-1 md:col-span-7">
         <RevealText>
@@ -3042,7 +3651,7 @@ const resolveSpeakingRoute = (path: string): (() => React.ReactElement) | null =
 const MobileNavBar = () => (
   <nav aria-label="Mobile Navigation" className="md:hidden fixed bottom-0 left-0 w-full bg-lab-white border-t border-lab-black/10 p-4 flex justify-between overflow-x-auto gap-6 z-40">
     <PageLink to="/#practice" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors">Practice</PageLink>
-    <PageLink to="/#atlas" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors">Atlas</PageLink>
+    <PageLink to="/#atlas" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors whitespace-nowrap">Open work</PageLink>
     <PageLink to="/speaking" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors">Speaking</PageLink>
     <PageLink to="/#contact" className="font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-lab-olive transition-colors">Contact</PageLink>
   </nav>
@@ -3051,6 +3660,7 @@ const MobileNavBar = () => (
 const PageShell = ({ children }: { children?: React.ReactNode }) => (
   <div className="w-full bg-lab-white min-h-screen selection:bg-lab-olive selection:text-white relative">
     <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-lab-black focus:text-lab-white focus:p-4 focus:font-mono focus:text-sm">Skip to content</a>
+    <SchematicFrame />
     <Navigation />
     <main id="main-content">{children}</main>
     <Footer />
@@ -3065,12 +3675,9 @@ const HomePage = () => {
   return (
     <PageShell>
       <Hero />
-      <div className="bg-lab-olive/20">
-        <StickyPhaseShowcase phases={METHODOLOGY_PHASES} />
-      </div>
+      <WhatWeDo phases={METHODOLOGY_PHASES} />
       <Practice />
-      <HouseBuiltTools />
-      <AIReview />
+      <OpenWork />
       <Contact contactIntent={null} />
     </PageShell>
   );
@@ -3079,6 +3686,7 @@ const HomePage = () => {
 const App = () => {
   const path = usePath();
   const isInitialMount = useRef(true);
+  const [introDone, setIntroDone] = useState(INTRO_SEEN);
 
   useScrollDepth(path);
 
@@ -3112,6 +3720,14 @@ const App = () => {
   return (
     <>
       <ShapeDefs />
+      {!introDone && (
+        <Preloader
+          onDone={() => {
+            markIntroSeen();
+            setIntroDone(true);
+          }}
+        />
+      )}
       {page}
     </>
   );
