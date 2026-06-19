@@ -802,7 +802,7 @@ const SectionHeader = ({ title, dark = false, id, rule = true, scatter = false }
   useEffect(() => {
     if (!scatter) return;
     if (!isInView) { setRevealed(false); setOrigin(-1); return; }
-    const timer = setTimeout(() => setRevealed(true), 450);
+    const timer = setTimeout(() => setRevealed(true), 225);
     return () => clearTimeout(timer);
   }, [scatter, isInView]);
 
