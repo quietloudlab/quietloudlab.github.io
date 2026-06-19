@@ -529,7 +529,7 @@ const AsciiRevealBand = () => {
     const cols = Math.ceil(w / cw);
     const rows = Math.ceil(h / chh);
     ctx.clearRect(0, 0, w, h);
-    ctx.font = '500 13px "JetBrains Mono", monospace';
+    ctx.font = '500 13px monospace';
     ctx.textBaseline = 'middle';
 
     let sx = pointer.current.x;
@@ -679,7 +679,7 @@ const SpecimenField = ({ mode }: { mode: SpecimenMode }) => {
     const cols = Math.ceil(w / cw);
     const rows = Math.ceil(h / chh);
     ctx.clearRect(0, 0, w, h);
-    ctx.font = '12px "JetBrains Mono", monospace';
+    ctx.font = '12px monospace';
     ctx.textBaseline = 'middle';
     const { from, to, at } = blend.current;
     let k = clamp01((performance.now() - at) / 650);
@@ -731,16 +731,6 @@ const CornerMarks = () => (
         +
       </span>
     ))}
-  </div>
-);
-
-// Fixed schematic chrome: a quiet tick rail on the page edge.
-const SchematicFrame = () => (
-  <div className="hidden xl:block pointer-events-none fixed inset-0 z-30" aria-hidden="true">
-    <div
-      className="absolute left-4 top-24 bottom-24 w-2"
-      style={{ backgroundImage: 'repeating-linear-gradient(to bottom, rgba(128,128,128,0.4) 0 1px, transparent 1px 56px)' }}
-    />
   </div>
 );
 
@@ -1854,7 +1844,7 @@ const AmbientField = ({ hoveredRef }: { hoveredRef: React.MutableRefObject<numbe
     a.focus = ease(a.focus, !still && tgt === 2 ? 1 : 0);
     a.glow = ease(a.glow, !still && tgt !== null ? 1 : 0);
 
-    ctx.font = '11px "JetBrains Mono", monospace';
+    ctx.font = '11px monospace';
     ctx.textBaseline = 'middle';
     const rect = ctx.canvas.getBoundingClientRect();
     const px = pointer.current.x - rect.left;
@@ -2118,7 +2108,6 @@ const Footer = () => {
       <div className="max-w-screen-xl mx-auto py-16 px-6 md:px-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-12">
           <div>
-            <Logo className="h-5 w-auto mb-6" />
             <p className="font-mono text-sm text-gray-400 max-w-xs">
               Systems Thinking + Critical Futures
             </p>
@@ -2142,12 +2131,11 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Oversized wordmark as the site's closing image */}
-        <RevealText className="mt-16">
-          <div aria-hidden="true">
-            <LogoSvg className="w-full h-auto text-lab-white opacity-90" />
-          </div>
-        </RevealText>
+        {/* Oversized wordmark as the site's closing image — always present
+            (it's the last element on the page, so a scroll-reveal never fires). */}
+        <div className="mt-16" aria-hidden="true">
+          <LogoSvg className="w-full h-auto text-lab-white opacity-90" />
+        </div>
       </div>
     </footer>
   );
@@ -3693,7 +3681,6 @@ const MobileNavBar = () => (
 const PageShell = ({ children }: { children?: React.ReactNode }) => (
   <div className="w-full bg-lab-white min-h-screen selection:bg-lab-olive selection:text-white relative">
     <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-lab-black focus:text-lab-white focus:p-4 focus:font-mono focus:text-sm">Skip to content</a>
-    <SchematicFrame />
     <Navigation />
     <main id="main-content">{children}</main>
     <Footer />
