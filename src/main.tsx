@@ -1637,7 +1637,7 @@ const Hero = () => {
       <div className="max-w-screen-xl mx-auto w-full px-6 md:px-12 pt-32 md:pt-[14vh] relative z-10 flex flex-col flex-1">
         <motion.div style={{ y: headlineY }} className="relative" onMouseMove={e => e.stopPropagation()}>
           <h1 className="mb-8 text-5xl md:text-7xl lg:text-[5.5rem] font-sans tracking-tight leading-tight font-medium text-lab-black selection:bg-lab-olive selection:text-white">
-            <MaskedWords text="quietloudlab is a design invention studio, shaping emerging technologies to become useful, meaningful products." delay={INTRO_DELAY + 0.1} />
+            <MaskedWords text="Shaping emerging technologies to become useful, meaningful products." delay={INTRO_DELAY + 0.1} />
           </h1>
         </motion.div>
       </div>
@@ -1662,7 +1662,7 @@ const Hero = () => {
     <section className="pt-40 md:pt-52 pb-40 md:pb-52 px-6 md:px-12">
       <div className="max-w-screen-2xl mx-auto space-y-10 md:space-y-14">
         <ScrollWords
-          text="We work collaboratively with companies to turn new technologies and complex ideas into clear product propositions, interaction models, and working prototypes."
+          text="quietloudlab works collaboratively with companies to turn new technologies and complex ideas into clear product propositions, interaction models, and working prototypes."
           className="text-3xl md:text-5xl lg:text-6xl font-sans text-gray-700"
           style={{ lineHeight: 1.6 }}
         />
