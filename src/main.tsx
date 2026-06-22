@@ -1499,7 +1499,7 @@ const NewsletterForm = () => {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-2">
-      <label htmlFor="newsletter-email" className="font-mono text-xs uppercase tracking-widest text-gray-600">Stay Updated</label>
+      <label htmlFor="newsletter-email" className="font-mono text-xs uppercase tracking-widest text-gray-600 text-center">Sign up for the quietloudlab newsletter</label>
       <div className="flex gap-0">
         <input
           type="email"
@@ -1680,13 +1680,15 @@ const Hero = () => {
 const SPECIMEN_MODES: SpecimenMode[] = ['lattice', 'loop', 'bounds', 'drift'];
 
 const DispatchCard = () => (
-  <div className="relative border border-lab-black/15 bg-lab-white p-6">
+  <div className="relative mx-auto max-w-2xl border border-lab-black/15 bg-lab-white px-8 py-12 md:px-14 md:py-16 text-center">
     <CornerMarks />
-    <h3 className="font-sans text-lg font-medium text-lab-black mb-3">The Dispatch</h3>
-    <p className="font-serif text-gray-600 mb-6">
-      Occasional notes on systems, futures, and the lab's work. No spam, just signal.
-    </p>
-    <NewsletterForm />
+    <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-5">The Dispatch</p>
+    <h3 className="font-sans text-2xl md:text-3xl font-medium tracking-tight leading-snug text-lab-black mb-8 max-w-lg mx-auto">
+      Stay connected for notes on new experiments, research, and lab work.
+    </h3>
+    <div className="max-w-sm mx-auto text-left">
+      <NewsletterForm />
+    </div>
   </div>
 );
 
@@ -2048,13 +2050,6 @@ const CalBooking = () => {
   );
 };
 
-const ContactChannel = ({ label, children }: { label: string; children?: React.ReactNode }) => (
-  <div>
-    <p className="font-mono text-xs uppercase tracking-widest mb-2 text-lab-olive">{label}</p>
-    <div className="font-mono text-sm text-gray-600">{children}</div>
-  </div>
-);
-
 const Contact = ({ contactIntent }: { contactIntent: ContactIntent | null }) => {
   return (
     <section id="contact" aria-labelledby="contact-heading" className="bg-lab-white">
@@ -2079,20 +2074,9 @@ const Contact = ({ contactIntent }: { contactIntent: ContactIntent | null }) => 
           </RevealText>
         </div>
 
-        {/* Other channels + dispatch — slim strip */}
-        <div className="mt-16 md:mt-20 border-t border-lab-black/15 pt-10 grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 lg:gap-x-12 items-start">
-          <RevealText className="lg:col-span-7">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-              <ContactChannel label="Email">
-                <a href="mailto:brandon@quietloudlab.com" onClick={() => trackEvent('Email Link Clicked')} className="hover:text-lab-olive transition-colors break-all">brandon@quietloudlab.com</a>
-              </ContactChannel>
-              <ContactChannel label="Connect">
-                <a href="https://www.linkedin.com/company/quietloudlab" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('LinkedIn Link Clicked')} className="hover:text-lab-olive transition-colors">LinkedIn</a>
-              </ContactChannel>
-              <ContactChannel label="Location">Dallas, TX / Remote</ContactChannel>
-            </div>
-          </RevealText>
-          <RevealText delay={0.1} className="lg:col-span-5">
+        {/* Dispatch — centered closing CTA */}
+        <div className="mt-16 md:mt-24 border-t border-lab-black/15 pt-14 md:pt-20">
+          <RevealText>
             <DispatchCard />
           </RevealText>
         </div>
@@ -2103,17 +2087,19 @@ const Contact = ({ contactIntent }: { contactIntent: ContactIntent | null }) => 
 
 const Footer = () => {
   return (
-    <footer className="bg-lab-black text-lab-white" role="contentinfo">
-      <Marquee dark />
-      <div className="max-w-screen-xl mx-auto py-16 px-6 md:px-12">
+    <footer className="bg-lab-white text-lab-black" role="contentinfo">
+      <div className="max-w-[1920px] mx-auto">
+        <Marquee />
+      </div>
+      <div className="max-w-[1920px] mx-auto py-16 px-6 md:px-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-12">
           <div>
-            <p className="font-mono text-sm text-gray-400 max-w-xs">
+            <p className="font-mono text-sm text-gray-500 max-w-xs">
               Systems Thinking + Critical Futures
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-6 md:gap-12 font-mono text-sm uppercase tracking-widest text-gray-400">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-12 font-mono text-sm uppercase tracking-widest text-gray-600">
             <a href="https://www.linkedin.com/company/quietloudlab" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('LinkedIn Link Clicked')} className="hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive">LinkedIn</a>
             <a href="mailto:brandon@quietloudlab.com" onClick={() => trackEvent('Email Link Clicked')} className="hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive">Email</a>
             <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-lab-olive transition-colors focus:outline-none focus:text-lab-olive text-left">
@@ -2122,19 +2108,19 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-t border-white/20 pt-8 font-mono text-xs text-gray-600 gap-2">
+        {/* Oversized wordmark as the site's closing image — always present
+            (it's the last element on the page, so a scroll-reveal never fires). */}
+        <div className="mt-16" aria-hidden="true">
+          <LogoSvg className="w-full h-auto text-lab-black opacity-90" />
+        </div>
+
+        <div className="mt-8 border-t border-lab-black/15 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center font-mono text-xs text-gray-500 gap-2">
           <div className="mb-4 md:mb-0">
             <span>&copy; 2026 quietloudlab. All rights reserved.</span>
           </div>
           <div>
             <span>Dallas, TX / Remote</span>
           </div>
-        </div>
-
-        {/* Oversized wordmark as the site's closing image — always present
-            (it's the last element on the page, so a scroll-reveal never fires). */}
-        <div className="mt-16" aria-hidden="true">
-          <LogoSvg className="w-full h-auto text-lab-white opacity-90" />
         </div>
       </div>
     </footer>
