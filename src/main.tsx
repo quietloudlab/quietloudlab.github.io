@@ -2189,6 +2189,17 @@ const UPCOMING_CARDS: SpeakingCard[] = [
     href: '/speaking/idea-lab-mastermind',
   },
   {
+    id: 'designing-with-futures-ixdf-dallas-2026',
+    sortDate: '2026-07-27',
+    formatTag: 'Community Workshop · IxDF Dallas',
+    title: 'An Intro to Designing with Futures',
+    date: 'Mon, Jul 27, 2026 · 5:30–8:30 PM',
+    location: 'Plano, TX',
+    venue: 'Improving Plano',
+    summary: 'A guided design-fiction workshop that sent small teams into DFW in 2033, then asked them to work backward from future evidence to the decisions shaping the present.',
+    href: '/speaking/designing-with-futures',
+  },
+  {
     id: 'uxlx-2026',
     sortDate: '2026-05-12',
     formatTag: 'Conference · Talk + Workshop',
@@ -3508,6 +3519,534 @@ const AIAsDesignMaterialPage = () => {
   );
 };
 
+// --- Speaking detail: An Intro to Designing with Futures ---
+
+type FuturesAsset = {
+  src: string;
+  alt: string;
+};
+
+type FuturesArtifact = FuturesAsset & {
+  id: string;
+  title: string;
+  location: string;
+  prompt: string;
+  gridClass: string;
+};
+
+const FUTURES_ARTIFACTS: FuturesArtifact[] = [
+  {
+    id: 'EV-014',
+    title: 'A lane for delivery robots',
+    location: 'State Thomas · Dallas',
+    prompt: 'What changes when service robots get their own lane?',
+    src: '/images/futures-workshop/artifact-delivery-lane.webp',
+    alt: 'A speculative 2033 Dallas sidewalk with a dedicated lane for delivery robots',
+    gridClass: 'md:col-span-7',
+  },
+  {
+    id: 'EV-087',
+    title: 'A missing-cat search with confidence scores',
+    location: 'Lower Greenville · Dallas',
+    prompt: 'What happens when search becomes an AI-mediated civic service?',
+    src: '/images/futures-workshop/artifact-missing-cat.webp',
+    alt: 'A speculative missing-cat poster with AI search metadata and a confidence score',
+    gridClass: 'md:col-span-5',
+  },
+  {
+    id: 'EV-027',
+    title: 'An autonomous vehicle exchange',
+    location: 'Deep Ellum · Dallas',
+    prompt: 'What becomes ordinary when ownership gives way to fleets?',
+    src: '/images/futures-workshop/artifact-av-exchange.webp',
+    alt: 'A speculative autonomous vehicle exchange releasing fleets after an event in Deep Ellum',
+    gridClass: 'md:col-span-8',
+  },
+  {
+    id: 'EV-031',
+    title: 'A municipal sensor tree',
+    location: 'West Plano',
+    prompt: 'When does environmental care become surveillance infrastructure?',
+    src: '/images/futures-workshop/artifact-sensor-tree.webp',
+    alt: 'A speculative city tree covered with municipal environmental and mobility sensors',
+    gridClass: 'md:col-span-4',
+  },
+  {
+    id: 'EV-058',
+    title: 'A winter grid pause',
+    location: 'Denton Square',
+    prompt: 'Who gets priority when automated mobility meets a constrained grid?',
+    src: '/images/futures-workshop/artifact-grid-pause.webp',
+    alt: 'A speculative Denton grid conservation notice beside paused autonomous vehicles',
+    gridClass: 'md:col-span-6',
+  },
+  {
+    id: 'EV-073',
+    title: "Maya's ninth birthday",
+    location: 'Plano',
+    prompt: 'If a child can travel alone, what has society decided to trust?',
+    src: '/images/futures-workshop/artifact-birthday.webp',
+    alt: "A speculative 2033 child's birthday invitation with autonomous child transportation",
+    gridClass: 'md:col-span-6',
+  },
+];
+
+const FUTURES_METHOD = [
+  {
+    number: '01',
+    title: 'Observe',
+    question: 'What is literally present?',
+    body: 'Committees catalogued objects, language, behavior, infrastructure, and absences before they were allowed to explain any of it.',
+    src: '/images/futures-workshop/workbook-observe.webp',
+    alt: 'Observation Log page from the Future Evidence Workbook',
+  },
+  {
+    number: '02',
+    title: 'Interpret',
+    question: 'What world would make this ordinary?',
+    body: 'Groups separated evidence from inference, then named assumed changes, emerging social norms, and the systems implied by the scene.',
+    src: '/images/futures-workshop/workbook-interpret.webp',
+    alt: 'Interpretation Log page from the Future Evidence Workbook',
+  },
+  {
+    number: '03',
+    title: 'Reconstruct',
+    question: 'How did DFW get from 2026 to 2033?',
+    body: 'Teams backcast from their evidence, placing policy, technology, infrastructure, and cultural shifts onto a seven-year timeline.',
+    src: '/images/futures-workshop/workbook-reconstruct.webp',
+    alt: 'Timeline Reconstruction page from the Future Evidence Workbook',
+  },
+  {
+    number: '04',
+    title: 'Deliberate',
+    question: 'What changes when the evidence meets?',
+    body: 'Six partial histories became one shared public record through negotiation, contradiction, revision, and evidence-supported debate.',
+    src: '/images/futures-workshop/workbook-deliberate.webp',
+    alt: 'Public Deliberation page from the Future Evidence Workbook',
+  },
+];
+
+const FUTURES_GROUP_NOTES = [
+  {
+    label: 'Observation log',
+    quote: 'Waymo child transport. Robot kid. Autonomous cab.',
+    src: '/images/futures-workshop/worksheet-observation.webp',
+    alt: 'Participant observation worksheet examining the 2033 birthday invitation',
+  },
+  {
+    label: 'Interpretation log',
+    quote: 'Robots part of family. Robots have agency. Robots have birthdays.',
+    src: '/images/futures-workshop/worksheet-interpretation.webp',
+    alt: 'Participant interpretation worksheet connecting robots, family life, and energy constraints',
+  },
+  {
+    label: 'Implied systems',
+    quote: 'Trust in AVs becomes normalcy in taking rides — and higher demand.',
+    src: '/images/futures-workshop/worksheet-systems.webp',
+    alt: 'Participant worksheet tracing autonomous vehicle trust, demand, ownership, and infrastructure',
+  },
+];
+
+const FUTURES_REFLECTIONS = [
+  {
+    number: '01',
+    title: 'Start with attention',
+    body: 'The useful future did not begin with imagination alone. It began with weak signals already visible in North Texas — autonomous vehicles, delivery robots, energy constraints, sensor networks, and shifting ideas of trust.',
+  },
+  {
+    number: '02',
+    title: 'Make the future ordinary',
+    body: 'A future becomes discussable when it stops looking like science fiction. A birthday invitation, a missing-cat poster, or a note on a coffee-shop door gave the room something specific enough to question.',
+  },
+  {
+    number: '03',
+    title: 'Design the path, not the prophecy',
+    body: 'Backcasting moved the conversation away from prediction and toward responsibility: which product choices, policies, investments, and norms would make this future possible — and which of those choices are already underway?',
+  },
+];
+
+const DesigningWithFuturesPage = () => {
+  const [selectedAsset, setSelectedAsset] = useState<FuturesAsset | null>(null);
+
+  useEffect(() => {
+    document.title = 'An Intro to Designing with Futures · Speaking · quietloudlab';
+  }, []);
+
+  useEffect(() => {
+    if (!selectedAsset) return;
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelectedAsset(null);
+    };
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [selectedAsset]);
+
+  return (
+    <PageShell>
+      <DetailHero
+        eyebrow="Delivered Workshop · IxDF Dallas · July 2026"
+        title="An Intro to Designing with Futures"
+        lead="A guided design-fiction workshop that turned DFW in 2033 into a public case file — then asked the room to work backward toward the choices shaping that future today."
+        meta={[
+          { key: 'Date', value: 'July 27, 2026' },
+          { key: 'Format', value: '3-hour workshop' },
+          { key: 'Presented with', value: 'IxDF Dallas' },
+          { key: 'Hosted by', value: 'Improving Plano' },
+        ]}
+        decoration={
+          <img
+            src="/images/futures-workshop/ntocf-seal.webp"
+            alt=""
+            aria-hidden="true"
+            className="hidden md:block absolute right-[-120px] top-[150px] w-[360px] opacity-[0.07] rotate-[8deg] pointer-events-none mix-blend-multiply"
+          />
+        }
+      />
+
+      <section className="pt-8 md:pt-12 px-6 md:px-12 max-w-screen-xl mx-auto" aria-label="Workshop overview photograph">
+        <RevealText>
+          <figure>
+            <button
+              type="button"
+              onClick={() => setSelectedAsset({ src: '/images/futures-workshop/room-working.webp', alt: 'IxDF Dallas workshop participants working in small groups around tables' })}
+              className="group block w-full overflow-hidden rounded-2xl bg-lab-concrete focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4"
+              aria-label="Open workshop photograph"
+            >
+              <img
+                src="/images/futures-workshop/room-working.webp"
+                alt="IxDF Dallas workshop participants working in small groups around tables"
+                className="w-full aspect-[2.14/1] object-cover transition-transform duration-700 group-hover:scale-[1.01]"
+              />
+            </button>
+            <figcaption className="mt-4 pt-3 border-t border-lab-black/15 flex flex-col md:flex-row md:justify-between gap-1 font-mono text-xs uppercase tracking-widest text-gray-600">
+              <span>Public Deliberation Committee · Active session</span>
+              <span>Plano, Texas · 2026 / 2033</span>
+            </figcaption>
+          </figure>
+        </RevealText>
+      </section>
+
+      <TrackedSection eventName="Speaking Futures: Viewed Premise" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-premise-heading">
+        <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
+          <p className="font-mono text-xs uppercase tracking-widest text-lab-olive">The opening question</p>
+          <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-600">Design fiction · Worldbuilding</p>
+        </div>
+        <LabGrid>
+          <div className="col-span-1 md:col-span-7">
+            <RevealText>
+              <h2 id="futures-premise-heading" className="font-sans text-4xl md:text-5xl tracking-tight leading-[1.05] font-medium text-lab-black max-w-3xl">
+                What kind of world are we designing for?
+              </h2>
+            </RevealText>
+          </div>
+          <div className="col-span-1 md:col-span-5 md:pt-20">
+            <RevealText delay={0.12}>
+              <p className="font-serif text-lg md:text-xl text-gray-700 leading-relaxed">
+                AI, automation, new interfaces, and changing expectations are reshaping everyday life faster than our design practices are adapting. This session slowed the room down long enough to examine the worlds those choices might produce.
+              </p>
+              <p className="mt-6 font-serif text-base text-gray-600 leading-relaxed">
+                The goal was not to predict the future. It was to make one plausible future concrete enough to inspect, challenge, and redesign.
+              </p>
+            </RevealText>
+          </div>
+        </LabGrid>
+      </TrackedSection>
+
+      <TrackedSection eventName="Speaking Futures: Viewed Assignment" className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-assignment-heading">
+        <DetailSectionHeader id="futures-assignment-heading" title="The assignment" kicker="Case file · DFW 2033" />
+        <LabGrid className="items-start">
+          <div className="col-span-1 md:col-span-5">
+            <RevealText>
+              <div className="bg-lab-black text-lab-white rounded-2xl p-6 md:p-8 relative overflow-hidden">
+                <img src="/images/futures-workshop/ntocf-seal.webp" alt="" aria-hidden="true" className="absolute -right-12 -bottom-14 w-56 opacity-10 rotate-12" />
+                <p className="font-mono text-xs uppercase tracking-[0.22em] text-lab-olive mb-8">North Texas Office of Civic Futures</p>
+                <p className="font-mono text-xs uppercase tracking-widest text-white/50 mb-2">Committee status</p>
+                <p className="font-sans text-2xl md:text-3xl font-medium">Active deliberation</p>
+                <div className="mt-8 pt-6 border-t border-white/15 grid grid-cols-2 gap-5 font-mono text-xs uppercase tracking-widest text-white/65">
+                  <div><span className="block text-white/35 mb-1">Survey year</span>2033</div>
+                  <div><span className="block text-white/35 mb-1">Archive date</span>2026</div>
+                  <div><span className="block text-white/35 mb-1">Committees</span>Six</div>
+                  <div><span className="block text-white/35 mb-1">Outcome</span>Shared record</div>
+                </div>
+              </div>
+            </RevealText>
+          </div>
+          <div className="col-span-1 md:col-span-6 md:col-start-7">
+            <RevealText delay={0.1}>
+              <p className="font-serif text-xl md:text-2xl text-lab-black leading-relaxed">
+                Participants were appointed to temporary public committees and given photographs and field notes collected by fictional agents sent into DFW in 2033.
+              </p>
+              <div className="mt-8 space-y-5 font-serif text-base text-gray-600 leading-relaxed">
+                <p>Each group had to describe what it could actually see before explaining what any of it meant.</p>
+                <p>From there, committees reconstructed the technological, social, cultural, economic, and infrastructural changes that would make those future scenes feel completely ordinary.</p>
+                <p>Finally, every committee brought its partial history into one public timeline. The room had to negotiate not only what might happen, but what would need to happen first.</p>
+              </div>
+            </RevealText>
+          </div>
+        </LabGrid>
+        <RevealText delay={0.18}>
+          <button
+            type="button"
+            onClick={() => setSelectedAsset({ src: '/images/futures-workshop/materials-table.webp', alt: 'Future Evidence Workbook, case files, folder, sticky notes, and markers laid out for a workshop group' })}
+            className="group mt-16 md:mt-24 block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4"
+          >
+            <img src="/images/futures-workshop/materials-table.webp" alt="Future Evidence Workbook, case files, folder, sticky notes, and markers laid out for a workshop group" className="w-full aspect-[2.3/1] object-cover rounded-2xl transition-transform duration-700 group-hover:scale-[1.005]" />
+          </button>
+        </RevealText>
+      </TrackedSection>
+
+      <TrackedSection eventName="Speaking Futures: Viewed Evidence" className="bg-lab-black text-lab-white py-20 md:py-32 px-6 md:px-12" aria-labelledby="futures-evidence-heading">
+        <div className="max-w-screen-xl mx-auto">
+          <div className="flex flex-col md:flex-row items-baseline border-t border-white/20 pt-6 pb-10 md:pb-12 mb-8 gap-3">
+            <RevealText>
+              <h2 id="futures-evidence-heading" className="font-sans text-2xl md:text-4xl font-medium tracking-tight">Evidence from an ordinary 2033</h2>
+            </RevealText>
+            <RevealText delay={0.08} className="md:ml-auto">
+              <p className="font-mono text-xs uppercase tracking-widest text-lab-olive">Six records · One possible future</p>
+            </RevealText>
+          </div>
+          <RevealText>
+            <p className="font-serif text-lg md:text-xl leading-relaxed text-white/65 max-w-3xl mb-12 md:mb-16">
+              Every image was built from present-day signals, then pushed just far enough forward to expose assumptions about mobility, energy, care, surveillance, ownership, and trust.
+            </p>
+          </RevealText>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+            {FUTURES_ARTIFACTS.map((artifact, index) => (
+              <RevealText key={artifact.id} delay={(index % 2) * 0.07} className={artifact.gridClass}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedAsset({ src: artifact.src, alt: artifact.alt });
+                    trackEvent(`Speaking Futures: Opened ${artifact.id}`);
+                  }}
+                  className="group w-full h-full flex flex-col text-left bg-lab-white text-lab-black rounded-2xl overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4 focus-visible:ring-offset-lab-black"
+                >
+                  <div className="aspect-[4/3] bg-lab-concrete overflow-hidden">
+                    <img src={artifact.src} alt={artifact.alt} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.015]" />
+                  </div>
+                  <div className="p-5 md:p-6">
+                    <div className="flex justify-between items-center gap-4 font-mono text-xs uppercase tracking-widest text-gray-600 mb-5">
+                      <span>{artifact.id}</span>
+                      <span>{artifact.location}</span>
+                    </div>
+                    <h3 className="font-sans text-xl md:text-2xl font-medium leading-tight">{artifact.title}</h3>
+                    <p className="mt-4 pt-4 border-t border-lab-black/10 font-serif text-sm md:text-base text-gray-600 leading-relaxed">{artifact.prompt}</p>
+                  </div>
+                </button>
+              </RevealText>
+            ))}
+          </div>
+        </div>
+      </TrackedSection>
+
+      <TrackedSection eventName="Speaking Futures: Viewed Method" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-method-heading">
+        <DetailSectionHeader id="futures-method-heading" title="How the room worked" kicker="Observe · Interpret · Reconstruct · Deliberate" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {FUTURES_METHOD.map((step, index) => (
+            <RevealText key={step.number} delay={(index % 2) * 0.08}>
+              <article className="bg-lab-concrete rounded-2xl border border-lab-black/5 p-5 md:p-6 h-full flex flex-col sm:flex-row gap-6">
+                <button
+                  type="button"
+                  onClick={() => setSelectedAsset({ src: step.src, alt: step.alt })}
+                  className="group w-full sm:w-[38%] shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4"
+                  aria-label={`Open ${step.title} workbook page`}
+                >
+                  <img src={step.src} alt={step.alt} loading="lazy" className="w-full aspect-[8.5/11] object-cover border border-lab-black/10 shadow-sm transition-transform duration-500 group-hover:-translate-y-1" />
+                </button>
+                <div className="flex-1 sm:pt-2">
+                  <p className="font-mono text-xs uppercase tracking-widest text-lab-olive">{step.number}</p>
+                  <h3 className="mt-3 font-sans text-2xl font-medium text-lab-black">{step.title}</h3>
+                  <p className="mt-4 font-sans text-base font-medium text-lab-black leading-snug">{step.question}</p>
+                  <p className="mt-3 font-serif text-sm text-gray-600 leading-relaxed">{step.body}</p>
+                </div>
+              </article>
+            </RevealText>
+          ))}
+        </div>
+      </TrackedSection>
+
+      <TrackedSection eventName="Speaking Futures: Viewed Room" className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-room-heading">
+        <DetailSectionHeader id="futures-room-heading" title="Inside the room" kicker="From case files to a shared history" />
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+          <RevealText className="md:col-span-7">
+            <button type="button" onClick={() => setSelectedAsset({ src: '/images/futures-workshop/presenting.webp', alt: 'Brandon presenting the future evidence to IxDF Dallas participants' })} className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4">
+              <img src="/images/futures-workshop/presenting.webp" alt="Brandon presenting the future evidence to IxDF Dallas participants" loading="lazy" className="w-full aspect-[4/3] object-cover rounded-2xl transition-transform duration-700 group-hover:scale-[1.005]" />
+            </button>
+          </RevealText>
+          <RevealText delay={0.08} className="md:col-span-5">
+            <button type="button" onClick={() => setSelectedAsset({ src: '/images/futures-workshop/evidence-review.webp', alt: 'Brandon pointing to details in the speculative future evidence' })} className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4">
+              <img src="/images/futures-workshop/evidence-review.webp" alt="Brandon pointing to details in the speculative future evidence" loading="lazy" className="w-full aspect-[4/3] object-cover rounded-2xl transition-transform duration-700 group-hover:scale-[1.005]" />
+            </button>
+          </RevealText>
+          <RevealText className="md:col-span-5">
+            <button type="button" onClick={() => setSelectedAsset({ src: '/images/futures-workshop/room-deliberation.webp', alt: 'The room listening as a committee shares its reconstructed future' })} className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4">
+              <img src="/images/futures-workshop/room-deliberation.webp" alt="The room listening as a committee shares its reconstructed future" loading="lazy" className="w-full aspect-[4/3] object-cover rounded-2xl transition-transform duration-700 group-hover:scale-[1.005]" />
+            </button>
+          </RevealText>
+          <RevealText delay={0.08} className="md:col-span-7">
+            <button type="button" onClick={() => setSelectedAsset({ src: '/images/futures-workshop/timeline-building.webp', alt: 'Participants adding evidence-supported developments to the shared 2026 to 2033 timeline' })} className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4">
+              <img src="/images/futures-workshop/timeline-building.webp" alt="Participants adding evidence-supported developments to the shared 2026 to 2033 timeline" loading="lazy" className="w-full aspect-[4/3] object-cover rounded-2xl transition-transform duration-700 group-hover:scale-[1.005]" />
+            </button>
+          </RevealText>
+        </div>
+        <RevealText delay={0.12}>
+          <figure className="mt-16 md:mt-24">
+            <button type="button" onClick={() => setSelectedAsset({ src: '/images/futures-workshop/timeline-result.webp', alt: 'The completed shared timeline from 2026 to 2033, built from participant sticky notes' })} className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4">
+              <img src="/images/futures-workshop/timeline-result.webp" alt="The completed shared timeline from 2026 to 2033, built from participant sticky notes" loading="lazy" className="w-full aspect-[16/7] object-cover rounded-2xl transition-transform duration-700 group-hover:scale-[1.005]" />
+            </button>
+            <figcaption className="mt-3 font-mono text-xs uppercase tracking-widest text-gray-600">One timeline, assembled from six incomplete views of the same future.</figcaption>
+          </figure>
+        </RevealText>
+      </TrackedSection>
+
+      <TrackedSection eventName="Speaking Futures: Viewed Participant Work" className="py-20 md:py-32 px-6 md:px-12 bg-lab-concrete" aria-labelledby="futures-work-heading">
+        <div className="max-w-screen-xl mx-auto">
+          <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
+            <h2 id="futures-work-heading" className="text-2xl md:text-4xl font-sans font-medium text-lab-black">What the committees surfaced</h2>
+            <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-600">Notes from the archive</p>
+          </div>
+          <RevealText>
+            <p className="font-serif text-lg md:text-xl text-gray-700 leading-relaxed max-w-3xl mb-12 md:mb-16">
+              The evidence was identical. The worlds it produced were not. Groups moved from visible details into questions about monopoly, energy, privacy, family, infrastructure, public trust, and whether a robot could have a birthday.
+            </p>
+          </RevealText>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {FUTURES_GROUP_NOTES.map((note, index) => (
+              <RevealText key={note.label} delay={index * 0.06}>
+                <article className="bg-lab-white rounded-2xl p-5 h-full">
+                  <button type="button" onClick={() => setSelectedAsset({ src: note.src, alt: note.alt })} className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4" aria-label={`Open ${note.label}`}>
+                    <img src={note.src} alt={note.alt} loading="lazy" className="w-full aspect-[4/5] object-cover object-top rounded-lg border border-lab-black/10 transition-transform duration-500 group-hover:-translate-y-1" />
+                  </button>
+                  <p className="mt-6 font-mono text-xs uppercase tracking-widest text-lab-olive">{note.label}</p>
+                  <blockquote className="mt-3 font-serif italic text-lg text-lab-black leading-relaxed">“{note.quote}”</blockquote>
+                  <p className="mt-4 font-mono text-xs uppercase tracking-widest text-gray-500">Participant committee · DFW 2033</p>
+                </article>
+              </RevealText>
+            ))}
+          </div>
+        </div>
+      </TrackedSection>
+
+      <TrackedSection eventName="Speaking Futures: Viewed Voices" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-voices-heading">
+        <DetailSectionHeader id="futures-voices-heading" title="After the workshop" kicker="What participants carried out" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <RevealText>
+            <blockquote className="border-t-2 border-lab-olive pt-6 h-full flex flex-col">
+              <p className="font-serif italic text-xl text-lab-black leading-relaxed">“Speed without a ‘should we’ check just gets you to the wrong outcome faster.”</p>
+              <footer className="mt-8 font-mono text-xs uppercase tracking-widest text-gray-600">Jordyn Popova · Experience designer</footer>
+            </blockquote>
+          </RevealText>
+          <RevealText delay={0.07}>
+            <blockquote className="border-t-2 border-lab-olive pt-6 h-full flex flex-col">
+              <p className="font-serif italic text-xl text-lab-black leading-relaxed">“We went down a sci-fi rabbit hole and inferred that the children themselves might be robots.”</p>
+              <footer className="mt-8 font-mono text-xs uppercase tracking-widest text-gray-600">Leo Semenenko · Workshop participant</footer>
+            </blockquote>
+          </RevealText>
+          <RevealText delay={0.14}>
+            <blockquote className="border-t-2 border-lab-olive pt-6 h-full flex flex-col">
+              <p className="font-serif italic text-xl text-lab-black leading-relaxed">“Nothing we built started from imagination alone. It started with signals — real shifts already underway in 2026.”</p>
+              <footer className="mt-8 font-mono text-xs uppercase tracking-widest text-gray-600">Tania Millan · IxDF Dallas lead</footer>
+            </blockquote>
+          </RevealText>
+        </div>
+      </TrackedSection>
+
+      <TrackedSection eventName="Speaking Futures: Viewed Reflection" className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-reflection-heading">
+        <DetailSectionHeader id="futures-reflection-heading" title="What I’m carrying forward" kicker="Notes after the room cleared" />
+        <LabGrid className="items-start">
+          <div className="col-span-1 md:col-span-5">
+            <RevealText>
+              <p className="font-serif text-xl md:text-2xl text-lab-black leading-relaxed">
+                Futures work is most useful when it helps builders notice what the present is already asking of us.
+              </p>
+              <p className="mt-6 font-serif text-base text-gray-600 leading-relaxed">
+                The room did not need to agree on one future. It needed a disciplined way to disagree with assumptions, trace consequences, and ask better questions about the decisions being made now.
+              </p>
+            </RevealText>
+          </div>
+          <div className="col-span-1 md:col-span-6 md:col-start-7 border-t border-lab-black/15">
+            {FUTURES_REFLECTIONS.map((item, index) => (
+              <RevealText key={item.number} delay={index * 0.06}>
+                <div className="py-6 md:py-7 border-b border-lab-black/15 grid grid-cols-[auto_1fr] gap-5 md:gap-8">
+                  <p className="font-mono text-xs uppercase tracking-widest text-lab-olive pt-1">{item.number}</p>
+                  <div>
+                    <h3 className="font-sans text-xl font-medium text-lab-black">{item.title}</h3>
+                    <p className="mt-3 font-serif text-base text-gray-600 leading-relaxed">{item.body}</p>
+                  </div>
+                </div>
+              </RevealText>
+            ))}
+          </div>
+        </LabGrid>
+      </TrackedSection>
+
+      <section className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-label="Workshop inquiry">
+        <RevealText>
+          <div className="bg-lab-concrete rounded-2xl p-6 md:p-10 relative overflow-hidden">
+            <img src="/images/futures-workshop/ntocf-seal.webp" alt="" aria-hidden="true" className="absolute -right-20 -bottom-24 w-[380px] opacity-[0.06] rotate-12 pointer-events-none mix-blend-multiply" />
+            <LabGrid className="relative">
+              <div className="col-span-1 md:col-span-7">
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-4">Bring the future into the room</p>
+                <h2 className="font-sans text-2xl md:text-3xl font-medium tracking-tight text-lab-black">Run this workshop with your team or community.</h2>
+                <p className="mt-5 font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-2xl">
+                  The evidence can be rebuilt around your industry, city, product, or strategic question. The method stays the same: make a future tangible, work backward, and use it to improve the choices in front of you now.
+                </p>
+              </div>
+              <div className="col-span-1 md:col-span-5 flex flex-col md:items-end justify-end gap-3 mt-6 md:mt-0">
+                <a href="https://cal.com/quietloudlab/speaking-event-collaborations" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('Speaking Futures: Calendly')} className="inline-flex items-center gap-2 bg-lab-black text-white px-6 py-3 font-mono text-xs uppercase tracking-widest hover:bg-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive">
+                  Talk about a workshop <ArrowRight size={14} aria-hidden="true" />
+                </a>
+                <a href="mailto:brandon@quietloudlab.com?subject=Designing%20with%20Futures%20Workshop" onClick={() => trackEvent('Speaking Futures: Email')} className="inline-flex items-center gap-2 border border-lab-black/20 text-lab-black px-6 py-3 font-mono text-xs uppercase tracking-widest hover:border-lab-olive hover:text-lab-olive transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lab-olive">
+                  Send an email
+                </a>
+              </div>
+            </LabGrid>
+          </div>
+        </RevealText>
+        <RevealText delay={0.08}>
+          <p className="mt-8 text-center font-mono text-xs uppercase tracking-widest text-gray-500 leading-relaxed">
+            Created and facilitated by Brandon Harwood · Presented with IxDF Dallas · Hosted by Improving Plano · Event photography by Magendran Chandrasekar
+          </p>
+        </RevealText>
+      </section>
+
+      <AnimatePresence>
+        {selectedAsset ? (
+          <motion.div
+            className="fixed inset-0 z-[100] bg-black/90 p-4 md:p-10 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Expanded workshop image"
+            onClick={() => setSelectedAsset(null)}
+          >
+            <button type="button" onClick={() => setSelectedAsset(null)} className="absolute top-5 right-5 md:top-8 md:right-8 h-11 w-11 rounded-full bg-white text-lab-black flex items-center justify-center hover:bg-lab-olive hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white" aria-label="Close expanded image">
+              <X size={20} aria-hidden="true" />
+            </button>
+            <motion.img
+              src={selectedAsset.src}
+              alt={selectedAsset.alt}
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.2 }}
+              className="max-w-full max-h-full object-contain"
+              onClick={(event) => event.stopPropagation()}
+            />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </PageShell>
+  );
+};
+
 // --- Speaking: routes ---
 
 // --- Speaking detail: City Option pages (Barcelona / Berlin) ---
@@ -3599,6 +4138,7 @@ const BerlinOptionPage = () => <CityOptionPage config={CITY_OPTIONS['berlin-2026
 const SPEAKING_ROUTES: Record<string, () => React.ReactElement> = {
   '/speaking': SpeakingPage,
   '/speaking/idea-lab-mastermind': IdeaLabMastermindPage,
+  '/speaking/designing-with-futures': DesigningWithFuturesPage,
   '/speaking/uxlx-2026': UXLXDetailPage,
   '/speaking/ai-as-design-material': AIAsDesignMaterialPage,
   '/speaking/barcelona-2026': BarcelonaOptionPage,
