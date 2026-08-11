@@ -2533,7 +2533,7 @@ const DetailHero = ({
   decoration,
   notice,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   lead: string;
   meta: Array<{ key: string; value: React.ReactNode }>;
@@ -2552,11 +2552,13 @@ const DetailHero = ({
       </RevealText>
       <LabGrid>
         <div className="col-span-1 md:col-span-8">
-          <RevealText>
-            <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-6">
-              {eyebrow}
-            </p>
-          </RevealText>
+          {eyebrow ? (
+            <RevealText>
+              <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-6">
+                {eyebrow}
+              </p>
+            </RevealText>
+          ) : null}
           <RevealText delay={0.08}>
             <h1 className="text-4xl md:text-6xl lg:text-[4.25rem] font-sans tracking-tight leading-[1.05] font-medium text-lab-black mb-8">
               {title}
@@ -3689,7 +3691,6 @@ const DesigningWithFuturesPage = () => {
   return (
     <PageShell>
       <DetailHero
-        eyebrow="Delivered Workshop · IxDF Dallas · July 2026"
         title="An Intro to Designing with Futures"
         lead="A guided design-fiction workshop that turned DFW in 2033 into a public case file — then asked the room to work backward toward the choices shaping that future today."
         meta={[
@@ -3732,11 +3733,7 @@ const DesigningWithFuturesPage = () => {
       </section>
 
       <TrackedSection eventName="Speaking Futures: Viewed Premise" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-premise-heading">
-        <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-lab-olive">The opening question</p>
-          <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-600">Design fiction · Worldbuilding</p>
-        </div>
-        <LabGrid>
+        <LabGrid className="border-t border-lab-black/20 pt-10 md:pt-12">
           <div className="col-span-1 md:col-span-7">
             <RevealText>
               <h2 id="futures-premise-heading" className="font-sans text-4xl md:text-5xl tracking-tight leading-[1.05] font-medium text-lab-black max-w-3xl">
@@ -3758,7 +3755,7 @@ const DesigningWithFuturesPage = () => {
       </TrackedSection>
 
       <TrackedSection eventName="Speaking Futures: Viewed Assignment" className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-assignment-heading">
-        <DetailSectionHeader id="futures-assignment-heading" title="The assignment" kicker="Case file · DFW 2033" />
+        <DetailSectionHeader id="futures-assignment-heading" title="The assignment" />
         <LabGrid className="items-start">
           <div className="col-span-1 md:col-span-5">
             <RevealText>
@@ -3806,9 +3803,6 @@ const DesigningWithFuturesPage = () => {
             <RevealText>
               <h2 id="futures-evidence-heading" className="font-sans text-2xl md:text-4xl font-medium tracking-tight">Evidence from an ordinary 2033</h2>
             </RevealText>
-            <RevealText delay={0.08} className="md:ml-auto">
-              <p className="font-mono text-xs uppercase tracking-widest text-lab-olive">Six records · One possible future</p>
-            </RevealText>
           </div>
           <RevealText>
             <p className="font-serif text-lg md:text-xl leading-relaxed text-white/65 max-w-3xl mb-12 md:mb-16">
@@ -3845,7 +3839,7 @@ const DesigningWithFuturesPage = () => {
       </TrackedSection>
 
       <TrackedSection eventName="Speaking Futures: Viewed Method" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-method-heading">
-        <DetailSectionHeader id="futures-method-heading" title="How the room worked" kicker="Observe · Interpret · Reconstruct · Deliberate" />
+        <DetailSectionHeader id="futures-method-heading" title="How the room worked" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {FUTURES_METHOD.map((step, index) => (
             <RevealText key={step.number} delay={(index % 2) * 0.08}>
@@ -3871,7 +3865,7 @@ const DesigningWithFuturesPage = () => {
       </TrackedSection>
 
       <TrackedSection eventName="Speaking Futures: Viewed Room" className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-room-heading">
-        <DetailSectionHeader id="futures-room-heading" title="Inside the room" kicker="From case files to a shared history" />
+        <DetailSectionHeader id="futures-room-heading" title="Inside the room" />
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
           <RevealText className="md:col-span-7">
             <button type="button" onClick={() => setSelectedAsset({ src: '/images/futures-workshop/presenting.webp', alt: 'Brandon presenting the future evidence to IxDF Dallas participants' })} className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4">
@@ -3908,7 +3902,6 @@ const DesigningWithFuturesPage = () => {
         <div className="max-w-screen-xl mx-auto">
           <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
             <h2 id="futures-work-heading" className="text-2xl md:text-4xl font-sans font-medium text-lab-black">What the committees surfaced</h2>
-            <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-600">Notes from the archive</p>
           </div>
           <RevealText>
             <p className="font-serif text-lg md:text-xl text-gray-700 leading-relaxed max-w-3xl mb-12 md:mb-16">
@@ -3933,7 +3926,7 @@ const DesigningWithFuturesPage = () => {
       </TrackedSection>
 
       <TrackedSection eventName="Speaking Futures: Viewed Voices" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-voices-heading">
-        <DetailSectionHeader id="futures-voices-heading" title="After the workshop" kicker="What participants carried out" />
+        <DetailSectionHeader id="futures-voices-heading" title="After the workshop" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <RevealText>
             <blockquote className="border-t-2 border-lab-olive pt-6 h-full flex flex-col">
@@ -3957,7 +3950,7 @@ const DesigningWithFuturesPage = () => {
       </TrackedSection>
 
       <TrackedSection eventName="Speaking Futures: Viewed Reflection" className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-reflection-heading">
-        <DetailSectionHeader id="futures-reflection-heading" title="What I’m carrying forward" kicker="Notes after the room cleared" />
+        <DetailSectionHeader id="futures-reflection-heading" title="What I’m carrying forward" />
         <LabGrid className="items-start">
           <div className="col-span-1 md:col-span-5">
             <RevealText>
@@ -3991,7 +3984,6 @@ const DesigningWithFuturesPage = () => {
             <img src="/images/futures-workshop/ntocf-seal.webp" alt="" aria-hidden="true" className="absolute -right-20 -bottom-24 w-[380px] opacity-[0.06] rotate-12 pointer-events-none mix-blend-multiply" />
             <LabGrid className="relative">
               <div className="col-span-1 md:col-span-7">
-                <p className="font-mono text-xs uppercase tracking-widest text-lab-olive mb-4">Bring the future into the room</p>
                 <h2 className="font-sans text-2xl md:text-3xl font-medium tracking-tight text-lab-black">Run this workshop with your team or community.</h2>
                 <p className="mt-5 font-serif text-base md:text-lg text-gray-600 leading-relaxed max-w-2xl">
                   The evidence can be rebuilt around your industry, city, product, or strategic question. The method stays the same: make a future tangible, work backward, and use it to improve the choices in front of you now.
