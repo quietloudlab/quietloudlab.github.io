@@ -2154,8 +2154,8 @@ const SpeakingBackLink = () => (
   </PageLink>
 );
 
-const DetailSectionHeader = ({ id, title, kicker }: { id?: string; title: string; kicker?: string }) => (
-  <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
+const DetailSectionHeader = ({ id, title, kicker, showRule = true }: { id?: string; title: string; kicker?: string; showRule?: boolean }) => (
+  <div className={`flex flex-col md:flex-row items-baseline pb-10 md:pb-12 mb-8 ${showRule ? 'border-t border-lab-black/20 pt-6' : ''}`}>
     <h2 id={id} className="text-2xl md:text-4xl font-sans font-medium text-lab-black">{title}</h2>
     {kicker ? <p className="md:ml-auto mt-3 md:mt-0 font-mono text-xs uppercase tracking-widest text-gray-600">{kicker}</p> : null}
   </div>
@@ -3733,7 +3733,7 @@ const DesigningWithFuturesPage = () => {
       </section>
 
       <TrackedSection eventName="Speaking Futures: Viewed Premise" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-premise-heading">
-        <LabGrid className="border-t border-lab-black/20 pt-10 md:pt-12">
+        <LabGrid>
           <div className="col-span-1 md:col-span-7">
             <RevealText>
               <h2 id="futures-premise-heading" className="font-sans text-4xl md:text-5xl tracking-tight leading-[1.05] font-medium text-lab-black max-w-3xl">
@@ -3755,7 +3755,7 @@ const DesigningWithFuturesPage = () => {
       </TrackedSection>
 
       <TrackedSection eventName="Speaking Futures: Viewed Assignment" className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-assignment-heading">
-        <DetailSectionHeader id="futures-assignment-heading" title="The assignment" />
+        <DetailSectionHeader id="futures-assignment-heading" title="The assignment" showRule={false} />
         <LabGrid className="items-start">
           <div className="col-span-1 md:col-span-5">
             <RevealText>
@@ -3799,7 +3799,7 @@ const DesigningWithFuturesPage = () => {
 
       <TrackedSection eventName="Speaking Futures: Viewed Evidence" className="bg-lab-black text-lab-white py-20 md:py-32 px-6 md:px-12" aria-labelledby="futures-evidence-heading">
         <div className="max-w-screen-xl mx-auto">
-          <div className="flex flex-col md:flex-row items-baseline border-t border-white/20 pt-6 pb-10 md:pb-12 mb-8 gap-3">
+          <div className="flex flex-col md:flex-row items-baseline pb-10 md:pb-12 mb-8 gap-3">
             <RevealText>
               <h2 id="futures-evidence-heading" className="font-sans text-2xl md:text-4xl font-medium tracking-tight">Evidence from an ordinary 2033</h2>
             </RevealText>
@@ -3839,7 +3839,7 @@ const DesigningWithFuturesPage = () => {
       </TrackedSection>
 
       <TrackedSection eventName="Speaking Futures: Viewed Method" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-method-heading">
-        <DetailSectionHeader id="futures-method-heading" title="How the room worked" />
+        <DetailSectionHeader id="futures-method-heading" title="How the room worked" showRule={false} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {FUTURES_METHOD.map((step, index) => (
             <RevealText key={step.number} delay={(index % 2) * 0.08}>
@@ -3865,7 +3865,7 @@ const DesigningWithFuturesPage = () => {
       </TrackedSection>
 
       <TrackedSection eventName="Speaking Futures: Viewed Room" className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-room-heading">
-        <DetailSectionHeader id="futures-room-heading" title="Inside the room" />
+        <DetailSectionHeader id="futures-room-heading" title="Inside the room" showRule={false} />
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
           <RevealText className="md:col-span-7">
             <button type="button" onClick={() => setSelectedAsset({ src: '/images/futures-workshop/presenting.webp', alt: 'Brandon presenting the future evidence to IxDF Dallas participants' })} className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-lab-olive focus-visible:ring-offset-4">
@@ -3900,7 +3900,7 @@ const DesigningWithFuturesPage = () => {
 
       <TrackedSection eventName="Speaking Futures: Viewed Participant Work" className="py-20 md:py-32 px-6 md:px-12 bg-lab-concrete" aria-labelledby="futures-work-heading">
         <div className="max-w-screen-xl mx-auto">
-          <div className="flex flex-col md:flex-row items-baseline border-t border-lab-black/20 pt-6 pb-10 md:pb-12 mb-8">
+          <div className="flex flex-col md:flex-row items-baseline pb-10 md:pb-12 mb-8">
             <h2 id="futures-work-heading" className="text-2xl md:text-4xl font-sans font-medium text-lab-black">What the committees surfaced</h2>
           </div>
           <RevealText>
@@ -3926,7 +3926,7 @@ const DesigningWithFuturesPage = () => {
       </TrackedSection>
 
       <TrackedSection eventName="Speaking Futures: Viewed Voices" className="py-20 md:py-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-voices-heading">
-        <DetailSectionHeader id="futures-voices-heading" title="After the workshop" />
+        <DetailSectionHeader id="futures-voices-heading" title="After the workshop" showRule={false} />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <RevealText>
             <blockquote className="border-t-2 border-lab-olive pt-6 h-full flex flex-col">
@@ -3950,7 +3950,7 @@ const DesigningWithFuturesPage = () => {
       </TrackedSection>
 
       <TrackedSection eventName="Speaking Futures: Viewed Reflection" className="pb-20 md:pb-32 px-6 md:px-12 max-w-screen-xl mx-auto" aria-labelledby="futures-reflection-heading">
-        <DetailSectionHeader id="futures-reflection-heading" title="What I’m carrying forward" />
+        <DetailSectionHeader id="futures-reflection-heading" title="What I’m carrying forward" showRule={false} />
         <LabGrid className="items-start">
           <div className="col-span-1 md:col-span-5">
             <RevealText>
