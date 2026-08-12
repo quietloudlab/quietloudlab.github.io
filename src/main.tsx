@@ -1637,7 +1637,7 @@ const Hero = () => {
       <div className="max-w-screen-xl mx-auto w-full px-6 md:px-12 pt-32 md:pt-[14vh] relative z-10 flex flex-col flex-1">
         <motion.div style={{ y: headlineY }} className="relative" onMouseMove={e => e.stopPropagation()}>
           <h1 className="mb-8 text-5xl md:text-7xl lg:text-[5.5rem] font-sans tracking-tight leading-tight font-medium text-lab-black selection:bg-lab-olive selection:text-white">
-            <MaskedWords text="Shaping emerging technologies to become useful, meaningful products." delay={INTRO_DELAY + 0.1} />
+            <MaskedWords text="quietloudlab is a design and technology studio for moments of consequential change." delay={INTRO_DELAY + 0.1} />
           </h1>
         </motion.div>
       </div>
@@ -1662,12 +1662,12 @@ const Hero = () => {
     <section className="pt-40 md:pt-52 pb-40 md:pb-52 px-6 md:px-12">
       <div className="max-w-screen-2xl mx-auto space-y-10 md:space-y-14">
         <ScrollWords
-          text="quietloudlab works collaboratively with companies to turn new technologies and complex ideas into clear product propositions, interaction models, and working prototypes."
+          text="We collaborate with ambitious organizations to explore a rapidly changing world, and our place in it."
           className="text-3xl md:text-5xl lg:text-6xl font-sans text-gray-700"
           style={{ lineHeight: 1.6 }}
         />
         <ScrollWords
-          text="Our work moves from early research and product R&D through experience definition, prototyping, and validation, with particular depth in AI systems designed to expand human agency, creativity, and judgment."
+          text="Through research, design, and prototyping, we transform uncertainty about the future into tangible experiences and actionable strategy."
           className="text-3xl md:text-5xl lg:text-6xl font-sans text-gray-700"
           style={{ lineHeight: 1.6 }}
         />
