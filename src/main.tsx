@@ -155,6 +155,103 @@ const PageLink = ({
   );
 };
 
+const SELECTION_COLORS = [
+  '#FFD166',
+  '#76D7C4',
+  '#85B7FF',
+  '#C7A6FF',
+  '#FF9DC7',
+  '#FF9B71',
+] as const;
+
+const useColorfulTextSelection = () => {
+  useEffect(() => {
+    let selectionInProgress = false;
+    let keyboardSelectionInProgress = false;
+    let lastColorIndex = -1;
+
+    const showNextColor = () => {
+      const availableColorCount = lastColorIndex < 0
+        ? SELECTION_COLORS.length
+        : SELECTION_COLORS.length - 1;
+      let nextColorIndex = Math.floor(Math.random() * availableColorCount);
+
+      // Sample from every color except the current one, so consecutive
+      // selections can never land on the same background.
+      if (lastColorIndex >= 0 && nextColorIndex >= lastColorIndex) {
+        nextColorIndex += 1;
+      }
+
+      lastColorIndex = nextColorIndex;
+      document.documentElement.style.setProperty(
+        '--selection-background',
+        SELECTION_COLORS[nextColorIndex],
+      );
+      document.documentElement.style.setProperty('--selection-foreground', '#050505');
+    };
+
+    const beginSelection = () => {
+      if (selectionInProgress) return;
+      selectionInProgress = true;
+      showNextColor();
+    };
+
+    const handleSelectionChange = () => {
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed || selection.toString().length === 0) {
+        selectionInProgress = false;
+        return;
+      }
+      beginSelection();
+    };
+
+    const handleInputSelection = (event: Event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement)) return;
+      if (target.selectionStart === target.selectionEnd) {
+        selectionInProgress = false;
+        return;
+      }
+      beginSelection();
+    };
+
+    const handlePointerDown = () => {
+      selectionInProgress = false;
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const startsKeyboardSelection = event.key === 'Shift'
+        || ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'a');
+      if (startsKeyboardSelection && !keyboardSelectionInProgress) {
+        keyboardSelectionInProgress = true;
+        selectionInProgress = false;
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key === 'Shift' || event.key.toLowerCase() === 'a') {
+        keyboardSelectionInProgress = false;
+      }
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    document.addEventListener('select', handleInputSelection, true);
+    document.addEventListener('pointerdown', handlePointerDown, true);
+    document.addEventListener('keydown', handleKeyDown, true);
+    document.addEventListener('keyup', handleKeyUp, true);
+
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+      document.removeEventListener('select', handleInputSelection, true);
+      document.removeEventListener('pointerdown', handlePointerDown, true);
+      document.removeEventListener('keydown', handleKeyDown, true);
+      document.removeEventListener('keyup', handleKeyUp, true);
+      document.documentElement.style.removeProperty('--selection-background');
+      document.documentElement.style.removeProperty('--selection-foreground');
+    };
+  }, []);
+};
+
 // --- Data ---
 
 const PRACTICE_AREAS = [
@@ -1636,7 +1733,7 @@ const Hero = () => {
       <MouseTrailLayer state={trailState} />
       <div className="max-w-screen-xl mx-auto w-full px-6 md:px-12 pt-32 md:pt-[14vh] relative z-10 flex flex-col flex-1">
         <motion.div style={{ y: headlineY }} className="relative" onMouseMove={e => e.stopPropagation()}>
-          <h1 className="mb-8 text-5xl md:text-7xl lg:text-[5.5rem] font-sans tracking-tight leading-tight font-medium text-lab-black selection:bg-lab-olive selection:text-white">
+          <h1 className="mb-8 text-5xl md:text-7xl lg:text-[5.5rem] font-sans tracking-tight leading-tight font-medium text-lab-black">
             <MaskedWords text="quietloudlab is a design and technology studio for moments of consequential change." delay={INTRO_DELAY + 0.1} />
           </h1>
         </motion.div>
@@ -4197,7 +4294,7 @@ const MobileNavBar = () => (
 );
 
 const PageShell = ({ children }: { children?: React.ReactNode }) => (
-  <div className="w-full bg-lab-white min-h-screen selection:bg-lab-olive selection:text-white relative">
+  <div className="w-full bg-lab-white min-h-screen relative">
     <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-lab-black focus:text-lab-white focus:p-4 focus:font-mono focus:text-sm">Skip to content</a>
     <Navigation />
     <main id="main-content">{children}</main>
@@ -4227,6 +4324,7 @@ const App = () => {
   const [introDone, setIntroDone] = useState(INTRO_SEEN);
 
   useScrollDepth(path);
+  useColorfulTextSelection();
 
   useEffect(() => {
     // Scroll to hash target when hash is present on any route change

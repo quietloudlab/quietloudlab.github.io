@@ -74,6 +74,11 @@
         overflow-x: hidden;
       }
 
+      :root {
+        --selection-background: #6B7456;
+        --selection-foreground: #FFFFFF;
+      }
+
       /* Accessibility: Ensure focus is always visible via keyboard */
       *:focus-visible {
         outline: 2px solid #6B7456;
@@ -91,8 +96,8 @@
         background: #050505;
       }
       ::selection {
-        background: #6B7456;
-        color: #fff;
+        background: var(--selection-background);
+        color: var(--selection-foreground);
       }
 
       /* Mobile trail float animation */
