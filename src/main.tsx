@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { motion, useScroll, useInView, AnimatePresence, useSpring, useTransform, useReducedMotion, useMotionValueEvent, type MotionValue } from 'framer-motion';
 import { ArrowRight, ArrowDown, Menu, X, Check, Loader2, Users, Compass, Code2, Building2, Video, Mic, Plus, type LucideIcon } from 'lucide-react';
+import { submitForm } from './formSubmission';
 import LogoSvg from './img/quietloudlab_logo_white.svg?react';
 
 // Fathom Analytics
@@ -1380,7 +1381,8 @@ type ContactIntent = {
 };
 
 const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null }) => {
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error' | 'rejected'>('idle');
+  const submittingRef = useRef(false);
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const shouldReduceMotion = useReducedMotion();
@@ -1423,6 +1425,8 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setStatus('submitting');
 
     const formData = new FormData(e.currentTarget);
@@ -1433,25 +1437,12 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
       interests: formData.getAll('interests') as string[],
     };
 
-    try {
-      const response = await fetch("https://submit-form.com/zJR7lYKAh", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        setStatus('success');
-        setMessage('');
-        trackEvent('Contact Form Submitted');
-      } else {
-        setStatus('error');
-      }
-    } catch (err) {
-      setStatus('error');
+    const result = await submitForm('https://submit-form.com/zJR7lYKAh', data, formData);
+    submittingRef.current = false;
+    setStatus(result);
+    if (result === 'success') {
+      setMessage('');
+      trackEvent('Contact Form Submitted');
     }
   };
 
@@ -1472,6 +1463,7 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
+      <FormHoneypot />
       <div>
         <label htmlFor="name" className="block font-mono text-xs uppercase tracking-widest text-gray-600 mb-2">Name *</label>
         <input
@@ -1548,42 +1540,38 @@ const ContactForm = ({ contactIntent }: { contactIntent: ContactIntent | null })
         )}
       </button>
 
-      {status === 'error' && (
-        <p role="alert" className="text-red-600 font-mono text-xs text-center">Something went wrong. Please try again.</p>
+      {(status === 'error' || status === 'rejected') && (
+        <p role="alert" className="text-red-600 font-mono text-xs text-center">{status === 'rejected' ? 'Your message could not be accepted. Please email brandon@quietloudlab.com instead.' : 'Your message was not confirmed. Please try again or email brandon@quietloudlab.com.'}</p>
       )}
     </form>
   );
 };
 
+// Hidden from keyboard users and screen readers; discourage browser autofill.
+// Keep it in FormData so the JSON payload actually reaches Formspark's check.
+const FormHoneypot = () => (
+  <div style={{ display: 'none' }} aria-hidden="true">
+    <label>Leave this field empty<input type="text" name="_honeypot" tabIndex={-1} autoComplete="off" /></label>
+  </div>
+);
+
 const NewsletterForm = () => {
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error' | 'rejected'>('idle');
+  const submittingRef = useRef(false);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setStatus('submitting');
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
 
-    try {
-      const response = await fetch("https://submit-form.com/buMSWec82", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      if (response.ok) {
-        setStatus('success');
-        trackEvent('Newsletter Subscribed');
-      } else {
-        setStatus('error');
-      }
-    } catch (err) {
-      setStatus('error');
-    }
+    const result = await submitForm('https://submit-form.com/buMSWec82', { email }, formData);
+    submittingRef.current = false;
+    setStatus(result);
+    if (result === 'success') trackEvent('Newsletter Subscribed');
   };
 
   if (status === 'success') {
@@ -1596,6 +1584,7 @@ const NewsletterForm = () => {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-2">
+      <FormHoneypot />
       <label htmlFor="newsletter-email" className="font-mono text-xs uppercase tracking-widest text-gray-600 text-center">Sign up for the quietloudlab newsletter</label>
       <div className="flex gap-0">
         <input
@@ -1616,7 +1605,7 @@ const NewsletterForm = () => {
           {status === 'submitting' ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <ArrowRight size={14} aria-hidden="true" />}
         </button>
       </div>
-      {status === 'error' && <p role="alert" className="text-red-600 font-mono text-xs">Error subscribing.</p>}
+      {(status === 'error' || status === 'rejected') && <p role="alert" className="text-red-600 font-mono text-xs">{status === 'rejected' ? 'Your subscription could not be accepted. Please email brandon@quietloudlab.com for help.' : 'Your subscription was not confirmed. Please try again.'}</p>}
     </form>
   );
 };
